@@ -1,0 +1,137 @@
+/*
+ * PiSton - A tiny web panel for your Minecraft server on a Raspberry Pi
+ * Copyright (C) 2026 Mischa S.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * Additional terms apply under Section 7 of the license;
+ * see the ADDITIONAL_TERMS file in the root of this repository.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/* PiSton design tokens – source: design/mockups/01-Styleguide.svg */
+
+:root {
+  color-scheme: dark;
+
+  /* ---------- Colors: Deepslate (base) ---------- */
+  --deepslate-900: #121314; /* console background, text on colored buttons */
+  --deepslate-800: #18191B; /* page background, input fields */
+  --deepslate-700: #222326; /* cards, sidebar */
+  --deepslate-600: #2C2D31; /* secondary buttons, inner dividers */
+  --deepslate-500: #3A3B40; /* borders */
+  --deepslate-300: #A3A19C; /* muted text, labels */
+  --deepslate-100: #ECEAE6; /* main text */
+
+  /* ---------- Colors: Grass (primary) ---------- */
+  --grass: #6DB33F;
+  --grass-edge: #4A7F27;
+  --grass-hover: #8FD15C;
+
+  /* ---------- Colors: Redstone (danger) ---------- */
+  --redstone: #F05A4F;
+  --redstone-edge: #B53A31;
+  --redstone-hover: #FF7A70;
+
+  /* ---------- Semantic colors ---------- */
+  --color-bg: var(--deepslate-800);
+  --color-surface: var(--deepslate-700);
+  --color-surface-raised: var(--deepslate-600);
+  --color-console-bg: var(--deepslate-900);
+  --color-input-bg: var(--deepslate-800);
+  --color-border: var(--deepslate-500);
+  --color-divider: var(--deepslate-600);
+  --color-text: var(--deepslate-100);
+  --color-text-muted: var(--deepslate-300);
+  --color-text-on-accent: var(--deepslate-900);
+  --color-placeholder: #757575;
+
+  --color-primary: var(--grass);
+  --color-primary-edge: var(--grass-edge);
+  --color-primary-hover: var(--grass-hover);
+  --color-danger: var(--redstone);
+  --color-danger-edge: var(--redstone-edge);
+  --color-danger-hover: var(--redstone-hover);
+
+  --color-online: var(--grass);
+  --color-online-text: var(--grass-hover);
+  --color-online-bg: rgb(109 179 63 / .15);
+  --color-offline: var(--redstone);
+  --color-offline-text: var(--redstone-hover);
+  --color-offline-bg: rgb(240 90 79 / .15);
+
+  /* ---------- Font families ---------- */
+  --font-display: "Pixelify Sans", system-ui, sans-serif;
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* ---------- Font weights ---------- */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* ---------- Type scale (size / line-height) ---------- */
+  --fs-h1: 32px;      --lh-h1: 40px;     /* Pixelify 700 – page title */
+  --fs-h2: 22px;      --lh-h2: 30px;     /* Pixelify 700 – section heading */
+  --fs-h3: 17px;      --lh-h3: 24px;     /* Inter 600 – card title */
+  --fs-body: 15px;    --lh-body: 24px;   /* Inter 400 */
+  --fs-label: 13px;   --lh-label: 18px;  /* Inter 500 – labels, help text */
+  --fs-mono: 14px;    --lh-mono: 22px;   /* JetBrains Mono 400 */
+  --fs-overline: 12px;                   /* mono caps, e.g. "STANDARD" */
+  --ls-overline: .08em;
+  --fs-display: 48px;                    /* large metrics */
+
+  /* ---------- Spacing (8 px grid) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+
+  /* ---------- Radii ---------- */
+  --radius-marker: 2px; /* small markers (badge dot) */
+  --radius-small: 3px;  /* toggle knob, checkbox */
+  --radius-control: 4px;
+  --radius-card: 6px;
+
+  /* ---------- Borders ---------- */
+  --border-width: 1px;
+  --border: var(--border-width) solid var(--color-border);
+  --edge-width: 3px; /* darker bottom edge on primary/danger buttons */
+  --press-offset: 2px;
+
+  /* ---------- Control sizes ---------- */
+  --control-h-s: 36px; /* tables only */
+  --control-h-m: 44px; /* default, min. touch target */
+  --control-h-l: 56px; /* main action */
+  --icon-size: 20px;
+  --icon-stroke: 2px;
+  --toggle-w: 44px;
+  --toggle-h: 24px;
+  --toggle-knob: 18px;
+  --checkbox-size: 20px;
+  --badge-h: 28px;
+  --badge-dot: 8px;
+
+  /* ---------- Focus ---------- */
+  --focus-width: 2px;
+  --focus-offset: 2px;
+  --focus-ring: var(--focus-width) solid var(--grass);
+  --focus-ring-danger: var(--focus-width) solid var(--redstone);
+  --focus-glow: 0 0 0 3px rgb(109 179 63 / .25); /* input focus */
+
+  /* ---------- Motion ---------- */
+  --transition-fast: 120ms ease-out;
+}
