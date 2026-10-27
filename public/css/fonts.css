@@ -1,0 +1,66 @@
+/*
+ * PiSton - A tiny web panel for your Minecraft server on a Raspberry Pi
+ * Copyright (C) 2026 Mischa S.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * Additional terms apply under Section 7 of the license;
+ * see the ADDITIONAL_TERMS file in the root of this repository.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/* Local web fonts (no CDN – the panel must work offline in the LAN).
+   Variable fonts: one file per family covers all weights used in the styleguide. */
+
+/* ---------- Pixelify Sans – display (500 / 700) ---------- */
+@font-face {
+  font-family: "Pixelify Sans";
+  src: url("../assets/fonts/Pixelify_Sans/PixelifySans-VariableFont_wght.ttf") format("truetype");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Inter – UI text (400–700) ---------- */
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---------- JetBrains Mono – console, commands, IPs (400 / 600) ---------- */
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../assets/fonts/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../assets/fonts/JetBrains_Mono/JetBrainsMono-Italic-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 800;
+  font-style: italic;
+  font-display: swap;
+}
