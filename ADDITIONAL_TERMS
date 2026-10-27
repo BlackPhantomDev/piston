@@ -1,0 +1,27 @@
+ADDITIONAL TERMS UNDER SECTION 7 OF THE GNU AGPL VERSION 3
+
+PiSton - A tiny web panel for your Minecraft server on a Raspberry Pi
+Copyright (C) 2026 Mischa S.
+
+PiSton is licensed under the GNU Affero General Public License, either
+version 3 of the License, or (at your option) any later version (see the
+LICENCE file), with the following additional terms pursuant to Section 7:
+
+1. Attribution (Section 7(b)):
+   Any version of this program, whether modified or unmodified, that is
+   conveyed or made available to users over a network must display the
+   attribution "Powered by PiSton" with a working link to
+   https://github.com/BlackPhantomDev/piston on every page of the web
+   interface (for example in the footer or the sidebar). This attribution
+   is part of the Appropriate Legal Notices (Section 5(d)) and must
+   remain clearly visible and legible. It may not be removed, hidden,
+   or obscured.
+
+2. Marking of modified versions (Section 7(c)):
+   Modified versions must not be presented as the original PiSton and
+   must be marked in a reasonable way as modified.
+
+3. Trademarks (Section 7(e)):
+   This license does not grant permission to use the name "PiSton" or
+   its logos as trademarks, except as required to comply with the
+   attribution in term 1.
