@@ -35,8 +35,6 @@ export class LangSwitch extends HTMLElement {
 
     const fieldset = document.createElement('fieldset');
     fieldset.className = 'lang-switch';
-    const legend = document.createElement('legend');
-    legend.textContent = t('lang.label');
 
     const options = document.createElement('div');
     options.className = 'lang-switch__options';
@@ -76,7 +74,7 @@ export class LangSwitch extends HTMLElement {
       setLocale(/** @type {HTMLInputElement} */ (event.target).value);
     });
 
-    fieldset.append(legend, options);
+    fieldset.append(options);
     this.append(fieldset);
   }
 }

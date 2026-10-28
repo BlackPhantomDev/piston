@@ -128,4 +128,5 @@ svg {
 
 .legal-notice__version {
   font-family: var(--font-mono);
+  white-space: nowrap; /* never break "0.1.0-alpha.1" at the hyphen */
 }

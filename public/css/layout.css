@@ -300,8 +300,22 @@
   outline: none;
 }
 
-.content > .legal-notice {
-  padding-inline: var(--space-6);
+/* Required attribution (ADDITIONAL_TERMS term 1): in the sidebar on wide
+   screens – always in view there – and below the content on narrow screens,
+   where the sidebar is collapsed. Exactly one of the two is shown. */
+.legal-notice--sidebar {
+  padding: 0 0 0 14px; /* aligns with the address text above */
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+}
+
+/* One line each: "Powered by PiSton" / "Quellcode (AGPLv3)" / version */
+.legal-notice--sidebar .legal-notice__line {
+  display: block;
+}
+
+.legal-notice--content {
+  display: none;
 }
 
 /* =========================================================================
@@ -379,8 +393,13 @@
     --page-pad-x: var(--space-3);
   }
 
-  .content > .legal-notice {
+  .legal-notice--content {
+    display: block;
     padding-inline: var(--space-3);
+  }
+
+  .legal-notice--sidebar {
+    display: none;
   }
 
   /* The sticky top bar would cover the heading */
