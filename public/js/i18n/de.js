@@ -21,6 +21,23 @@
 
 /** German UI strings. */
 export default {
+  nav: {
+    label: 'Hauptnavigation',
+    menu: 'Menü',
+    home: 'Home',
+    konsole: 'Konsole',
+    einstellungen: 'Einstellungen',
+  },
+  sidebar: {
+    address: 'Adresse',
+  },
+  lang: {
+    label: 'Sprache',
+    planned: 'geplant',
+  },
+  page: {
+    placeholder: 'Inhalt folgt.',
+  },
   status: {
     online: 'Online',
     offline: 'Offline',

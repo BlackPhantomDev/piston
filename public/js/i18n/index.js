@@ -21,15 +21,90 @@
 
 import de from './de.js';
 
-const strings = de;
+/**
+ * @typedef {object} Locale
+ * @property {string} code  BCP 47 tag, also used for <html lang>
+ * @property {string} name  endonym ("Deutsch", "English") – never translated
+ * @property {string} short  label in the language switch
+ * @property {object | null} strings  null = planned, shown disabled in the switch
+ */
+
+/**
+ * Available UI languages. Adding one = new strings file + entry here.
+ * The first entry is the default and the fallback for missing keys.
+ * @type {Locale[]}
+ */
+export const LOCALES = [
+  { code: 'de', name: 'Deutsch', short: 'DE', strings: de },
+  { code: 'en', name: 'English', short: 'EN', strings: null },
+];
+
+const STORAGE_KEY = 'piston.locale';
+const fallback = LOCALES[0];
+
+/** @returns {Locale} */
+function storedLocale() {
+  let code = null;
+  try {
+    code = localStorage.getItem(STORAGE_KEY);
+  } catch {
+    // Storage blocked (private mode, file://) – use the default
+  }
+  return LOCALES.find((l) => l.code === code && l.strings) ?? fallback;
+}
+
+const active = storedLocale();
+const strings = active.strings;
+
+/** Code of the active UI language. */
+export const locale = active.code;
+
+/**
+ * @param {object | null} table
+ * @param {string} key
+ */
+function lookup(table, key) {
+  const value = key.split('.').reduce((node, part) => node?.[part], table);
+  return typeof value === 'string' ? value : undefined;
+}
 
 /**
  * Looks up a UI string by dot path, e.g. t('status.online').
- * Falls back to the key itself so missing strings are visible, not empty.
+ * Missing keys fall back to the default language, then to the key itself,
+ * so gaps are visible, not empty.
  * @param {string} key
  * @returns {string}
  */
 export function t(key) {
-  const value = key.split('.').reduce((node, part) => node?.[part], strings);
-  return typeof value === 'string' ? value : key;
+  return lookup(strings, key) ?? lookup(fallback.strings, key) ?? key;
+}
+
+/**
+ * Stores the chosen language and reloads, so every page and component
+ * renders with the new strings.
+ * @param {string} code
+ */
+export function setLocale(code) {
+  if (code === locale || !LOCALES.some((l) => l.code === code && l.strings)) return;
+  try {
+    localStorage.setItem(STORAGE_KEY, code);
+  } catch {
+    return; // cannot persist – a reload would just show the old language
+  }
+  location.reload();
+}
+
+/**
+ * Fills static markup: data-i18n sets the text, data-i18n-label the aria-label.
+ * Also sets <html lang> to the active language.
+ * @param {ParentNode} [root]
+ */
+export function translate(root = document) {
+  document.documentElement.lang = locale;
+  for (const el of root.querySelectorAll('[data-i18n]')) {
+    el.textContent = t(el.dataset.i18n);
+  }
+  for (const el of root.querySelectorAll('[data-i18n-label]')) {
+    el.setAttribute('aria-label', t(el.dataset.i18nLabel));
+  }
 }
