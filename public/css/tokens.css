@@ -71,7 +71,8 @@
   --color-offline-bg: rgb(240 90 79 / .15);
 
   /* ---------- Font families ---------- */
-  --font-display: "Pixelify Sans", system-ui, sans-serif;
+  --font-display: "Chakra Petch", system-ui, sans-serif;
+  --font-logo: "Pixelify Sans", system-ui, sans-serif;   /* only the "PiSton" wordmark */
   --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
@@ -82,8 +83,8 @@
   --fw-bold: 700;
 
   /* ---------- Type scale (size / line-height) ---------- */
-  --fs-h1: 32px;      --lh-h1: 40px;     /* Pixelify 700 – page title */
-  --fs-h2: 22px;      --lh-h2: 30px;     /* Pixelify 700 – section heading */
+  --fs-h1: 32px;      --lh-h1: 40px;     /* Chakra Petch 700 – page title */
+  --fs-h2: 22px;      --lh-h2: 30px;     /* Chakra Petch 700 – section heading */
   --fs-h3: 17px;      --lh-h3: 24px;     /* Inter 600 – card title */
   --fs-body: 15px;    --lh-body: 24px;   /* Inter 400 */
   --fs-label: 13px;   --lh-label: 18px;  /* Inter 500 – labels, help text */

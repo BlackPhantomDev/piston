@@ -32,7 +32,7 @@
    ========================================================================= */
 
 .wordmark {
-  font-family: var(--font-display);
+  font-family: var(--font-logo);
   font-size: var(--fs-wordmark);
   line-height: var(--lh-wordmark);
   font-weight: var(--fw-bold);
