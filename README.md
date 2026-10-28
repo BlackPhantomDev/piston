@@ -25,7 +25,7 @@
 
 PiSton is in **early development** and cannot manage a server yet. What exists today is the
 frontend foundation: design system, base components and the app shell with navigation.
-The Node.js backend comes next.
+The pages are built next, first with sample data; the Node.js backend follows once the frontend is complete.
 
 Progress is tracked in the [roadmap](PROGRESS.md) (German).
 
