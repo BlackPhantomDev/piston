@@ -21,6 +21,7 @@
 
 import './components/index.js';
 import { onStatus } from './api.js';
+import { copyText } from './clipboard.js';
 import { t, translate } from './i18n/index.js';
 import { initNav } from './nav.js';
 import { startRouter } from './router.js';
@@ -28,6 +29,8 @@ import * as home from './pages/home.js';
 import * as consolePage from './pages/console.js'; // not `console` – would shadow the global
 import * as settings from './pages/settings.js';
 import { VERSION } from './version.js';
+
+const COPIED_MS = 2000; // how long the tick shows after copying the address
 
 // Version next to the attribution in the footer (index.html and components.html)
 for (const el of document.querySelectorAll('[data-version]')) el.textContent = VERSION;
@@ -46,9 +49,30 @@ if (app) {
   // Server name and address in the sidebar – subscribed for as long as the panel is open
   const serverName = /** @type {HTMLElement} */ (document.getElementById('server-name'));
   const serverAddress = /** @type {HTMLElement} */ (document.getElementById('server-address'));
+  const copyButton = /** @type {HTMLButtonElement} */ (document.getElementById('copy-address'));
+  const copyStatus = /** @type {HTMLElement} */ (document.getElementById('copy-address-status'));
+  const copyTip = /** @type {HTMLElement} */ (document.getElementById('copy-address-tip'));
   onStatus((status) => {
     serverName.textContent = status.name;
     serverAddress.textContent = status.address;
+    copyButton.disabled = !status.address;
+  });
+
+  // Copy "IP:Port" – if the browser refuses, the address is selected for copying by hand
+  let copiedTimer = 0;
+  copyButton.addEventListener('click', async () => {
+    const copied = await copyText(serverAddress.textContent ?? '');
+    if (!copied) getSelection()?.selectAllChildren(serverAddress);
+    // data-state keeps the tooltip open with the result (see .tooltip in components.css)
+    copyButton.dataset.state = copied ? 'copied' : 'failed';
+    copyTip.textContent = t(copied ? 'sidebar.copied' : 'sidebar.copyFailedShort');
+    copyStatus.textContent = t(copied ? 'sidebar.copied' : 'sidebar.copyFailed');
+    clearTimeout(copiedTimer);
+    copiedTimer = setTimeout(() => {
+      delete copyButton.dataset.state;
+      copyTip.textContent = t('sidebar.copyAddress');
+      copyStatus.textContent = '';
+    }, COPIED_MS);
   });
 
   startRouter({

@@ -1448,6 +1448,52 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
 }
 
 /* =========================================================================
+   Tooltip – short visible hint above a control (parent: position: relative)
+   <button aria-label="Adresse kopieren">… <span class="tooltip" aria-hidden="true">Adresse kopieren</span></button>
+   Shown on hover (only where hovering exists), on keyboard focus and while
+   the parent has data-state – e.g. "copied" for a confirmation.
+   ========================================================================= */
+
+.tooltip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + var(--space-1));
+  z-index: 1;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-control);
+  background-color: var(--deepslate-100);
+  color: var(--deepslate-900);
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-fast), visibility 0s linear var(--transition-fast);
+}
+
+@media (hover: hover) {
+  :hover > .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+}
+
+:focus-visible > .tooltip,
+[data-state] > .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+[data-state="copied"] > .tooltip {
+  background-color: var(--grass);
+}
+
+/* =========================================================================
    Action menu – built by <action-menu>: "⋯" button + popover with entries
    ========================================================================= */
 

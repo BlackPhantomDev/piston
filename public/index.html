@@ -84,9 +84,50 @@
             <p class="sidebar__server" id="server-name">–</p>
           </div>
         </div>
-        <div class="card card--outline card--compact">
+        <div class="card card--outline card--compact address-box">
           <p class="card__label" data-i18n="sidebar.address"></p>
+          <button
+            class="address-box__copy"
+            type="button"
+            id="copy-address"
+            data-i18n-label="sidebar.copyAddress"
+            disabled
+          >
+            <svg
+              class="address-box__icon-copy"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+            </svg>
+            <svg
+              class="address-box__icon-done"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <!-- Visible hint only; screen readers get the label and the status below -->
+            <span
+              class="tooltip"
+              aria-hidden="true"
+              id="copy-address-tip"
+              data-i18n="sidebar.copyAddress"
+            ></span>
+          </button>
           <p class="card__value" id="server-address">–</p>
+          <p class="visually-hidden" role="status" id="copy-address-status"></p>
         </div>
 
         <nav class="nav" data-i18n-label="nav.label">

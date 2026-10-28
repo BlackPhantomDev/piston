@@ -30,6 +30,10 @@ export default {
   },
   sidebar: {
     address: 'Adresse',
+    copyAddress: 'Adresse kopieren',
+    copied: 'In die Zwischenablage kopiert',
+    copyFailed: 'Kopieren nicht möglich – die Adresse ist markiert, du kannst sie selbst kopieren.',
+    copyFailedShort: 'Markiert – bitte selbst kopieren',
   },
   lang: {
     label: 'Sprache',

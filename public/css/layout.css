@@ -87,6 +87,72 @@
   min-width: 0;
 }
 
+/* ---------- Address box: label + copy button, the address below in full width ---------- */
+
+.address-box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.address-box > .card__value {
+  grid-column: 1 / -1;
+}
+
+/* A 20-character address fills the box, so the button sits in the label row:
+   28 px on screen, negative margins keep the row as low as the label,
+   and ::before widens the tap area to 44 px */
+.address-box__copy {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: -6px -8px -6px 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.address-box__copy::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+}
+
+.address-box__copy:hover {
+  background-color: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.address-box__copy svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Until the address is known there is nothing to copy */
+.address-box__copy:disabled {
+  visibility: hidden;
+}
+
+/* Copied: tick instead of the copy icon for a moment */
+.address-box__icon-done,
+.address-box__copy[data-state="copied"] .address-box__icon-copy {
+  display: none;
+}
+
+.address-box__copy[data-state="copied"] .address-box__icon-done {
+  display: block;
+}
+
+.address-box__copy[data-state="copied"] {
+  color: var(--grass-hover);
+}
+
 /* ---------- Navigation ---------- */
 
 .nav ul {
