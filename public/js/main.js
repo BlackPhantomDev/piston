@@ -20,6 +20,7 @@
  */
 
 import './components/index.js';
+import { onStatus } from './api.js';
 import { t, translate } from './i18n/index.js';
 import { initNav } from './nav.js';
 import { startRouter } from './router.js';
@@ -41,6 +42,14 @@ if (app) {
     /** @type {HTMLElement} */ (app),
     /** @type {HTMLButtonElement} */ (document.getElementById('nav-toggle')),
   );
+
+  // Server name and address in the sidebar – subscribed for as long as the panel is open
+  const serverName = /** @type {HTMLElement} */ (document.getElementById('server-name'));
+  const serverAddress = /** @type {HTMLElement} */ (document.getElementById('server-address'));
+  onStatus((status) => {
+    serverName.textContent = status.name;
+    serverAddress.textContent = status.address;
+  });
 
   startRouter({
     routes: { home, console: consolePage, settings },

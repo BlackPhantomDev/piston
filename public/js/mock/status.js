@@ -34,13 +34,17 @@ let installed = { provider: 'vanilla', version: '26.3' };
 /** @param {number} minutes */
 const ago = (minutes) => new Date(Date.now() - minutes * MINUTE).toISOString();
 
+const SERVER_NAME = 'Survival-Welt';
+const SERVER_ADDRESS = '192.168.178.42:25565';
+
+/** @type {import('../api.js').Player[]} */
 const players = [
-  { name: 'Steve', dimension: 'overworld', joinedAt: ago(47), pingMs: 23 },
-  { name: 'Alex', dimension: 'overworld', joinedAt: ago(65), pingMs: 41 },
-  { name: 'Mia_Baut', dimension: 'nether', joinedAt: ago(12), pingMs: 88 },
-  { name: 'Builder_Max', dimension: 'overworld', joinedAt: ago(150), pingMs: 19 },
-  { name: 'Creeperfan', dimension: 'end', joinedAt: ago(8), pingMs: 57 },
-  { name: 'Lena_MC', dimension: 'overworld', joinedAt: ago(33), pingMs: 30 },
+  { name: 'Steve', dimension: 'overworld', joinedAt: ago(47), pingMs: 23, op: true },
+  { name: 'Alex', dimension: 'overworld', joinedAt: ago(65), pingMs: 41, op: false },
+  { name: 'Mia_Baut', dimension: 'nether', joinedAt: ago(12), pingMs: 88, op: false },
+  { name: 'Builder_Max', dimension: 'overworld', joinedAt: ago(150), pingMs: 19, op: false },
+  { name: 'Creeperfan', dimension: 'end', joinedAt: ago(8), pingMs: 57, op: false },
+  { name: 'Lena_MC', dimension: 'overworld', joinedAt: ago(33), pingMs: 30, op: false },
 ];
 
 /**
@@ -50,6 +54,8 @@ const players = [
 export function mockStatus() {
   const running = state === 'online';
   return {
+    name: SERVER_NAME,
+    address: SERVER_ADDRESS,
     state,
     provider: installed.provider,
     version: installed.version,
@@ -66,6 +72,33 @@ export function mockStatus() {
     java: [25],
     eulaAccepted: true,
   };
+}
+
+/** Names of everyone online right now, in list order (for mockCommand()). */
+export function mockOnlineNames() {
+  return state === 'online' ? players.map((player) => player.name) : [];
+}
+
+/**
+ * Kick or ban: the player leaves the sample list.
+ * @param {string} name  exactly as in the list
+ */
+export function mockRemovePlayer(name) {
+  const index = players.findIndex((player) => player.name === name);
+  if (index !== -1) players.splice(index, 1);
+}
+
+/**
+ * op / deop on a sample player.
+ * @param {string} name  exactly as in the list
+ * @param {boolean} op
+ * @returns {boolean} false if nothing changed
+ */
+export function mockSetOp(name, op) {
+  const player = players.find((candidate) => candidate.name === name);
+  if (!player || player.op === op) return false;
+  player.op = op;
+  return true;
 }
 
 /** Pretends to archive the world; resolves when done. */

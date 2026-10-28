@@ -64,6 +64,32 @@ export default {
       help: 'Erscheint im Chat als [Rcon].',
       send: 'Senden',
     },
+    onlineCount: '{count} online',
+    noPlayers: 'Gerade ist niemand online.',
+    serverDown: 'Der Server läuft nicht.',
+    op: 'OP',
+    playerMenu: {
+      label: 'Aktionen für {name}',
+      tell: 'Nachricht senden …',
+      op: 'Zum Operator machen',
+      deop: 'Operator-Rechte entziehen',
+      kick: 'Kicken',
+      ban: 'Bannen',
+    },
+    tellDialog: {
+      title: 'Nachricht an {name}',
+      help: 'Nur {name} sieht sie, als Flüstern von Rcon.',
+    },
+    kickDialog: {
+      title: '{name} kicken?',
+      text: '{name} wird vom Server getrennt, kann sich aber gleich wieder verbinden.',
+      confirm: 'Kicken',
+    },
+    banDialog: {
+      title: '{name} bannen?',
+      text: '{name} wird getrennt und kann erst wieder beitreten, wenn der Bann aufgehoben ist (pardon {name}).',
+      confirm: 'Bannen',
+    },
   },
   console: {
     subtitle: 'Live-Ausgabe von latest.log',

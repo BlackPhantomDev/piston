@@ -32,10 +32,13 @@ import { mockCreateBackup, mockResetWorld, mockServerAction, mockStatus, mockSwi
  * @property {'overworld' | 'nether' | 'end'} dimension
  * @property {string} joinedAt  ISO date
  * @property {number} pingMs
+ * @property {boolean} op  on the operator list (ops.json)
  */
 
 /**
  * @typedef {object} Status  shape of GET /api/status
+ * @property {string} name  server name for the sidebar (source still open, AGENTS.md §9)
+ * @property {string} address  "host:port" players connect to
  * @property {'online' | 'offline' | 'starting' | 'stopping'} state
  * @property {string} provider  'vanilla' | 'paper' | 'fabric'
  * @property {string} version
@@ -130,7 +133,9 @@ export function onLog(callback) {
  * @returns {Promise<string[]>} response lines, may be empty (e.g. for say)
  */
 export async function sendCommand(command) {
-  const { response, log } = mockCommand(command);
+  const { response, log, statusChanged } = mockCommand(command);
+  // kick, ban, op, … change the player list – the backend's next status shows it
+  if (statusChanged) broadcastStatus();
   if (log.length > 0) {
     // latest.log is tailed, so its lines arrive a moment after the direct answer
     setTimeout(() => {

@@ -20,6 +20,7 @@
  */
 
 import * as api from "../api.js";
+import { confirmDialog } from "../dialogs.js";
 import { dimensionName, formatSince, formatWhen, providerName } from "../format.js";
 import { t } from "../i18n/index.js";
 import { fields, view } from "./view.js";
@@ -87,9 +88,11 @@ const VIEW = `
   <section class="card-grid card-grid--wide">
     <div class="card">
       <header class="card__header">
-        <h2 data-i18n="home.playerList"></h2>
+        <h2 tabindex="-1" data-i18n="home.playerList" data-field="playersHeading"></h2>
+        <span class="card__meta" data-field="onlineCount"></span>
       </header>
       <ul class="card__list" data-field="players"></ul>
+      <p class="card__empty" data-field="playersEmpty" hidden></p>
     </div>
 
     <div class="card">
@@ -137,31 +140,40 @@ const VIEW = `
     </div>
   </section>
 
-  <dialog class="dialog" aria-labelledby="home-say-title" data-field="sayDialog">
-    <form class="dialog__form" data-field="sayForm">
-      <h2 id="home-say-title" data-i18n="home.sayDialog.title"></h2>
+  <!-- To everyone (say) or to one player (tell): title and help are set when it opens -->
+  <dialog class="dialog" aria-labelledby="home-message-title" data-field="messageDialog">
+    <form class="dialog__form" data-field="messageForm">
+      <h2 id="home-message-title" data-field="messageTitle"></h2>
       <div class="field">
-        <label class="field__label" for="home-say-input" data-i18n="home.sayDialog.label"></label>
-        <input class="input" id="home-say-input" name="message" maxlength="200" required autocomplete="off" aria-describedby="home-say-help">
-        <p class="field__help" id="home-say-help" data-i18n="home.sayDialog.help"></p>
+        <label class="field__label" for="home-message-input" data-i18n="home.sayDialog.label"></label>
+        <input class="input" id="home-message-input" name="message" maxlength="200" required autocomplete="off" aria-describedby="home-message-help">
+        <p class="field__help" id="home-message-help" data-field="messageHelp"></p>
       </div>
       <div class="dialog__actions">
-        <button class="btn btn--ghost" type="button" data-field="sayCancel" data-i18n="common.cancel"></button>
+        <button class="btn btn--ghost" type="button" data-field="messageCancel" data-i18n="common.cancel"></button>
         <button class="btn btn--primary" type="submit" data-i18n="home.sayDialog.send"></button>
       </div>
     </form>
   </dialog>
   `;
 
-// One row per player, cloned in playerRow().
+// One row per player, created in playerRow() and then updated in place.
 const PLAYER_ROW = `
   <li class="list-row">
     <span class="avatar" aria-hidden="true" data-field="initial"></span>
     <div class="list-row__main">
       <p class="list-row__title" data-field="name"></p>
-      <p class="list-row__sub" data-field="dimension"></p>
+      <p class="list-row__sub" data-field="details"></p>
     </div>
     <span class="list-row__meta" data-field="ping"></span>
+    <action-menu data-field="menu">
+      <button value="tell" data-i18n="home.playerMenu.tell"></button>
+      <button value="op" data-i18n="home.playerMenu.op" data-field="opItem"></button>
+      <button value="deop" data-i18n="home.playerMenu.deop" data-field="deopItem"></button>
+      <hr>
+      <button value="kick" data-danger data-i18n="home.playerMenu.kick"></button>
+      <button value="ban" data-danger data-i18n="home.playerMenu.ban"></button>
+    </action-menu>
   </li>`;
 
 /** @param {HTMLElement} root */
@@ -176,7 +188,7 @@ export function render(root) {
     f.state.setAttribute("status", status.state);
     updateHeader(status);
     updateQuickActions(status);
-    updatePlayersData(status.players);
+    updatePlayersData(status.players, status.state);
     updateMemoryData(status.memory);
     updateCpuData(status.cpuPercent);
 
@@ -252,7 +264,7 @@ export function render(root) {
         api.sendCommand("time set day");
         break;
       case "say":
-        f.sayDialog.showModal();
+        openMessageDialog(null);
         break;
       case "backup":
         runBackup();
@@ -260,16 +272,47 @@ export function render(root) {
     }
   });
 
-  // "Nachricht an alle": one line, whitespace collapsed so it stays a single command
-  f.sayForm.addEventListener("submit", (event) => {
+  // Message dialog: to everyone (say) or, from the player menu, to one player (tell)
+  let messageTarget = null;
+
+  function openMessageDialog(player) {
+    messageTarget = player;
+    f.messageTitle.textContent = player ? t("home.tellDialog.title", { name: player }) : t("home.sayDialog.title");
+    f.messageHelp.textContent = player ? t("home.tellDialog.help", { name: player }) : t("home.sayDialog.help");
+    f.messageDialog.showModal();
+  }
+
+  // One line, whitespace collapsed so it stays a single command
+  f.messageForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const message = f.sayForm.elements.message.value.replace(/\s+/g, " ").trim();
+    const message = f.messageForm.elements.message.value.replace(/\s+/g, " ").trim();
     if (!message) return;
-    api.sendCommand(`say ${message}`);
-    f.sayDialog.close();
+    api.sendCommand(messageTarget ? `tell ${messageTarget} ${message}` : `say ${message}`);
+    f.messageDialog.close();
   });
-  f.sayCancel.addEventListener("click", () => f.sayDialog.close());
-  f.sayDialog.addEventListener("close", () => f.sayForm.reset());
+  f.messageCancel.addEventListener("click", () => f.messageDialog.close());
+  f.messageDialog.addEventListener("close", () => f.messageForm.reset());
+
+  // Player menu (<action-menu> fires "action"); kick and ban ask first
+  f.players.addEventListener("action", async (event) => {
+    const name = event.target.closest("[data-player]")?.dataset.player;
+    const action = event.detail.value;
+    if (!name) return;
+
+    if (action === "tell") {
+      openMessageDialog(name);
+    } else if (action === "op" || action === "deop") {
+      api.sendCommand(`${action} ${name}`);
+    } else if (action === "kick" || action === "ban") {
+      const confirmed = await confirmDialog({
+        title: t(`home.${action}Dialog.title`, { name }),
+        text: t(`home.${action}Dialog.text`, { name }),
+        confirmLabel: t(`home.${action}Dialog.confirm`),
+        danger: true,
+      });
+      if (confirmed) api.sendCommand(`${action} ${name}`);
+    }
+  });
 
   let refocus = false;
   f.actions.addEventListener("click", (event) => {
@@ -279,12 +322,47 @@ export function render(root) {
     api.serverAction(button.dataset.action);
   });
 
-  function updatePlayersData(players) {
+  function updatePlayersData(players, state) {
     f.online.textContent = players.online;
     f.max.textContent = ` / ${players.max}`;
     f.playersMeter.max = players.max;
     f.playersMeter.value = players.online;
-    f.players.replaceChildren(...players.list.map(playerRow));
+    f.onlineCount.textContent = t("home.onlineCount", { count: players.online });
+    updatePlayerList(players.list);
+
+    const empty = players.list.length === 0;
+    f.players.hidden = empty;
+    f.playersEmpty.hidden = !empty;
+    f.playersEmpty.textContent = t(state === "online" ? "home.noPlayers" : "home.serverDown");
+  }
+
+  // Rows are kept per player and only updated, so focus and an open menu
+  // survive the status update every few seconds.
+  const playerRows = new Map();
+
+  function updatePlayerList(list) {
+    const rows = [...f.players.children];
+    const focusedIndex = rows.findIndex((row) => row.contains(document.activeElement));
+
+    const names = new Set(list.map((player) => player.name));
+    for (const name of playerRows.keys()) {
+      if (!names.has(name)) playerRows.delete(name);
+    }
+
+    list.forEach((player, index) => {
+      if (!playerRows.has(player.name)) playerRows.set(player.name, playerRow());
+      const { row, f: rowFields } = playerRows.get(player.name);
+      fillPlayerRow(row, rowFields, player);
+      // Only move rows that are out of place – moving a row drops its focus
+      if (f.players.children[index] !== row) f.players.insertBefore(row, f.players.children[index] ?? null);
+    });
+    while (f.players.children.length > list.length) f.players.lastElementChild.remove();
+
+    // The focused player left (e.g. kicked): continue on the row that took its place
+    if (focusedIndex !== -1 && !rows[focusedIndex].isConnected) {
+      const next = f.players.children[Math.min(focusedIndex, f.players.children.length - 1)];
+      (next?.querySelector("action-menu > button") ?? f.playersHeading).focus();
+    }
   }
 
   function updateMemoryData(memory) {
@@ -312,12 +390,20 @@ export function render(root) {
   };
 }
 
-function playerRow(player) {
-  const row = view(PLAYER_ROW);
-  const f = fields(row);
+function playerRow() {
+  const fragment = view(PLAYER_ROW);
+  return { row: fragment.firstElementChild, f: fields(fragment) };
+}
+
+function fillPlayerRow(row, f, player) {
+  row.dataset.player = player.name;
   f.initial.textContent = player.name[0];
   f.name.textContent = player.name;
-  f.dimension.textContent = dimensionName(player.dimension);
+  const details = [dimensionName(player.dimension)];
+  if (player.op) details.push(t("home.op"));
+  f.details.textContent = details.join(" · ");
   f.ping.textContent = `${player.pingMs} ms`;
-  return row;
+  f.menu.setAttribute("label", t("home.playerMenu.label", { name: player.name }));
+  f.opItem.hidden = player.op;
+  f.deopItem.hidden = !player.op;
 }
