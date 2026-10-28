@@ -25,6 +25,12 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 > Minecraft-Server als Demo laufen kann. Die Sicherung passiert **vor** dem ersten Umstellen auf echte Daten
 > (Anfang Phase 6) und wird in Phase 11 **nicht** gelöscht.
 
+> [!WARNING]
+> **Rechtliches beachten:** `eula=true` wird nur nach Bestätigung durch den Nutzer gesetzt.
+> Keine `server.jar` wird weitergegeben. Das Logo darf nicht wie der Minecraft-Kolben aussehen.
+> Regeln und Checkliste stehen unter
+> [Rechtliches](#rechtliches--marke-eula-weiterverbreitung).
+
 ---
 
 ## Überblick
@@ -47,6 +53,67 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 | 11 | [Release](#phase-11--release) | systemd, Installation, Screenshots | ⬜ |
 
 ✅ erledigt · 🚧 als Nächstes · ⬜ offen
+
+---
+
+## Rechtliches – Marke, EULA, Weiterverbreitung
+
+> [!CAUTION]
+> Die Punkte stammen aus einem Gespräch mit Claude am 28.10.2026. Es ging um die Markenrichtlinien von
+> Mojang/Microsoft und von Raspberry Pi Ltd. Das ist **keine Rechtsberatung**, aber die Regeln gelten trotzdem
+> verbindlich für das Projekt.
+
+### Regeln
+
+- **Name:** „PiSton“ ist durch die Schreibweise und den Pi-Bezug eigenständig genug. Ausgesprochen klingt es
+  trotzdem wie „Piston“. Es darf also nie wie ein offizielles Mojang-Tool wirken.
+  - „Minecraft“ erscheint nie in Name, Logo oder Titel.
+  - Beschreibend ist es erlaubt, z. B. „for Minecraft Java Edition“ oder das Feld „Minecraft-Version“.
+  - Wo „Minecraft“ steht, gehört der Disclaimer dazu: *Not an official Minecraft product. Not approved by or
+    associated with Mojang or Microsoft.*
+- **Logo:** Ein Kolben ist ein normales technisches Bauteil, aber das Logo darf nicht wie der Minecraft-Kolben
+  aussehen.
+  - Nicht verwenden: einen Würfel als Sockel mit ausgefahrener Stange und flacher Platte, Pixeltextur,
+    Holzplatte oder Steinseiten.
+  - Besser: ein echter mechanischer Kolben, also Zylinder und Kolbenstange, flach oder als Linie gezeichnet.
+  - Grün darf bleiben.
+- **Raspberry Pi:** „Pi“ allein ist frei, es ist der griechische Buchstabe.
+  - Das Himbeer-Logo und „Raspberry Pi“ gehören nie in Name oder Logo.
+  - Beschreibend ist es erlaubt („runs on a Raspberry Pi“).
+- **EULA:** Ein Minecraft-Server startet erst, wenn in `eula.txt` `eula=true` steht. Das Panel setzt das **nie
+  selbst**, auch nicht nebenbei bei einem Versionswechsel oder bei der Einrichtung.
+  - Der Nutzer bestätigt ausdrücklich mit einer Checkbox. Sie ist nie vorausgewählt.
+  - Daneben steht ein Link zur EULA (`https://aka.ms/MinecraftEULA`).
+- **Weiterverbreitung:** Die Guidelines verbieten, das Spiel oder Spieldateien weiterzugeben.
+  - Keine `server.jar` und keine anderen Spieldateien im Repo, in Releases oder in einem fertigen Pi-Image.
+  - Das Backend lädt die Jar immer direkt vom Anbieter. Für Vanilla ist das Mojangs Versions-Manifest,
+    die SHA1-Prüfsumme wird geprüft (AGENTS.md §6.5).
+
+### Checkliste
+
+- [x] Name „PiSton“ geprüft, „Minecraft“ kommt im Namen nicht vor
+- [x] „Minecraft“ und „Raspberry Pi“ nur beschreibend:
+      Tagline, README, `package.json`, im UI das Feld „Minecraft-Version“ und der EULA-Hinweis
+- [x] Disclaimer im README
+- [x] Version wechseln ist gesperrt, solange die EULA nicht akzeptiert ist. Es gibt einen Prüfpunkt mit Link zur EULA.
+- [x] **Logo überarbeitet:** Der alte Würfel-Sockel erinnerte an den Minecraft-Kolben.
+  - Jetzt: Zylinder als Sockel, Kolbenstange, runder grüner Kopf mit π.
+  - Die Logo-Dateien in `public/assets/logo/` sind neu erzeugt.
+  - Neu ist die helle Variante `piston-logo-light(-512)` für hellen Grund.
+- [x] README-Logo per `<picture>` + `prefers-color-scheme`: GitHub zeigt im hellen Modus `piston-logo-light.svg`,
+      im dunklen `piston-logo.svg` (AGENTS.md §1)
+- [ ] **EULA bestätigen im UI** (Phase 5):
+  - Hinweis, wenn `eula.txt` nicht `true` ist: auf Home (der Server startet dann nicht) und in den Einstellungen.
+  - Dazu ein Link zur EULA, eine Checkbox (nie vorausgewählt) und ein Button.
+  - Bisher gibt es nur den Prüfpunkt beim Versionswechsel.
+- [ ] `.gitignore`: `*.jar` ausschließen, damit keine Server-Jar versehentlich im Repo landet (Phase 6)
+- [ ] **EULA-Endpunkt** (Phase 9): schreibt `eula=true` nur auf die ausdrückliche Bestätigung aus dem UI.
+      Fehlt noch in AGENTS.md §9.
+- [ ] **Release** (Phase 11):
+  - Das Image und die Installation enthalten keine Spieldateien.
+  - Das README erklärt, dass die Jar beim Einrichten direkt vom Anbieter geladen wird.
+  - Das README erklärt, dass der Nutzer die EULA selbst akzeptiert.
+  - Der Disclaimer steht auch in den Release-Notes bzw. in der Beschreibung des Images.
 
 ---
 
@@ -254,7 +321,11 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   - `<log-view limit live>` – Konsolenausgabe, `el.add(lines)`; Spalten per Subgrid, `.log--truncate` für einzeilige Vorschau.
 
 ### App-Shell (`index.html`, `css/layout.css`)
-- Sidebar 240 px nach Mockup 02: Logo 40 px + Schriftzug + Servername (`#server-name`), Nav, Adresse-Box (`#server-address`), Sprachumschalter.
+- Sidebar 240 px, von oben nach unten (AGENTS.md §1):
+  1. Logo 40 px, Schriftzug und Servername (`#server-name`).
+  2. Adress-Box (`#server-address`).
+  3. Navigation.
+  4. Fuß mit Sprachumschalter und Namensnennung.
   Servername und Adresse zeigen Platzhalter (`[SERVER NAME]`, `[IP ADRESS:PORT]`), bis das Backend sie liefert.
 - Unter 900 px: Topbar mit Menü-Button, Sidebar gleitet über den Inhalt (`.app[data-nav-open]`).
   Schließen per Escape, Klick auf den Hintergrund oder Navigation; Fokus wandert in die Nav bzw. zurück zum Button.
