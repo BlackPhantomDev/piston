@@ -150,11 +150,70 @@
 }
 
 .page {
+  --page-pad-y: var(--space-5);
+  --page-pad-x: var(--space-6);
+
   flex: 1;
   display: grid;
   align-content: start;
   gap: var(--space-4);
-  padding: var(--space-5) var(--space-6);
+  padding: var(--page-pad-y) var(--page-pad-x);
+}
+
+/* Narrower reading width for form pages (mockup 04: 960 px) */
+.page__narrow {
+  display: grid;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 960px;
+}
+
+/* Save bar: sticks to the bottom of the screen, spans the content column */
+.save-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  margin: 0 calc(var(--page-pad-x) * -1) calc(var(--page-pad-y) * -1);
+  padding: 14px var(--page-pad-x);
+  border-top: var(--border);
+  background-color: var(--color-surface);
+}
+
+.save-bar__status {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.save-bar__status[data-state="dirty"] {
+  color: var(--color-text);
+}
+
+.save-bar__status[data-state="invalid"] {
+  color: var(--redstone-hover);
+}
+
+.save-bar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Phones: status + "Verwerfen" in the first row, both save buttons in the second */
+@media (max-width: 599.98px) {
+  .save-bar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding-block: 12px;
+  }
+
+  .save-bar__actions {
+    display: contents;
+  }
 }
 
 /* Page header: title + status line on the left, actions on the right (mockup 02) */
@@ -229,8 +288,15 @@
   }
 }
 
-/* Focus is moved to the page title on navigation; no ring needed there */
-.page h1[tabindex="-1"]:focus {
+/* Target of an in-page jump link: keep a little air above it */
+.page-anchor {
+  scroll-margin-top: var(--space-4);
+}
+
+/* Focus is moved to the page title on navigation (and to section titles on
+   in-page jumps); no ring needed there */
+.page h1[tabindex="-1"]:focus,
+.page h2[tabindex="-1"]:focus {
   outline: none;
 }
 
@@ -309,11 +375,17 @@
   }
 
   .page {
-    padding: var(--space-4) var(--space-3);
+    --page-pad-y: var(--space-4);
+    --page-pad-x: var(--space-3);
   }
 
   .content > .legal-notice {
     padding-inline: var(--space-3);
+  }
+
+  /* The sticky top bar would cover the heading */
+  .page-anchor {
+    scroll-margin-top: calc(var(--topbar-h) + var(--space-3));
   }
 }
 

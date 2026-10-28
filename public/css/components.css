@@ -860,8 +860,15 @@ status-badge[data-state="stopping"] .status-badge__marker {
   padding-inline: var(--card-pad);
 }
 
-.card__body + .setting-list {
+.card__body + .setting-list,
+.setting-list + .card__body {
   border-top: var(--border-width) solid var(--color-divider);
+}
+
+/* Body whose parts stack with the page rhythm (e.g. version switch) */
+.card__body--stack {
+  display: grid;
+  gap: var(--space-4);
 }
 
 /* ---------- List rows: <ul class="card__list"><li class="list-row">… ---------- */
@@ -1103,6 +1110,8 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
    <fieldset class="choice-chips"><legend class="visually-hidden">…</legend>
      <label class="choice-chip"><input type="radio" name="level" value="all" checked> Alle</label>…
    </fieldset>
+   Same look for jump links between sections of a page:
+   <nav class="choice-chips"><button class="choice-chip" aria-current="true">…</button></nav>
    ========================================================================= */
 
 .choice-chips {
@@ -1118,6 +1127,7 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
 .choice-chip {
   position: relative;
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   height: var(--control-h-m);
   padding: 0 var(--space-3);
@@ -1139,11 +1149,12 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
   cursor: inherit;
 }
 
-.choice-chip:hover:not(:has(input:checked)) {
+.choice-chip:hover:not(:has(input:checked), [aria-current="true"]) {
   background-color: var(--color-surface-raised);
 }
 
-.choice-chip:has(input:checked) {
+.choice-chip:has(input:checked),
+.choice-chip[aria-current="true"] {
   border-color: var(--grass);
   background-color: var(--color-online-bg);
   color: var(--grass-hover);
@@ -1430,4 +1441,321 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
 
 .console-input .btn {
   font-size: 14px;
+}
+
+/* =========================================================================
+   Form grid – fields side by side, wrapping on narrow screens
+   <div class="form-grid"><mc-field>…</mc-field>…</div>
+   ========================================================================= */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: var(--space-4) var(--space-4);
+  align-items: start;
+}
+
+/* A field that spans the whole row, e.g. the MOTD */
+.form-grid__wide {
+  grid-column: 1 / -1;
+}
+
+/* =========================================================================
+   Option cards – radio group of larger cards (mockup 04: "Anbieter")
+   <fieldset class="option-cards"><legend>…</legend>
+     <label class="option-card"><input type="radio" name="provider" value="vanilla">
+       <span class="option-card__title">Vanilla</span>
+       <span class="option-card__sub">Offizieller Server</span></label>…
+   </fieldset>
+   ========================================================================= */
+
+.option-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.option-cards legend {
+  float: left; /* makes the legend a normal grid item … */
+  grid-column: 1 / -1; /* … that spans the whole row above the cards */
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-medium);
+}
+
+.option-card {
+  position: relative;
+  display: grid;
+  align-content: center;
+  min-height: 62px;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius-control);
+  background-color: var(--color-input-bg);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.option-card input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.option-card__title {
+  font-weight: var(--fw-semibold);
+}
+
+.option-card__sub {
+  color: var(--color-text-muted);
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+}
+
+.option-card:hover:not(:has(input:checked, input:disabled)) {
+  border-color: var(--deepslate-300);
+}
+
+.option-card:has(input:checked) {
+  border-color: var(--grass);
+  background-color: var(--color-online-bg);
+}
+
+.option-card:has(input:focus-visible) {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.option-card:has(input:disabled) {
+  cursor: not-allowed;
+}
+
+.option-card:has(input:disabled) .option-card__title {
+  color: var(--color-text-muted);
+}
+
+/* =========================================================================
+   Check list – results of checks before a risky action
+   <div class="check-list"><p class="check-list__title">…</p><ul>
+     <li class="check-list__item" data-result="ok|fail|info">…</li></ul></div>
+   The icon is decorative; the sentence always says the result.
+   ========================================================================= */
+
+.check-list {
+  display: grid;
+  gap: 12px;
+  padding: var(--card-pad-s);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-console-bg);
+}
+
+.check-list__title {
+  font-weight: var(--fw-semibold);
+}
+
+.check-list ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.check-list__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.check-list__item::before {
+  content: "";
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-small);
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  line-height: 1;
+}
+
+.check-list__item[data-result="ok"]::before {
+  content: "✓" / "";
+  background-color: var(--grass);
+  color: var(--color-text-on-accent);
+}
+
+.check-list__item[data-result="fail"]::before {
+  content: "✕" / "";
+  background-color: var(--redstone);
+  color: var(--color-text-on-accent);
+}
+
+.check-list__item[data-result="fail"] {
+  color: var(--redstone-hover);
+}
+
+.check-list__item[data-result="info"] {
+  color: var(--color-text-muted);
+}
+
+.check-list__item[data-result="info"]::before {
+  content: "i" / "";
+  border: var(--border-width) solid var(--deepslate-300);
+  color: var(--color-text-muted);
+}
+
+/* =========================================================================
+   Steps – numbered progress of a multi-step action
+   <ol class="steps"><li class="steps__item" data-state="done|active|">Stoppen</li>…</ol>
+   Active step: aria-current="step".
+   ========================================================================= */
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+  list-style: none;
+  counter-reset: step;
+}
+
+.steps__item {
+  counter-increment: step;
+}
+
+.steps__item::before {
+  content: counter(step) " ";
+}
+
+.steps__item:not(:last-child)::after {
+  content: "→" / "";
+  margin-left: var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.steps__item[data-state="done"] {
+  color: var(--grass-hover);
+}
+
+.steps__item[data-state="active"] {
+  color: var(--color-text);
+  font-weight: var(--fw-semibold);
+}
+
+/* =========================================================================
+   Option row – title + description left, action right (e.g. danger zone)
+   <div class="option-row"><div class="option-row__text">
+     <p class="option-row__title">…</p><p class="option-row__desc">…</p></div>
+     <button class="btn …">…</button></div>
+   ========================================================================= */
+
+.option-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--card-pad);
+}
+
+.option-row + .option-row {
+  border-top: var(--border-width) solid var(--color-divider);
+}
+
+.option-row__text {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.option-row__title {
+  font-weight: var(--fw-semibold);
+}
+
+.option-row__desc {
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+}
+
+/* =========================================================================
+   Danger card + outlined danger button
+   ========================================================================= */
+
+.card--danger {
+  border-color: var(--redstone-edge);
+}
+
+.card--danger .card__header h2 {
+  color: var(--redstone-hover);
+}
+
+.btn--outline-danger {
+  border-color: var(--redstone);
+  background-color: transparent;
+  color: var(--redstone-hover);
+}
+
+.btn--outline-danger:hover:not(:disabled) {
+  background-color: var(--color-offline-bg);
+}
+
+.btn--outline-danger:focus-visible {
+  outline: var(--focus-ring-danger);
+}
+
+/* =========================================================================
+   Info pill – small framed fact, e.g. "Installiert: Vanilla 26.3 · Java 25"
+   ========================================================================= */
+
+.info-pill {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: 6px 12px;
+  border: var(--border);
+  border-radius: var(--radius-control);
+  background-color: var(--color-input-bg);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+}
+
+.info-pill__label {
+  color: var(--color-text-muted);
+}
+
+.info-pill__value {
+  font-family: var(--font-mono);
+}
+
+/* Version switch: steps on the left, the big button on the right */
+.version-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.version-switch__status {
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
 }
