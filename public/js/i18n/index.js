@@ -72,11 +72,15 @@ function lookup(table, key) {
  * Looks up a UI string by dot path, e.g. t('status.online').
  * Missing keys fall back to the default language, then to the key itself,
  * so gaps are visible, not empty.
+ * Placeholders like {duration} are filled from params: t('server.runningFor', { duration: '3 h' }).
  * @param {string} key
+ * @param {Record<string, string | number>} [params]
  * @returns {string}
  */
-export function t(key) {
-  return lookup(strings, key) ?? lookup(fallback.strings, key) ?? key;
+export function t(key, params) {
+  const text = lookup(strings, key) ?? lookup(fallback.strings, key) ?? key;
+  if (!params) return text;
+  return text.replace(/\{(\w+)\}/g, (match, name) => (name in params ? String(params[name]) : match));
 }
 
 /**
