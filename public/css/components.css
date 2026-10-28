@@ -1049,6 +1049,148 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
 }
 
 /* =========================================================================
+   Console panel – scrolling log with the command line at the bottom
+   <section class="console-panel">
+     <log-view class="console-panel__output log--lg" live follow></log-view>
+     <form class="console-input">…</form>
+   </section>
+   ========================================================================= */
+
+.console-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: clamp(320px, 62vh, 720px);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-console-bg);
+  overflow: hidden;
+}
+
+.console-panel__output {
+  flex: 1;
+  min-height: 0;
+  padding: var(--card-pad-s);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Inside the panel the command line is a footer bar, not a separate box */
+.console-panel .console-input {
+  flex-shrink: 0;
+  height: 56px;
+  border: 0;
+  border-top: var(--border);
+  border-radius: 0;
+  background-color: var(--color-input-bg);
+}
+
+.console-panel .console-input:focus-within {
+  box-shadow: none;
+  outline: var(--focus-ring);
+  outline-offset: calc(var(--focus-width) * -1);
+}
+
+/* Shown while scrolled up and new lines arrived */
+.console-panel__jump {
+  position: absolute;
+  right: var(--space-3);
+  bottom: calc(56px + var(--space-3));
+}
+
+/* =========================================================================
+   Choice chips – a radio group that looks like a row of toggle buttons
+   <fieldset class="choice-chips"><legend class="visually-hidden">…</legend>
+     <label class="choice-chip"><input type="radio" name="level" value="all" checked> Alle</label>…
+   </fieldset>
+   ========================================================================= */
+
+.choice-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: var(--control-h-m);
+  padding: 0 var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+/* Input covers the chip: stays focusable and clickable, but invisible */
+.choice-chip input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.choice-chip:hover:not(:has(input:checked)) {
+  background-color: var(--color-surface-raised);
+}
+
+.choice-chip:has(input:checked) {
+  border-color: var(--grass);
+  background-color: var(--color-online-bg);
+  color: var(--grass-hover);
+}
+
+.choice-chip:has(input:focus-visible) {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* =========================================================================
+   Command chip – button that inserts a command
+   <button class="chip" type="button">save-all</button>
+   ========================================================================= */
+
+.chip {
+  height: var(--control-h-m);
+  padding: 0 var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.chip:hover:not(:disabled) {
+  border-color: var(--deepslate-300);
+  background-color: var(--color-surface-raised);
+}
+
+.chip:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* =========================================================================
    Stat card – metric with optional bar or hint
    <div class="card stat">
      <p class="stat__label">Players online</p>
