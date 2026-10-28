@@ -38,6 +38,16 @@ export default {
   page: {
     placeholder: 'Inhalt folgt.',
   },
+  home: {
+    players: 'Spieler online',
+    tps: 'TPS',
+    tpsDesc: 'Ziel 20',
+    playerList: 'Spieler',
+    quickactions: 'Schnellaktionen',
+    ram: 'Arbeitsspeicher',
+    console: "Letzte Konsolenausgabe",
+    consoleLink: "Zur Konsole",
+  },
   status: {
     online: 'Online',
     offline: 'Offline',
