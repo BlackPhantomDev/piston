@@ -1,9 +1,9 @@
 # 🗺️ PiSton – Roadmap
 
-**Stand:** 28.10.2026 · **Aktuelle Phase:** 4 – Einstellungen (UI), danach 5 – Feinschliff
+**Stand:** 28.10.2026 · **Version:** `0.1.0-alpha.3` · **Aktuelle Phase:** 5 – Feinschliff
 
 ```
-Frontend  ▰▰▰▱▱▱  3 von 6 Phasen
+Frontend  ▰▰▰▰▰▱  5 von 6 Phasen
 Backend   ▱▱▱▱▱▱  0 von 6 Phasen
 ```
 
@@ -12,7 +12,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 > [!TIP]
 > **Als Nächstes**
-> Home-Seite fertigstellen (Mockup 02): Aktionsmenü je Spieler; Servername + Adresse in der Sidebar
+> Feinschliff (Phase 5): EULA im UI bestätigen, Zustände (offline, lädt, Fehler), schmale Bildschirme, Barrierefreiheit
 
 > [!NOTE]
 > **Reihenfolge: erst das Frontend, dann das Backend.** Alle Seiten entstehen zuerst vollständig mit
@@ -40,10 +40,10 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 | | **Frontend** | | |
 | 0 | [Fundament](#phase-0--fundament) | Lizenz, Fonts, Design-Tokens, Basis-Komponenten | ✅ |
 | 1 | [App-Shell](#phase-1--app-shell) | Sidebar, Hash-Routing, Sprachumschalter | ✅ |
-| 2 | [Home (UI)](#phase-2--home-ui) | Datenschicht mit Beispieldaten, Home-Seite | 🚧 |
+| 2 | [Home (UI)](#phase-2--home-ui) | Datenschicht mit Beispieldaten, Home-Seite | ✅ |
 | 3 | [Konsole (UI)](#phase-3--konsole-ui) | Log-Ansicht, Filter, Befehlseingabe | ✅ |
-| 4 | [Einstellungen (UI)](#phase-4--einstellungen-ui) | Properties-Formular, Anbieter-Karten, Versionswechsel | 🚧 |
-| 5 | [Feinschliff](#phase-5--feinschliff) | Zustände, schmale Bildschirme, Barrierefreiheit | ⬜ |
+| 4 | [Einstellungen (UI)](#phase-4--einstellungen-ui) | Properties-Formular, Spielerlisten, Versionswechsel | ✅ |
+| 5 | [Feinschliff](#phase-5--feinschliff) | Zustände, schmale Bildschirme, Barrierefreiheit | 🚧 |
 | | **Backend** | | |
 | 6 | [Backend-Grundgerüst](#phase-6--backend-grundgerüst) | Node-Server, Konfiguration, `server.properties`-Parser | ⬜ |
 | 7 | [Konsole live](#phase-7--konsole-live) | RCON, Live-Log, WebSocket | ⬜ |
@@ -107,13 +107,13 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - Dazu ein Link zur EULA, eine Checkbox (nie vorausgewählt) und ein Button.
   - Bisher gibt es nur den Prüfpunkt beim Versionswechsel.
 - [ ] `.gitignore`: `*.jar` ausschließen, damit keine Server-Jar versehentlich im Repo landet (Phase 6)
-- [ ] **EULA-Endpunkt** (Phase 9): schreibt `eula=true` nur auf die ausdrückliche Bestätigung aus dem UI.
-      Fehlt noch in AGENTS.md §9.
+- [ ] **EULA-Endpunkt** (Phase 9): `POST /api/eula` schreibt `eula=true` nur auf die ausdrückliche Bestätigung aus dem UI.
+      Steht als Entwurf in AGENTS.md §9.
 - [ ] **Release** (Phase 11):
-  - Das Image und die Installation enthalten keine Spieldateien.
-  - Das README erklärt, dass die Jar beim Einrichten direkt vom Anbieter geladen wird.
-  - Das README erklärt, dass der Nutzer die EULA selbst akzeptiert.
-  - Der Disclaimer steht auch in den Release-Notes bzw. in der Beschreibung des Images.
+  - [ ] Das Image und die Installation enthalten keine Spieldateien.
+  - [x] Das README erklärt, dass die Jar direkt vom Anbieter geladen wird (Abschnitt Requirements, `0.1.0-alpha.3`).
+  - [x] Das README erklärt, dass der Nutzer die EULA selbst akzeptiert (ebenda).
+  - [ ] Der Disclaimer steht auch in den Release-Notes bzw. in der Beschreibung des Images.
 
 ---
 
@@ -146,20 +146,26 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 2 – Home (UI)
 
-🚧 als Nächstes
+✅ abgeschlossen
 
 - [x] Boxen: `.card` (+ Kopf, Body, Liste, Outline), `.stat`, `.action-card`, `.card-grid`
 - [x] `js/api.js` – Schnittstelle der Seiten zu den Daten (später `fetch` + WebSocket nach AGENTS.md §9)
 - [x] `js/mock/` – Beispieldaten im Format der geplanten API-Antworten, inkl. simulierter Live-Updates
 - [x] Seitenkopf: Status-Badge + „Vanilla 26.3 · läuft seit …“
 - [x] Kennzahl-Karten: Spieler, TPS, Arbeitsspeicher, CPU (mit Balken)
-- [x] Spielerliste mit Dimension und Ping (Online-Zeit bewusst weggelassen)
-- [ ] Aktionsmenü je Spieler (…)
+- [x] Spielerliste mit Dimension, Ping und „OP“ (Online-Zeit bewusst weggelassen), im Kopf „6 online“
+- [x] Spielerliste wird an Ort und Stelle aktualisiert: Fokus und offenes Menü überstehen das Status-Update alle 5 s
+- [x] Leere Spielerliste: „Gerade ist niemand online.“ bzw. „Der Server läuft nicht.“
+- [x] Aktionsmenü je Spieler (`<action-menu>`):
+  - Nachricht senden (`tell`, Dialog)
+  - Zum Operator machen / Operator-Rechte entziehen (`op` / `deop`)
+  - Kicken und Bannen, beide mit Bestätigung
+  - Fliegt ein Spieler raus, wandert der Fokus zur nächsten Zeile.
 - [x] Letzte Konsolenausgabe (Ausschnitt) mit `<log-view>`
 - [x] Schnellaktionen: Welt speichern, Backup erstellen, Nachricht an alle (Dialog), Tag setzen
 - [x] Gliederung: Server-Monitoring, System-Monitoring, Spieler + Konsole, Schnellaktionen
 - [x] Start / Stopp / Neustart (Buttons je nach Status, im Mock mit Übergängen)
-- [ ] Servername + Adresse in der Sidebar aus `api.js`
+- [x] Servername + Adresse in der Sidebar aus `api.js` (Felder `name`, `address` in `Status`; Quelle im Backend noch offen)
 
 ## Phase 3 – Konsole (UI)
 
@@ -177,7 +183,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 4 – Einstellungen (UI)
 
-🚧 fast fertig
+✅ abgeschlossen
 
 - [x] Seite nach Mockup 04: Abschnitte Allgemein, Welt, Spieler & Regeln, Leistung & Netzwerk, Server-Version, Gefahrenzone
 - [x] Sprungnavigation zu den Abschnitten, markiert den Abschnitt im Blick
@@ -189,8 +195,18 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] Prüfung vor dem Wechsel: Java-Anforderung, Backup, gleiche Version, Downgrade, EULA (mit Link)
 - [x] Ablauf des Versionswechsels mit Schritt-Fortschritt, Bestätigung bei Downgrade
 - [x] Gefahrenzone: Welt zurücksetzen, Standardwerte – beide mit Bestätigungsdialog (`js/dialogs.js`)
-- [ ] Listen: Whitelist, OPs, Bans – nicht im Mockup, Gestaltung offen
-- [ ] Warnung bei ungespeicherten Änderungen auch beim Seitenwechsel im Panel (bisher nur beim Schließen des Tabs)
+- [x] Abschnitt „Spielerlisten“ (nicht im Mockup), außerhalb des Formulars:
+  - Whitelist, Operatoren und Gebannt als Chips mit Anzahl.
+  - Hinzufügen per Name, beim Bannen mit optionalem Grund; Entfernen je Zeile.
+  - Prüfung des Namens (3–16 Zeichen) und doppelter Einträge.
+  - Gilt sofort, ohne Speichern; während Start/Stopp gesperrt.
+  - Hinweis, wenn die Whitelist ausgeschaltet ist.
+- [x] Beispieldaten: eine gemeinsame Quelle für OPs und Banns (`js/mock/lists.js`).
+      Home, Konsole und Einstellungen zeigen denselben Stand.
+- [x] Warnung bei ungespeicherten Änderungen auch beim Seitenwechsel im Panel
+  - Gilt für Links und für Zurück/Vor im Browser.
+  - Umsetzung: `onBeforeLeave()` in `router.js`.
+  - Abbrechen macht den Schritt im Verlauf rückgängig, ohne doppelte Einträge.
 
 ## Phase 5 – Feinschliff
 
@@ -198,6 +214,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [ ] Fehlermeldungen im Format `{ error: { code, message } }` anzeigen
 - [ ] Schmale Bildschirme: alle Seiten durchgehen
 - [ ] Barrierefreiheit: Tastatur, Fokus, Screenreader, Kontrast (inkl. Platzhalterfarbe)
+- [ ] `<lang-switch>`: Das `fieldset` hat ohne die entfernte Legend keinen zugänglichen Namen → unsichtbares `aria-label`
 - [ ] Komponenten-Übersicht um neue Bausteine ergänzen
 
 ## Phase 6 – Backend-Grundgerüst
@@ -207,8 +224,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] `package.json` (`"type": "module"`, `"license": "AGPL-3.0-or-later"`, Version) – vorgezogen
 - [ ] `node --test` eingerichtet, Test: `public/js/version.js` = `version` in `package.json`
 - [ ] `server/config.js` + `panel.config.example.json` – Datei + Umgebungsvariablen, validiert
-- [ ] `server/index.js` – statischer HTTP-Server für `public/`, gebunden an die LAN-IP
-- [ ] `server/properties.js` – erhält Kommentare, Leerzeilen, Reihenfolge; Java-Escaping; atomar schreiben
+- [ ] `server/index.js` – statischer HTTP-Server für `public/`, gebunden an die LAN-IP, Path-Traversal abgelehnt (AGENTS.md §8)
+- [ ] `server/properties.js` – erhält Kommentare, Leerzeilen, Reihenfolge; Java-Escaping; atomar schreiben, vorher `server.properties.bak`
 - [ ] Tests: properties-Round-Trip mit Kommentaren
 
 ## Phase 7 – Konsole live
@@ -216,32 +233,40 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [ ] `server/rcon.js` – eigener RCON-Client mit Reconnect + Backoff
 - [ ] `server/logwatch.js` – `latest.log` mitlesen, Log-Rotation, Puffer ~500 Zeilen
 - [ ] WebSocket `/ws` mit `Origin`-Prüfung
+- [ ] RCON-Status („verbunden / getrennt“) ans Frontend melden und anzeigen (AGENTS.md §6.1). Im Typ `Status` gibt es dafür noch kein Feld.
 - [ ] Konsole-Seite von Beispieldaten auf echte Daten umstellen
-- [ ] „Log herunterladen“: liefert bisher nur den Puffer der Ansicht – für die ganze `latest.log` fehlt ein Endpunkt (nicht in AGENTS.md §9)
+- [ ] „Log herunterladen“: liefert bisher nur den Puffer der Ansicht. Die ganze `latest.log` kommt über `GET /api/logs/latest` (Entwurf in AGENTS.md §9).
 - [ ] Tests: RCON-Paketcodierung, Log-Zeilen-Parser
 
 ## Phase 8 – Home live
 
 - [ ] `server/service.js` – nur die drei erlaubten `systemctl`-Aufrufe
 - [ ] `server/metrics.js` – Spieler, TPS, RAM, CPU (Polling ≥ 5 s, nur mit Clients)
-- [ ] `GET /api/status`, `POST /api/server/start|stop|restart`
+- [ ] `GET /api/status` mit allen Feldern des Typs `Status` in `js/api.js` (inkl. `name`, `address`, `java`, `eulaAccepted`,
+      `lastBackupAt`; `op` je Spieler aus `ops.json`), `POST /api/server/start|stop|restart`
 - [ ] Home-Seite und Sidebar auf echte Daten umstellen
 
 ## Phase 9 – Einstellungen live
 
 - [ ] `GET/PUT /api/properties` mit serverseitiger Validierung, RCON-Werte nie ans Frontend
-- [ ] Endpunkt für Panel-Einstellungen (RAM/-Xmx, automatischer Neustart) – fehlt in AGENTS.md §9
+- [ ] `GET /api/properties/defaults` für „Auf Standardwerte zurücksetzen“ (Entwurf in AGENTS.md §9)
+- [ ] `GET/PUT /api/panel` für Panel-Einstellungen (RAM/-Xmx, automatischer Neustart) (Entwurf in AGENTS.md §9)
 - [ ] Automatischer Neustart: Zeitplan im Backend (Timer muss sich laut AGENTS.md §2 rechtfertigen) oder per systemd-Timer
-- [ ] Welt zurücksetzen: Endpunkt fehlt in AGENTS.md §9
-- [ ] Listen: bei laufendem Server nur über RCON, sonst direkt in die Dateien
+- [ ] Welt zurücksetzen: `POST /api/world/reset`, vorher Pflicht-Backup (Entwurf in AGENTS.md §9)
+- [ ] Listen: `GET /api/lists`, `POST /api/lists/<list>` (Entwurf in AGENTS.md §9).
+      Bei laufendem Server nur über RCON, sonst direkt in die Dateien (§6.3).
 - [ ] Einstellungen-Seite auf echte Daten umstellen
 
 ## Phase 10 – Versionswechsel live
 
 - [ ] `server/backup.js` – Welt-Backups (tar.gz), Pflicht vor jedem Wechsel
 - [ ] `server/java.js` – installierte Java-Versionen
-- [ ] Versionsvergleich für altes (`1.x.y`) und neues Schema (`26.x`) + Tests
+- [ ] Versionsvergleich für altes (`1.x.y`) und neues Schema (`26.x`) + Tests.
+      Das Frontend hat ihn schon (`public/js/versions.js`: `compareVersions`, `requiredJava`), also übernehmen oder gemeinsam nutzen.
 - [ ] Provider Vanilla, danach Paper, Fabric (Tests mit gemockten Antworten)
+  - Downloads nur von den Hosts aus AGENTS.md §6.5, Prüfsumme muss passen.
+  - Paper verlangt einen eigenen User-Agent mit Kontakt.
+- [ ] `GET /api/versions` mit `&snapshots=true` (Entwurf in AGENTS.md §9)
 - [ ] Ablauf mit Fortschritt per WebSocket, Rückfall auf `server.jar.prev`
 
 ## Phase 11 – Release
@@ -255,6 +280,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 - 🌐 Englische Oberfläche: `js/i18n/en.js` anlegen und in `LOCALES` eintragen – der Umschalter ist schon da
 - 🧩 Forge / NeoForge – bewusst nicht enthalten, nur als „geplant“ im UI
+- 🚫 IP-Banns (`banned-ips.json`) – die Spielerlisten zeigen bisher nur Banns nach Name
 
 ---
 
@@ -264,7 +290,10 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [ ] `AGENTS.md` §4 beschreibt die Soll-Struktur, nicht den Ist-Zustand (siehe [Ordnerstruktur](#ordnerstruktur))
 - [ ] Platzhalterfarbe `#757575` hat auf `#18191B` nur ~3,8:1 Kontrast (Ziel ≥ 4,5:1)
 - [ ] Fonts als WOFF2 statt TTF (~60–70 % kleiner)
-- [ ] Ungenutzte statische Inter-Schnitte in `public/assets/fonts/Inter/static/` (nur die Variable Fonts werden geladen)
+- [ ] Ungenutzte Font-Dateien: die `static/`-Ordner von Inter, JetBrains Mono und Pixelify Sans sowie 7 Schnitte von
+      Chakra Petch (geladen werden nur Medium, SemiBold und Bold). Das `dist/` für den FTP-Test lässt sie schon weg.
+- [ ] „Quellcode“ in der Namensnennung steht fest im HTML (`index.html`, `components.html`). Für Englisch per `data-i18n`
+      übersetzbar machen und den deutschen Text als Rückfall im HTML lassen, damit er auch ohne JS sichtbar ist.
 - [ ] Komponenten bisher nur visuell geprüft, keine automatisierten Tests
 - [x] Display-Schrift Chakra Petch statt Pixelify Sans (Titel, Überschriften, Kennzahlen, Avatare); Pixelify nur noch im Logo (`--font-logo`)
 - [x] `README.md` mit Beschreibung, Lizenz, Disclaimer, Sicherheitshinweis
@@ -294,6 +323,7 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
 | `public/brand/` | `public/assets/logo/` |
 | `public/css/base.css` | `public/css/style.css` |
 | `public/js/app.js` | `public/js/main.js` (Einstieg) + `router.js` + `nav.js` |
+| `<mc-button>` in `js/components/` | – (ein `<button class="btn">` reicht) |
 | `docs/design/` | `design/mockups/` (gitignored) |
 | – | `public/main.css` (CSS-Einstieg, `@import` aller Stylesheets) |
 | – | `public/css/layout.css` (App-Shell) |
@@ -311,14 +341,19 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   - `.action-card` – ganze Karte ist ein `<button>`, Icon-Kachel + Titel + Untertitel.
   - `.card-grid` – Karten nebeneinander, bricht auf schmalen Bildschirmen um.
   - `.avatar` – quadratisches Initial für Spieler.
+  - `.card__empty` – Hinweis statt leerer Liste; `.list-add` – Name (+ Grund) und Button in einer Zeile;
+    `.list-note` – kurzer Hinweis über einer Liste; `.choice-chip__count` – Anzahl im Chip.
 - **Web Components** (Light DOM, registrieren sich beim Import, gesammelt in `js/components/index.js`):
   - `<mc-field label help error>` – Label/Hilfe/Fehler, verdrahtet `for`, `aria-describedby`, `aria-invalid`; Fehler per `el.error = '…'`.
   - `<mc-toggle checked disabled name value description layout="row">` – `<button role="switch">`, form-associated, feuert `change`. `layout="row"` = große Einstellungszeile (52 × 28) aus Mockup 04.
   - `<mc-stepper>` – umschließt `<input type="number">`, −/+ an min/max gesperrt.
   - `<mc-range>` – umschließt `<input type="range">`, füllt die Spur, schreibt Wert in `<output for>`.
   - `<status-badge status="online|offline|starting|stopping">` – Text + Form-Marker, `role="status"`.
-  - `<lang-switch>` – Sprachumschalter aus `LOCALES`, native Radios als Segment-Schalter.
-  - `<log-view limit live>` – Konsolenausgabe, `el.add(lines)`; Spalten per Subgrid, `.log--truncate` für einzeilige Vorschau.
+  - `<lang-switch>` – Sprachumschalter aus `LOCALES`, native Radios als Segment-Schalter (je 44 × 44 px).
+  - `<log-view limit live follow filter>` – Konsolenausgabe, `el.add(lines)`; Spalten per Subgrid,
+    `.log--truncate` für einzeilige Vorschau, `.log--lg` für die Konsole.
+  - `<action-menu label>` – „⋯“-Button mit Menü aus den `<button value>`-Kindern (`<hr>` = Trenner, `data-danger` = rot).
+    Natives Popover, Pfeiltasten/Home/End, feuert `action` mit `detail.value`. Klappt nach oben, wenn unten kein Platz ist.
 
 ### App-Shell (`index.html`, `css/layout.css`)
 - Sidebar 240 px, von oben nach unten (AGENTS.md §1):
@@ -326,22 +361,27 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   2. Adress-Box (`#server-address`).
   3. Navigation.
   4. Fuß mit Sprachumschalter und Namensnennung.
-  Servername und Adresse zeigen Platzhalter (`[SERVER NAME]`, `[IP ADRESS:PORT]`), bis das Backend sie liefert.
+  Servername und Adresse kommen aus dem Status (`main.js` abonniert `onStatus`), bis dahin steht dort „–“.
 - Unter 900 px: Topbar mit Menü-Button, Sidebar gleitet über den Inhalt (`.app[data-nav-open]`).
   Schließen per Escape, Klick auf den Hintergrund oder Navigation; Fokus wandert in die Nav bzw. zurück zum Button.
 - Seiten in `js/pages/` exportieren `titleKey` und `render(root)` (optional Rückgabe einer Cleanup-Funktion).
   Unbekannte Hashes → `#/home`. Nach Navigation Fokus auf `<h1>`.
+- Seiten können einen Seitenwechsel aufhalten: `onBeforeLeave(guard)` aus `router.js`, Rückgabe in der Cleanup aufrufen.
+  Links werden vor dem Wechsel der URL abgefangen. Zurück/Vor macht den Schritt rückgängig, dafür steht in
+  `history.state` eine laufende Nummer (`index`).
 - Pflicht-Namensnennung **unten in der Sidebar** (breite Bildschirme, dort immer sichtbar) und als **Footer unter
   dem Inhalt** auf schmalen Bildschirmen, wo die Sidebar eingeklappt ist. Je Breite ist genau eine davon sichtbar.
 
 ### Versionierung
-- Semantic Versioning, aktuell **`0.1.0-alpha.2`**. Quelle: `package.json`; Kopie für den Browser in `public/js/version.js`
-  (beide gemeinsam ändern). Anzeige im Footer neben „Powered by PiSton“. Änderungen in `CHANGELOG.md`.
-- Fahrplan: `0.1.0-alpha.N` (je abgeschlossener Frontend-Phase +1) → `0.1.0-beta.N` (Backend angebunden)
-  → `0.1.0` (erste brauchbare Version) → `1.0.0` (stabil). Regeln: `AGENTS.md` §10 „Versionierung“.
+- Semantic Versioning, aktuell **`0.1.0-alpha.3`**. Quelle: `package.json`; Kopie für den Browser in `public/js/version.js`
+  (beide gemeinsam ändern). Anzeige bei der Namensnennung, also im Sidebar-Fuß bzw. auf schmalen Bildschirmen im Footer.
+  Änderungen in `CHANGELOG.md`.
+- Fahrplan: `0.1.0-alpha.N` (je abgeschlossener Roadmap-Phase +1) → `0.1.0-beta.N` (Backend angebunden, Test auf dem Pi)
+  → `0.1.0` (erste brauchbare Version) → `0.x.0` (neue Funktionen) → `1.0.0` (stabil). Regeln: `AGENTS.md` §10 „Versionierung“.
 
 ### Sprache (i18n)
 - UI-Texte zentral in `js/i18n/de.js`, Zugriff über `t('status.online')`.
-  Statisches HTML: `data-i18n` (Text) bzw. `data-i18n-label` (aria-label), befüllt von `translate()`.
+  Statisches HTML: `data-i18n` (Text), `data-i18n-label` (aria-label) oder `data-i18n-<attr>` (jedes andere Attribut),
+  befüllt von `translate()`.
 - Sprachen in `LOCALES` (`js/i18n/index.js`); Deutsch ist Standard und Rückfall für fehlende Schlüssel.
 - Auswahl in `localStorage` (`piston.locale`), Wechsel lädt die Seite neu. Regeln: `AGENTS.md` §7 „Sprache (i18n)“.
