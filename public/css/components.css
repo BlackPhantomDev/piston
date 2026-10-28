@@ -659,6 +659,99 @@ status-badge[data-state="stopping"] .status-badge__marker {
 }
 
 /* =========================================================================
+   Language switch – native radios as a segmented control
+   <lang-switch> renders: <fieldset class="lang-switch"><legend>…</legend>
+     <div class="lang-switch__options"><label class="lang-switch__option">
+       <input type="radio"> DE</label>…</div></fieldset>
+   ========================================================================= */
+
+.lang-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Floated legend takes part in the flex layout like a normal child */
+.lang-switch legend {
+  float: left;
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-medium);
+}
+
+.lang-switch__options {
+  display: flex;
+}
+
+.lang-switch__option {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: var(--control-h-m);
+  height: var(--control-h-m);
+  padding: 0 var(--space-2);
+  border: var(--border);
+  background-color: var(--color-input-bg);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.lang-switch__option:first-child {
+  border-radius: var(--radius-control) 0 0 var(--radius-control);
+}
+
+.lang-switch__option:last-child {
+  border-radius: 0 var(--radius-control) var(--radius-control) 0;
+}
+
+.lang-switch__option + .lang-switch__option {
+  margin-left: calc(var(--border-width) * -1);
+}
+
+/* Input covers the whole segment: stays focusable and clickable, but invisible */
+.lang-switch__option input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.lang-switch__option:hover:not(:has(input:disabled, input:checked)) {
+  background-color: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.lang-switch__option:has(input:checked) {
+  z-index: 1;
+  border-color: var(--grass);
+  background-color: var(--color-online-bg);
+  color: var(--grass-hover);
+}
+
+.lang-switch__option:has(input:focus-visible) {
+  z-index: 2;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.lang-switch__option:has(input:disabled) {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* =========================================================================
    Card
    ========================================================================= */
 

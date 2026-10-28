@@ -25,3 +25,4 @@ import './mc-toggle.js';
 import './mc-stepper.js';
 import './mc-range.js';
 import './status-badge.js';
+import './lang-switch.js';
