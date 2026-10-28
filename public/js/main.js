@@ -20,3 +20,31 @@
  */
 
 import './components/index.js';
+import { t, translate } from './i18n/index.js';
+import { initNav } from './nav.js';
+import { startRouter } from './router.js';
+import * as home from './pages/home.js';
+import * as konsole from './pages/konsole.js';
+import * as einstellungen from './pages/einstellungen.js';
+
+// components.html loads this module too, but has no app shell
+const app = document.querySelector('.app');
+
+if (app) {
+  translate();
+
+  const nav = initNav(
+    /** @type {HTMLElement} */ (app),
+    /** @type {HTMLButtonElement} */ (document.getElementById('nav-toggle')),
+  );
+
+  startRouter({
+    routes: { home, konsole, einstellungen },
+    fallback: 'home',
+    outlet: /** @type {HTMLElement} */ (document.getElementById('main')),
+    onRoute(name, page) {
+      document.title = `${t(page.titleKey)} – PiSton`;
+      nav.setCurrent(name);
+    },
+  });
+}

@@ -23,19 +23,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="assets/logo/favicon.svg" type="image/x-icon">
+    <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/logo/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/logo/apple-touch-icon.png">
     <title>PiSton</title>
     <link rel="stylesheet" href="main.css">
+    <script type="module" src="js/main.js"></script>
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <h3>PiSton is ready...</h3>
-    <img src="assets/logo/piston-logo.svg" alt="Logo" width="128px">
+<div class="app">
+    <!-- Narrow screens only -->
+    <header class="topbar">
+        <button class="btn btn--ghost btn--icon" type="button" id="nav-toggle"
+                aria-controls="sidebar" aria-expanded="false" data-i18n-label="nav.menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        </button>
+        <div class="topbar__brand">
+            <img src="assets/logo/piston-logo.svg" alt="" width="32" height="32">
+            <span class="wordmark"><span class="wordmark__pi">Pi</span>Ston</span>
+        </div>
+    </header>
 
-    <!-- Required attribution, see ADDITIONAL_TERMS (term 1). Do not remove. -->
-    <footer class="legal-notice">
-        Powered by <a href="https://github.com/BlackPhantomDev/piston">PiSton</a>
-        · <a href="https://github.com/BlackPhantomDev/piston">Quellcode</a> (AGPLv3)
-    </footer>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar__brand">
+            <img src="assets/logo/piston-logo.svg" alt="" width="40" height="40">
+            <div>
+                <p class="wordmark"><span class="wordmark__pi">Pi</span>Ston</p>
+                <p class="sidebar__server" id="server-name">[SERVER NAME]</p>
+            </div>
+        </div>
+
+        <nav class="nav" data-i18n-label="nav.label">
+            <ul>
+                <li>
+                    <a class="nav__link" href="#/home" data-route="home">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+                        <span data-i18n="nav.home"></span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav__link" href="#/konsole" data-route="konsole">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><polyline points="7 9 10 12 7 15"/><line x1="13" y1="15" x2="17" y2="15"/></svg>
+                        <span data-i18n="nav.konsole"></span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav__link" href="#/einstellungen" data-route="einstellungen">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h3M11 6h9M4 12h9M17 12h3M4 18h1M9 18h11"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                        <span data-i18n="nav.einstellungen"></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar__bottom">
+            <div class="sidebar__address">
+                <p class="sidebar__address-label" data-i18n="sidebar.address"></p>
+                <p class="sidebar__address-value" id="server-address">[IP ADRESS:PORT]</p>
+            </div>
+            <lang-switch></lang-switch>
+        </div>
+    </aside>
+    <div class="sidebar-backdrop"></div>
+
+    <div class="content">
+        <main class="page" id="main"></main>
+
+        <!-- Required attribution, see ADDITIONAL_TERMS (term 1). Do not remove. -->
+        <footer class="legal-notice">
+            Powered by <a href="https://github.com/BlackPhantomDev/piston">PiSton</a>
+            · <a href="https://github.com/BlackPhantomDev/piston">Quellcode</a> (AGPLv3)
+        </footer>
+    </div>
+</div>
 </body>
 </html>
