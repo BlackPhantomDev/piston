@@ -47,11 +47,37 @@ export default {
     ram: 'Arbeitsspeicher',
     console: "Letzte Konsolenausgabe",
     consoleLink: "Zur Konsole",
+    serverMonitoring: 'Server-Monitoring',
+    systemMonitoring: 'System-Monitoring',
+    quick: {
+      save: 'Welt speichern',
+      backup: 'Backup erstellen',
+      say: 'Nachricht an alle',
+      day: 'Tag setzen',
+      lastBackup: 'Letztes: {when}',
+      noBackup: 'Noch kein Backup',
+      backupRunning: 'Backup läuft …',
+    },
+    sayDialog: {
+      title: 'Nachricht an alle',
+      label: 'Nachricht',
+      help: 'Erscheint im Chat als [Server].',
+      send: 'Senden',
+    },
+  },
+  server: {
+    start: 'Starten',
+    stop: 'Stoppen',
+    restart: 'Neu starten',
+    runningFor: 'läuft seit {duration}',
   },
   when: {
     today: 'heute {time}',
     yesterday: 'gestern {time}',
     date: '{date} {time}',
+  },
+  common: {
+    cancel: 'Abbrechen',
   },
   duration: {
     lessThanMinute: '< 1 min',
