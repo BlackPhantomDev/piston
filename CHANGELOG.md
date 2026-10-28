@@ -7,6 +7,27 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+## [0.1.0-alpha.2] – 2026-10-28
+
+Still frontend only, on sample data.
+
+### Added
+
+- Settings page: all main `server.properties` values in sections (general, world,
+  players & rules, performance & network) with jump links, checks in the browser
+  and a save bar (discard / save / save & restart).
+- Server version: provider cards (Vanilla, Paper, Fabric; Forge / NeoForge shown as planned),
+  version list for the old and the new numbering, optional snapshots.
+- Checks before a version switch: required Java, automatic backup, same version,
+  downgrade, accepted EULA – then a step-by-step switch with confirmation for downgrades.
+- Danger zone: reset the world, reset settings to defaults – both ask first.
+
+### Changed
+
+- The "Powered by PiSton" attribution and the version sit at the bottom of the sidebar
+  on wide screens, so they are always in view; narrow screens keep the footer.
+- Server address moved to the top of the sidebar.
+
 ## [0.1.0-alpha.1] – 2026-10-28
 
 First tagged state: the frontend runs on sample data, there is no backend yet.
@@ -24,5 +45,6 @@ First tagged state: the frontend runs on sample data, there is no backend yet.
 - Language switch prepared (German active, English planned).
 - Required "Powered by PiSton" attribution on every page (AGPL-3.0 §7).
 
-[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.1...HEAD
+[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.2...HEAD
+[0.1.0-alpha.2]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.1...v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/BlackPhantomDev/piston/releases/tag/v0.1.0-alpha.1

@@ -264,7 +264,7 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   dem Inhalt** auf schmalen Bildschirmen, wo die Sidebar eingeklappt ist. Je Breite ist genau eine davon sichtbar.
 
 ### Versionierung
-- Semantic Versioning, aktuell **`0.1.0-alpha.1`**. Quelle: `package.json`; Kopie für den Browser in `public/js/version.js`
+- Semantic Versioning, aktuell **`0.1.0-alpha.2`**. Quelle: `package.json`; Kopie für den Browser in `public/js/version.js`
   (beide gemeinsam ändern). Anzeige im Footer neben „Powered by PiSton“. Änderungen in `CHANGELOG.md`.
 - Fahrplan: `0.1.0-alpha.N` (je abgeschlossener Frontend-Phase +1) → `0.1.0-beta.N` (Backend angebunden)
   → `0.1.0` (erste brauchbare Version) → `1.0.0` (stabil). Regeln: `AGENTS.md` §10 „Versionierung“.
