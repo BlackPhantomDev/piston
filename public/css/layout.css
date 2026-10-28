@@ -155,6 +155,9 @@
 
   flex: 1;
   display: grid;
+  /* minmax(0, …): content never makes the page wider than the screen – long,
+     truncated rows (e.g. player names) would otherwise widen the whole column */
+  grid-template-columns: minmax(0, 1fr);
   align-content: start;
   gap: var(--space-4);
   padding: var(--page-pad-y) var(--page-pad-x);
@@ -163,6 +166,7 @@
 /* Narrower reading width for form pages (mockup 04: 960 px) */
 .page__narrow {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   width: 100%;
   max-width: 960px;
@@ -203,7 +207,8 @@
   gap: 12px;
 }
 
-/* Phones: status + "Verwerfen" in the first row, both save buttons in the second */
+/* Phones: status + "Verwerfen" in the first row, both save buttons in the second.
+   On very small screens (320 px) a label may wrap to two lines instead of overflowing. */
 @media (max-width: 599.98px) {
   .save-bar {
     display: grid;
@@ -213,6 +218,14 @@
 
   .save-bar__actions {
     display: contents;
+  }
+
+  .save-bar .btn {
+    height: auto;
+    min-height: var(--control-h-m);
+    padding-block: var(--space-1);
+    line-height: var(--lh-label);
+    white-space: normal;
   }
 }
 
@@ -380,8 +393,15 @@
     background-color: var(--backdrop);
   }
 
+  /* The page behind the open sidebar does not scroll (html too: mobile browsers scroll the root) */
+  html:has(.app[data-nav-open]),
   body:has(.app[data-nav-open]) {
     overflow: hidden;
+  }
+
+  /* Scrolling inside the sidebar never hands over to the page */
+  .sidebar {
+    overscroll-behavior: contain;
   }
 
   .content {
