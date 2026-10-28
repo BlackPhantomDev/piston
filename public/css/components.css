@@ -930,13 +930,20 @@ status-badge[data-state="stopping"] .status-badge__marker {
    Card grid – cards side by side, wrapping on narrow screens
    ========================================================================= */
 
-/* auto-fit: with fewer cards than columns the cards share the full width */
+/* Flexbox, not grid: every row is filled completely. Cards share a row as long
+   as each gets at least --_min; cards that wrap share the next row – no gaps,
+   whether a card is added or the screen gets narrower. */
 .card-grid {
   --_min: var(--card-min-w);
 
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(var(--_min), 100%), 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--card-gap);
+}
+
+.card-grid > * {
+  flex: 1 1 var(--_min);
+  min-width: min(var(--_min), 100%);
 }
 
 /* Wider minimum for content cards (lists, console) – stacks earlier */
