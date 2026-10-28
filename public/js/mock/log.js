@@ -63,21 +63,46 @@ export function mockLogLine() {
   return { time: now(), ...line };
 }
 
+const ONLINE = ['Steve', 'Alex', 'Mia_Baut', 'Builder_Max', 'Creeperfan', 'Lena_MC'];
+
 /**
- * What the server would write to the log for a console command.
+ * How the server reacts to an RCON command, like vanilla does:
+ * `response` goes back to the sender only, `log` lands in latest.log for everyone
+ * (command feedback as "[Rcon: …]", say as "[Rcon] …").
  * @param {string} command  e.g. "save-all", "say Hallo"
- * @returns {import('../api.js').LogLine[]}
+ * @returns {{ response: string[], log: import('../api.js').LogLine[] }}
  */
 export function mockCommand(command) {
   const [name, ...args] = command.split(' ');
-  /** @type {Record<string, string[]>} */
-  const responses = {
-    'save-all': ['Saving the game (this may take a moment!)', 'Saved the game'],
-    time: ['Set the time to 1000'],
-    say: [`[Server] ${args.join(' ')}`],
+  const arg = args.join(' ');
+  /** @type {Record<string, () => string[]>} */
+  const feedback = {
+    list: () => [`There are ${ONLINE.length} of a max of 20 players online: ${ONLINE.join(', ')}`],
+    'save-all': () => ['Saving the game (this may take a moment!)', 'Saved the game'],
+    time: () => (args[0] === 'set' && args[1] ? [`Set the time to ${args[1] === 'day' ? 1000 : args[1]}`] : []),
+    weather: () => (args[0] ? [`Set the weather to ${args[0]}`] : []),
+    whitelist: () => (args[0] === 'add' && args[1] ? [`Added ${args[1]} to the whitelist`] : []),
+    op: () => (args[0] ? [`Made ${args[0]} a server operator`] : []),
+    kick: () => (args[0] ? [`Kicked ${args[0]}: Kicked by an operator`] : []),
   };
-  const texts = responses[name] ?? [`Unknown or incomplete command: ${command}`];
-  return texts.map((text) => ({ time: now(), level: 'INFO', text }));
+
+  if (name === 'say') {
+    return arg ? { response: [], log: [line(`[Rcon] ${arg}`)] } : { response: [usage(command)], log: [] };
+  }
+  const response = feedback[name]?.() ?? [];
+  if (response.length === 0) return { response: [usage(command)], log: [] };
+  const logged = name === 'list' ? [] : response.map((text) => line(`[Rcon: ${text}]`));
+  return { response, log: logged };
+}
+
+/** @param {string} command */
+function usage(command) {
+  return `Unknown or incomplete command, see below for error: ${command}<--[HERE]`;
+}
+
+/** @param {string} text */
+function line(text) {
+  return { time: now(), level: 'INFO', text };
 }
 
 function now() {

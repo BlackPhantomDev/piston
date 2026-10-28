@@ -55,6 +55,7 @@ import { mockCreateBackup, mockServerAction, mockStatus } from './mock/status.js
 
 const STATUS_INTERVAL_MS = 5000; // AGENTS.md §6.4: polling ≥ 5 s
 const MOCK_LOG_INTERVAL_MS = 4000; // sample data only – the real log is pushed via WebSocket
+const MOCK_LOG_DELAY_MS = 150; // sample data only – delay of command lines in the log
 
 /** @type {Set<(status: Status) => void>} */
 const statusListeners = new Set();
@@ -112,13 +113,20 @@ export function onLog(callback) {
 
 /**
  * Sends a console command via RCON (later WebSocket { type: 'cmd', command }).
- * The server's answer shows up in the log for everyone.
+ * Resolves with the server's answer for the sender (later message 'cmd-result');
+ * whatever the server writes to latest.log arrives for everyone through onLog().
  * @param {string} command  without leading slash, e.g. "save-all"
- * @returns {Promise<void>}
+ * @returns {Promise<string[]>} response lines, may be empty (e.g. for say)
  */
 export async function sendCommand(command) {
-  const lines = mockCommand(command);
-  for (const listener of logListeners) listener(lines);
+  const { response, log } = mockCommand(command);
+  if (log.length > 0) {
+    // latest.log is tailed, so its lines arrive a moment after the direct answer
+    setTimeout(() => {
+      for (const listener of logListeners) listener(log);
+    }, MOCK_LOG_DELAY_MS);
+  }
+  return response;
 }
 
 /**

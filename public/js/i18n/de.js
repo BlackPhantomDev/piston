@@ -61,7 +61,7 @@ export default {
     sayDialog: {
       title: 'Nachricht an alle',
       label: 'Nachricht',
-      help: 'Erscheint im Chat als [Server].',
+      help: 'Erscheint im Chat als [Rcon].',
       send: 'Senden',
     },
   },
