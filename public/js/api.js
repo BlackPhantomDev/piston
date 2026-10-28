@@ -151,8 +151,8 @@ export async function createBackup() {
 }
 
 /**
- * Current settings (later GET /api/properties; the panel part needs its own endpoint,
- * which AGENTS.md §9 does not list yet). RCON values are never included.
+ * Current settings (later GET /api/properties; the panel part from GET /api/panel,
+ * a draft in AGENTS.md §9). RCON values are never included.
  * @returns {Promise<Settings>}
  */
 export async function getSettings() {
@@ -160,7 +160,8 @@ export async function getSettings() {
 }
 
 /**
- * Values of a fresh server.properties, for "Auf Standardwerte zurücksetzen".
+ * Values of a fresh server.properties, for "Auf Standardwerte zurücksetzen"
+ * (later GET /api/properties/defaults, a draft in AGENTS.md §9).
  * @returns {Promise<Settings['properties']>}
  */
 export async function getDefaultProperties() {
@@ -201,7 +202,8 @@ export async function switchVersion(target, onStep) {
 }
 
 /**
- * Deletes the world and lets the server generate it again – after a backup.
+ * Deletes the world and lets the server generate it again – after a backup
+ * (later POST /api/world/reset, a draft in AGENTS.md §9).
  * @returns {Promise<void>}
  */
 export async function resetWorld() {
