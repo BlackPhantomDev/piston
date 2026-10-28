@@ -12,8 +12,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 > [!TIP]
 > **Als Nächstes**
-> Home-Seite fertigstellen (Mockup 02): Schnellaktionen, Spielerliste mit Dimension und Online-Zeit,
-> Seitenkopf „Vanilla 26.3 · läuft seit …“, Start/Stopp/Neustart
+> Home-Seite fertigstellen (Mockup 02): Spielerliste mit Dimension, Online-Zeit und Aktionsmenü;
+> Servername + Adresse in der Sidebar
 
 > [!NOTE]
 > **Reihenfolge: erst das Frontend, dann das Backend.** Alle Seiten entstehen zuerst vollständig mit
@@ -85,12 +85,13 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] Boxen: `.card` (+ Kopf, Body, Liste, Outline), `.stat`, `.action-card`, `.card-grid`
 - [x] `js/api.js` – Schnittstelle der Seiten zu den Daten (später `fetch` + WebSocket nach AGENTS.md §9)
 - [x] `js/mock/` – Beispieldaten im Format der geplanten API-Antworten, inkl. simulierter Live-Updates
-- [ ] Seitenkopf: Status-Badge + „Vanilla 26.3 · läuft seit …“
+- [x] Seitenkopf: Status-Badge + „Vanilla 26.3 · läuft seit …“
 - [x] Kennzahl-Karten: Spieler, TPS, Arbeitsspeicher, CPU (mit Balken)
 - [ ] Spielerliste mit Dimension, Online-Zeit, Ping, Aktionsmenü
 - [x] Letzte Konsolenausgabe (Ausschnitt) mit `<log-view>`
-- [ ] Schnellaktionen: Welt speichern, Backup erstellen, Nachricht an alle
-- [ ] Start / Stopp / Neustart (Hauptaktion je nach Status)
+- [x] Schnellaktionen: Welt speichern, Backup erstellen, Nachricht an alle (Dialog), Tag setzen
+- [x] Gliederung: Server-Monitoring, System-Monitoring, Spieler + Konsole, Schnellaktionen
+- [x] Start / Stopp / Neustart (Buttons je nach Status, im Mock mit Übergängen)
 - [ ] Servername + Adresse in der Sidebar aus `api.js`
 
 ## Phase 3 – Konsole (UI)
