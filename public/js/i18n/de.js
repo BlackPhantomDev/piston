@@ -110,6 +110,11 @@ export default {
     hours: '{h} h {m} min',
     days: '{d} d {h} h',
   },
+  dimension: {
+    overworld: 'Overworld',
+    nether: 'Nether',
+    end: 'The End',
+  },
   status: {
     online: 'Online',
     offline: 'Offline',

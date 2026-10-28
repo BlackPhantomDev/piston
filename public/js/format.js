@@ -85,3 +85,13 @@ function startOfDay(date) {
 export function providerName(id) {
   return PROVIDER_NAMES[/** @type {keyof typeof PROVIDER_NAMES} */ (id)] ?? id;
 }
+
+/**
+ * Display name of a dimension; unknown ones (e.g. from mods) show their id.
+ * @param {string} id  'overworld' | 'nether' | 'end' | …
+ */
+export function dimensionName(id) {
+  const key = `dimension.${id}`;
+  const name = t(key);
+  return name === key ? id : name;
+}

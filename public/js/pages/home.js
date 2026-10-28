@@ -20,7 +20,7 @@
  */
 
 import * as api from "../api.js";
-import { formatSince, formatWhen, providerName } from "../format.js";
+import { dimensionName, formatSince, formatWhen, providerName } from "../format.js";
 import { t } from "../i18n/index.js";
 import { fields, view } from "./view.js";
 
@@ -159,6 +159,7 @@ const PLAYER_ROW = `
     <span class="avatar" aria-hidden="true" data-field="initial"></span>
     <div class="list-row__main">
       <p class="list-row__title" data-field="name"></p>
+      <p class="list-row__sub" data-field="dimension"></p>
     </div>
     <span class="list-row__meta" data-field="ping"></span>
   </li>`;
@@ -316,6 +317,7 @@ function playerRow(player) {
   const f = fields(row);
   f.initial.textContent = player.name[0];
   f.name.textContent = player.name;
+  f.dimension.textContent = dimensionName(player.dimension);
   f.ping.textContent = `${player.pingMs} ms`;
   return row;
 }
