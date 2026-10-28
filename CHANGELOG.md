@@ -7,6 +7,11 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+### Changed
+
+- New logo: a cylindrical piston with π on its head, plus a light variant for light backgrounds.
+  The README shows the matching one for GitHub's light and dark mode.
+
 ## [0.1.0-alpha.2] – 2026-10-28
 
 Still frontend only, on sample data.

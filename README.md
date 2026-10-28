@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="public/assets/logo/piston-logo.svg" alt="PiSton logo" width="120" height="120">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="public/assets/logo/piston-logo.svg">
+    <source media="(prefers-color-scheme: light)" srcset="public/assets/logo/piston-logo-light.svg">
+    <img src="public/assets/logo/piston-logo-light.svg" alt="PiSton logo" width="120" height="120">
+  </picture>
 </p>
 
 <h1 align="center">PiSton</h1>
