@@ -1167,6 +1167,41 @@ log-view {
 }
 
 /* =========================================================================
+   Dialog – native <dialog> opened with showModal(): focus trap, Escape
+   and focus return come from the browser
+   <dialog class="dialog"><form class="dialog__form">
+     <h2>…</h2> … <div class="dialog__actions"><button>…</button></div>
+   </form></dialog>
+   ========================================================================= */
+
+.dialog {
+  width: min(480px, calc(100vw - 2 * var(--space-3)));
+  padding: 0;
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.dialog::backdrop {
+  background-color: rgb(0 0 0 / .5); /* older browsers: ::backdrop sees no custom properties */
+  background-color: var(--backdrop);
+}
+
+.dialog__form {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--card-pad);
+}
+
+.dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* =========================================================================
    Console input
    <form class="console-input"><span class="console-input__prompt">&gt;</span>
      <input> <button class="btn btn--primary btn--s">Send</button></form>
