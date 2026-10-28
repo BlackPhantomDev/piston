@@ -12,13 +12,19 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 > [!TIP]
 > **Als Nächstes**
-> 1. `js/api.js` mit Beispieldaten aus `js/mock/` – die Seiten holen ihre Daten nur über `api.js`
-> 2. Home-Seite nach Mockup 02
+> Home-Seite fertigstellen (Mockup 02): Schnellaktionen, Spielerliste mit Dimension und Online-Zeit,
+> Seitenkopf „Vanilla 26.3 · läuft seit …“, Start/Stopp/Neustart
 
 > [!NOTE]
 > **Reihenfolge: erst das Frontend, dann das Backend.** Alle Seiten entstehen zuerst vollständig mit
 > Beispieldaten. Das Backend ersetzt danach Seite für Seite die Beispieldaten durch echte – die Seiten selbst
 > sollen sich dabei kaum ändern.
+
+> [!IMPORTANT]
+> **Beispieldaten als Demo sichern, bevor das Backend kommt.** Die Mock-Daten (Logs, Systemwerte wie Spieler,
+> TPS, RAM, CPU) und die Mock-Variante von `api.js` bleiben als Kopie erhalten, damit das Panel ohne
+> Minecraft-Server als Demo laufen kann. Die Sicherung passiert **vor** dem ersten Umstellen auf echte Daten
+> (Anfang Phase 6) und wird in Phase 11 **nicht** gelöscht.
 
 ---
 
@@ -67,7 +73,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 - [x] Layout-Styles + Layout-Tokens (`css/layout.css`) · `ecdcb50`
 - [x] i18n: `LOCALES`, Rückfall auf Deutsch, `setLocale()`, `translate()` für `data-i18n` · `bdd4a08`
-- [x] Hash-Routing `#/home`, `#/konsole`, `#/einstellungen` + Seiten-Platzhalter · `be16173`
+- [x] Hash-Routing `#/home`, `#/konsole`, `#/einstellungen` + Seiten-Platzhalter · `be16173` (später umbenannt in `#/console`, `#/settings`)
 - [x] Sprachumschalter `<lang-switch>` (Englisch „geplant“) · `1ab9235`
 - [x] Sidebar nach Mockup 02, Topbar + Slide-in auf schmalen Bildschirmen · `11faa81`
 - [x] README, Roadmap · `155162b`, `730e0fc`
@@ -76,19 +82,21 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 🚧 als Nächstes
 
-- [ ] `js/api.js` – Schnittstelle der Seiten zu den Daten (später `fetch` + WebSocket nach AGENTS.md §9)
-- [ ] `js/mock/` – Beispieldaten im Format der geplanten API-Antworten, inkl. simulierter Live-Updates
+- [x] Boxen: `.card` (+ Kopf, Body, Liste, Outline), `.stat`, `.action-card`, `.card-grid`
+- [x] `js/api.js` – Schnittstelle der Seiten zu den Daten (später `fetch` + WebSocket nach AGENTS.md §9)
+- [x] `js/mock/` – Beispieldaten im Format der geplanten API-Antworten, inkl. simulierter Live-Updates
 - [ ] Seitenkopf: Status-Badge + „Vanilla 26.3 · läuft seit …“
-- [ ] Kennzahl-Karten: Spieler, TPS, Arbeitsspeicher (mit Balken)
+- [x] Kennzahl-Karten: Spieler, TPS, Arbeitsspeicher, CPU (mit Balken)
 - [ ] Spielerliste mit Dimension, Online-Zeit, Ping, Aktionsmenü
-- [ ] Letzte Konsolenausgabe (Ausschnitt)
+- [x] Letzte Konsolenausgabe (Ausschnitt) mit `<log-view>`
 - [ ] Schnellaktionen: Welt speichern, Backup erstellen, Nachricht an alle
 - [ ] Start / Stopp / Neustart (Hauptaktion je nach Status)
 - [ ] Servername + Adresse in der Sidebar aus `api.js`
 
 ## Phase 3 – Konsole (UI)
 
-- [ ] Log-Ansicht nach Mockup 03: Zeit, Level, Text; WARN/ERROR hervorgehoben
+- [x] `<log-view>`: Zeit, Level, Text; WARN/ERROR hervorgehoben, Chat-Absender grün
+- [ ] Log-Ansicht nach Mockup 03 auf der Konsole-Seite
 - [ ] Filter: Alle, Info, Warnungen, Fehler
 - [ ] Befehlseingabe mit Verlauf (↑/↓) und Antwort im Log
 - [ ] Häufige Befehle als Chips (füllen das Eingabefeld)
@@ -115,6 +123,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 6 – Backend-Grundgerüst
 
+- [ ] **Zuerst: Demo-Sicherung** – Kopie von `js/mock/` (Logs, Systemwerte, alles bis dahin Dazugekommene)
+      und der Mock-Variante von `js/api.js`, z. B. nach `demo/`. Erst danach etwas auf echte Daten umstellen.
 - [ ] `package.json` (`"type": "module"`, `"license": "AGPL-3.0-or-later"`), `node --test` eingerichtet
 - [ ] `server/config.js` + `panel.config.example.json` – Datei + Umgebungsvariablen, validiert
 - [ ] `server/index.js` – statischer HTTP-Server für `public/`, gebunden an die LAN-IP
@@ -152,7 +162,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 11 – Release
 
-- [ ] Beispieldaten (`js/mock/`) entfernen
+- [ ] Beispieldaten (`js/mock/`) aus dem Panel entfernen – die Demo-Kopie aus Phase 6 bleibt erhalten
 - [ ] `systemd/piston.service` + `sudoers-piston` (Beispiel)
 - [ ] README: Installation
 - [ ] Screenshots
@@ -209,6 +219,14 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   `.btn` (`--primary/--secondary/--ghost/--danger`, `--s/--l`, `--icon`), `.input` (`--mono`),
   `.select`, `.input-group` + `__addon`, `.checkbox`, `.card`, `.console-input`, `.setting-list`.
   Kein `<mc-button>` – ein `<button class="btn">` reicht.
+- **Boxen** (nur CSS, Vorlagen auf `components.html`):
+  - `.card` – Grundbox; `--outline` (nur Rahmen), `--compact` (enger), `--flush` (ohne Innenabstand).
+    Mit `.card__header` (Titel + `.card__meta` / `.card__link`) entfällt der Innenabstand automatisch;
+    Inhalt dann in `.card__body` (`--console` = dunkle Konsolenfläche), `.card__list` mit `.list-row` oder `.setting-list`.
+  - `.stat` – Kennzahl-Karte mit nativem `<meter>`; rot ab Grenze über `low` = `high` + `optimum="0"`.
+  - `.action-card` – ganze Karte ist ein `<button>`, Icon-Kachel + Titel + Untertitel.
+  - `.card-grid` – Karten nebeneinander, bricht auf schmalen Bildschirmen um.
+  - `.avatar` – quadratisches Initial für Spieler.
 - **Web Components** (Light DOM, registrieren sich beim Import, gesammelt in `js/components/index.js`):
   - `<mc-field label help error>` – Label/Hilfe/Fehler, verdrahtet `for`, `aria-describedby`, `aria-invalid`; Fehler per `el.error = '…'`.
   - `<mc-toggle checked disabled name value description layout="row">` – `<button role="switch">`, form-associated, feuert `change`. `layout="row"` = große Einstellungszeile (52 × 28) aus Mockup 04.
@@ -216,6 +234,7 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   - `<mc-range>` – umschließt `<input type="range">`, füllt die Spur, schreibt Wert in `<output for>`.
   - `<status-badge status="online|offline|starting|stopping">` – Text + Form-Marker, `role="status"`.
   - `<lang-switch>` – Sprachumschalter aus `LOCALES`, native Radios als Segment-Schalter.
+  - `<log-view limit live>` – Konsolenausgabe, `el.add(lines)`; Spalten per Subgrid, `.log--truncate` für einzeilige Vorschau.
 
 ### App-Shell (`index.html`, `css/layout.css`)
 - Sidebar 240 px nach Mockup 02: Logo 40 px + Schriftzug + Servername (`#server-name`), Nav, Adresse-Box (`#server-address`), Sprachumschalter.
