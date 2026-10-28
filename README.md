@@ -144,7 +144,7 @@ PiSton is free software, licensed under the
 
 If you run a modified version for others over a network, the AGPL requires you to offer them its source code.
 
-The bundled fonts (Inter, JetBrains Mono, Pixelify Sans) are licensed under the SIL Open Font License 1.1 –
+The bundled fonts (Chakra Petch, Inter, JetBrains Mono, Pixelify Sans) are licensed under the SIL Open Font License 1.1 –
 see [THIRD-PARTY-NOTICES](THIRD-PARTY-NOTICES).
 
 ---

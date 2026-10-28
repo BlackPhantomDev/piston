@@ -20,9 +20,35 @@
  */
 
 /* Local web fonts (no CDN – the panel must work offline in the LAN).
-   Variable fonts: one file per family covers all weights used in the styleguide. */
+   Variable fonts: one file per family covers all weights used in the styleguide.
+   Chakra Petch only ships static files: one @font-face per weight. */
 
-/* ---------- Pixelify Sans – display (500 / 700) ---------- */
+/* ---------- Chakra Petch – display: titles, headings, metrics (500 / 600 / 700) ---------- */
+@font-face {
+  font-family: "Chakra Petch";
+  src: url("../assets/fonts/Chakra_Petch/ChakraPetch-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Chakra Petch";
+  src: url("../assets/fonts/Chakra_Petch/ChakraPetch-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Chakra Petch";
+  src: url("../assets/fonts/Chakra_Petch/ChakraPetch-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Pixelify Sans – logo wordmark "PiSton" only (700) ---------- */
 @font-face {
   font-family: "Pixelify Sans";
   src: url("../assets/fonts/Pixelify_Sans/PixelifySans-VariableFont_wght.ttf") format("truetype");

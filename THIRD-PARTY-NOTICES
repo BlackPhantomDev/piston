@@ -5,6 +5,10 @@ PiSton bundles the following fonts in public/assets/fonts/. They are not
 covered by the project's own license (AGPL-3.0-or-later, see LICENCE); each is
 licensed under the SIL Open Font License, Version 1.1 (full text below).
 
+Chakra Petch
+  Copyright 2018 The Chakra Petch Project Authors (https://github.com/m4rc1e/Chakra-Petch)
+  Files: public/assets/fonts/Chakra_Petch/
+
 Inter
   Copyright 2020 The Inter Project Authors (https://github.com/rsms/inter)
   Files: public/assets/fonts/Inter/
