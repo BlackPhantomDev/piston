@@ -98,21 +98,28 @@ export function setLocale(code) {
   location.reload();
 }
 
+const ATTR_PREFIX = 'data-i18n-';
+
 /**
- * Fills static markup: data-i18n sets the text, data-i18n-label the aria-label,
- * data-i18n-placeholder the placeholder.
+ * Fills static markup:
+ *   data-i18n="key"          → text content
+ *   data-i18n-label="key"    → aria-label
+ *   data-i18n-<attr>="key"   → any other attribute, e.g. data-i18n-placeholder,
+ *                              data-i18n-help (<mc-field>), data-i18n-description (<mc-toggle>)
+ * Run it before the markup is connected, so components read translated attributes.
  * Also sets <html lang> to the active language.
  * @param {ParentNode} [root]
  */
 export function translate(root = document) {
   document.documentElement.lang = locale;
-  for (const el of root.querySelectorAll('[data-i18n]')) {
-    el.textContent = t(el.dataset.i18n);
-  }
-  for (const el of root.querySelectorAll('[data-i18n-label]')) {
-    el.setAttribute('aria-label', t(el.dataset.i18nLabel));
-  }
-  for (const el of root.querySelectorAll('[data-i18n-placeholder]')) {
-    el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder));
+  for (const el of root.querySelectorAll('*')) {
+    for (const { name, value } of [...el.attributes]) {
+      if (name === 'data-i18n') {
+        el.textContent = t(value);
+      } else if (name.startsWith(ATTR_PREFIX)) {
+        const attr = name.slice(ATTR_PREFIX.length);
+        el.setAttribute(attr === 'label' ? 'aria-label' : attr, t(value));
+      }
+    }
   }
 }
