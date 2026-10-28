@@ -22,8 +22,8 @@
 // The pages' only way to server data. Serves sample data from js/mock/
 // for now; later fetch + WebSocket (AGENTS.md §9) – pages stay unchanged.
 
-import { mockLogBacklog, mockLogLine } from './mock/log.js';
-import { mockStatus } from './mock/status.js';
+import { mockCommand, mockLogBacklog, mockLogLine } from './mock/log.js';
+import { mockCreateBackup, mockServerAction, mockStatus } from './mock/status.js';
 
 /**
  * @typedef {object} Player
@@ -43,6 +43,7 @@ import { mockStatus } from './mock/status.js';
  * @property {number | null} tps  null if unknown
  * @property {{ usedMb: number, maxMb: number }} memory
  * @property {number} cpuPercent
+ * @property {string | null} lastBackupAt  ISO date, null if there is none
  */
 
 /**
@@ -55,6 +56,12 @@ import { mockStatus } from './mock/status.js';
 const STATUS_INTERVAL_MS = 5000; // AGENTS.md §6.4: polling ≥ 5 s
 const MOCK_LOG_INTERVAL_MS = 4000; // sample data only – the real log is pushed via WebSocket
 
+/** @type {Set<(status: Status) => void>} */
+const statusListeners = new Set();
+
+/** @type {Set<(lines: LogLine[]) => void>} */
+const logListeners = new Set();
+
 /**
  * Calls back right away with the current status and again on every update.
  * Return the result from a page's render() so updates stop on navigation.
@@ -62,9 +69,29 @@ const MOCK_LOG_INTERVAL_MS = 4000; // sample data only – the real log is pushe
  * @returns {() => void} unsubscribe
  */
 export function onStatus(callback) {
+  statusListeners.add(callback);
   callback(mockStatus());
   const timer = setInterval(() => callback(mockStatus()), STATUS_INTERVAL_MS);
-  return () => clearInterval(timer);
+  return () => {
+    clearInterval(timer);
+    statusListeners.delete(callback);
+  };
+}
+
+/** Pushes the current status to every subscriber at once (e.g. after start/stop). */
+function broadcastStatus() {
+  const status = mockStatus();
+  for (const listener of statusListeners) listener(status);
+}
+
+/**
+ * Starts, stops or restarts the Minecraft server (later POST /api/server/<action>).
+ * Progress arrives through onStatus(): "stopping" → "offline" etc.
+ * @param {'start' | 'stop' | 'restart'} action
+ * @returns {Promise<void>}
+ */
+export async function serverAction(action) {
+  mockServerAction(action, broadcastStatus);
 }
 
 /**
@@ -74,7 +101,32 @@ export function onStatus(callback) {
  * @returns {() => void} unsubscribe
  */
 export function onLog(callback) {
+  logListeners.add(callback);
   callback(mockLogBacklog());
   const timer = setInterval(() => callback([mockLogLine()]), MOCK_LOG_INTERVAL_MS);
-  return () => clearInterval(timer);
+  return () => {
+    clearInterval(timer);
+    logListeners.delete(callback);
+  };
+}
+
+/**
+ * Sends a console command via RCON (later WebSocket { type: 'cmd', command }).
+ * The server's answer shows up in the log for everyone.
+ * @param {string} command  without leading slash, e.g. "save-all"
+ * @returns {Promise<void>}
+ */
+export async function sendCommand(command) {
+  const lines = mockCommand(command);
+  for (const listener of logListeners) listener(lines);
+}
+
+/**
+ * Creates a world backup (later POST /api/backups). Resolves when it is done;
+ * the new lastBackupAt arrives through onStatus().
+ * @returns {Promise<void>}
+ */
+export async function createBackup() {
+  await mockCreateBackup();
+  broadcastStatus();
 }

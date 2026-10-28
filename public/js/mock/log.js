@@ -60,6 +60,26 @@ export function mockLogBacklog() {
 export function mockLogLine() {
   const line = UPCOMING[next % UPCOMING.length];
   next += 1;
-  const time = new Date().toTimeString().slice(0, 8);
-  return { time, ...line };
+  return { time: now(), ...line };
+}
+
+/**
+ * What the server would write to the log for a console command.
+ * @param {string} command  e.g. "save-all", "say Hallo"
+ * @returns {import('../api.js').LogLine[]}
+ */
+export function mockCommand(command) {
+  const [name, ...args] = command.split(' ');
+  /** @type {Record<string, string[]>} */
+  const responses = {
+    'save-all': ['Saving the game (this may take a moment!)', 'Saved the game'],
+    time: ['Set the time to 1000'],
+    say: [`[Server] ${args.join(' ')}`],
+  };
+  const texts = responses[name] ?? [`Unknown or incomplete command: ${command}`];
+  return texts.map((text) => ({ time: now(), level: 'INFO', text }));
+}
+
+function now() {
+  return new Date().toTimeString().slice(0, 8);
 }
