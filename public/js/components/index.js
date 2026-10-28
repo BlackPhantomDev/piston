@@ -26,3 +26,4 @@ import './mc-stepper.js';
 import './mc-range.js';
 import './status-badge.js';
 import './lang-switch.js';
+import './log-view.js';

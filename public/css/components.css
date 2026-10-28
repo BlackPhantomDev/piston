@@ -945,6 +945,75 @@ status-badge[data-state="stopping"] .status-badge__marker {
 }
 
 /* =========================================================================
+   Log output – <log-view> renders the list (js/components/log-view.js)
+   <log-view limit="8"></log-view>
+     <ol class="log"><li class="log__line log__line--warn">
+       <span class="log__time">[15:07:30]</span> <span class="log__level">WARN</span>
+       <span class="log__text">Can't keep up!</span></li></ol>
+   Columns line up across all lines (subgrid). Level is always written out,
+   so colour is never the only hint.
+   ========================================================================= */
+
+log-view {
+  display: block;
+}
+
+.log {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  column-gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: var(--lh-mono);
+  list-style: none;
+}
+
+.log__line {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+.log__time,
+.log__level {
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.log__text {
+  overflow-wrap: anywhere;
+}
+
+/* Chat sender, e.g. "<Alex>" */
+.log__player {
+  color: var(--grass-hover);
+}
+
+.log__line--warn .log__level,
+.log__line--warn .log__text,
+.log__line--error .log__text {
+  color: var(--redstone-hover);
+}
+
+.log__line--error .log__level {
+  justify-self: start;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-marker);
+  background-color: var(--redstone);
+  color: var(--color-text-on-accent);
+  font-weight: var(--fw-semibold);
+}
+
+/* One line per entry, cut with "…" – for short previews like on Home */
+.log--truncate .log__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================================
    Stat card – metric with optional bar or hint
    <div class="card stat">
      <p class="stat__label">Players online</p>

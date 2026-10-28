@@ -165,7 +165,7 @@
             </div>
         </div>
 
-        <h3>Panel mit Kopf und Liste <code>.card__header</code> + <code>.card__list</code> in <code>.card-grid--wide</code></h3>
+        <h3>Panel mit Kopf und Liste <code>.card__header</code> + <code>.card__list</code> / <code>&lt;log-view&gt;</code> in <code>.card-grid--wide</code></h3>
         <div class="card-grid card-grid--wide">
             <section class="card">
                 <header class="card__header">
@@ -215,8 +215,7 @@
                     <a class="card__link" href="index.html#/console">Zur Konsole</a>
                 </header>
                 <div class="card__body card__body--console">
-                    <p><span class="text-muted">[14:58:02]</span> Steve joined the game</p>
-                    <p><span class="text-muted">[15:05:14]</span> Saved the game</p>
+                    <log-view id="demo-log"></log-view>
                 </div>
             </section>
         </div>
@@ -302,5 +301,15 @@
     Powered by <a href="https://github.com/BlackPhantomDev/piston">PiSton</a>
     · <a href="https://github.com/BlackPhantomDev/piston">Quellcode</a> (AGPLv3)
 </footer>
+<script type="module">
+    // Sample lines for the <log-view> demo above
+    await customElements.whenDefined('log-view');
+    document.getElementById('demo-log').add([
+        { time: '15:05:14', level: 'INFO', text: 'Saved the game' },
+        { time: '15:07:30', level: 'WARN', text: "Can't keep up! Is the server overloaded? Running 2140ms behind" },
+        { time: '15:08:02', level: 'ERROR', text: 'Failed to save chunk [12, -4]' },
+        { time: '15:11:20', level: 'INFO', text: '<Alex> hat jemand Eisen übrig?' },
+    ]);
+</script>
 </body>
 </html>
