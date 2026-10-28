@@ -1,33 +1,142 @@
-# PiSton – Fortschritt
+# 🗺️ PiSton – Roadmap
 
-Stand: 28.10.2026 · letzter Code-Commit `11faa81` · **noch nicht gepusht** (gepusht bis `010ef42`)
+**Stand:** 28.10.2026 · **Aktuelle Phase:** 2 – Backend-Grundgerüst
+
+```
+Fortschritt  ▰▰▱▱▱▱▱▱▱  2 von 9 Phasen
+```
 
 Übergabe-Notiz für die nächste Session. Verbindliche Projektregeln stehen in `AGENTS.md`,
 die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
+> [!TIP]
+> **Als Nächstes**
+> 1. Anbieter-Karten (Vanilla / Paper / Fabric, Forge/NeoForge deaktiviert) aus Mockup 04 – reines Frontend, passt noch zur App-Shell
+> 2. `package.json` + `server/config.js` + statischer HTTP-Server für `public/`
+
 ---
 
-## Erledigt
+## Überblick
 
-| Commit | Inhalt |
-|---|---|
-| `e6787c6` | Frontend-Dateien (`index.html`, `css/`, `js/`, `assets/`) unverändert nach `public/` verschoben |
-| `d4f7124` | Lizenz: `LICENCE` (AGPL-3.0, Originaltext), `ADDITIONAL_TERMS` (§7-Zusatzbedingungen), `THIRD-PARTY-NOTICES` (OFL-Fonts) |
-| `988e7fa` | AGPL-Kopfkommentar in allen Quelldateien |
-| `67d304d` | Pflicht-Footer „Powered by PiSton · Quellcode (AGPLv3)“ in `index.html` |
-| `c60b872` | `css/fonts.css` – lokale Variable Fonts (Inter, JetBrains Mono, Pixelify Sans) |
-| `f42cc37` | `css/tokens.css` – alle Design-Tokens aus `design/mockups/01-Styleguide.svg` |
-| `3391b01` | `css/style.css` – Grundstile (Reset, Typo, Fokus, Links, Utilities) |
-| `f6b7032` | `css/components.css` – Styles aller Basis-Komponenten |
-| `066e13e` | Web Components + i18n (`js/components/`, `js/i18n/`) |
-| `c089555` | `main.css` als CSS-Einstieg (importiert fonts, style, tokens, components) |
-| `870c033` | `components.html` – Übersichtsseite aller Komponenten und Zustände |
-| `010ef42` | `PROGRESS.md` |
-| `ecdcb50` | `css/layout.css` + Layout-Tokens (App-Shell) |
-| `bdd4a08` | i18n: `LOCALES`, Rückfall auf Deutsch, `setLocale()`, `translate()` für `data-i18n` |
-| `be16173` | `js/router.js` (Hash-Routing) + Seiten-Platzhalter in `js/pages/` |
-| `1ab9235` | `<lang-switch>` (Sprachumschalter, Englisch „geplant“) |
-| `11faa81` | App-Shell in `index.html`: Sidebar, Topbar, `js/nav.js`, Verdrahtung in `main.js` |
+| # | Phase | Ergebnis | Status |
+|:-:|---|---|:-:|
+| 0 | [Fundament](#phase-0--fundament) | Lizenz, Fonts, Design-Tokens, Basis-Komponenten | ✅ |
+| 1 | [App-Shell](#phase-1--app-shell) | Sidebar, Hash-Routing, Sprachumschalter | ✅ |
+| 2 | [Backend-Grundgerüst](#phase-2--backend-grundgerüst) | Node-Server liefert das Panel aus | 🚧 |
+| 3 | [`server.properties`](#phase-3--serverproperties) | Parser mit Round-Trip-Tests | ⬜ |
+| 4 | [Konsole](#phase-4--konsole) | Live-Log + Befehle über RCON | ⬜ |
+| 5 | [Home](#phase-5--home) | Status, Kennzahlen, Start/Stopp | ⬜ |
+| 6 | [Einstellungen](#phase-6--einstellungen) | Properties bearbeiten, Speichern & Neustart | ⬜ |
+| 7 | [Versionswechsel](#phase-7--versionswechsel) | Backup + Vanilla, Paper, Fabric | ⬜ |
+| 8 | [Release](#phase-8--release) | systemd, README, Screenshots | ⬜ |
+
+✅ erledigt · 🚧 in Arbeit · ⬜ offen
+
+---
+
+## Phase 0 – Fundament
+
+✅ abgeschlossen
+
+- [x] Frontend-Dateien nach `public/` verschoben · `e6787c6`
+- [x] Lizenz: `LICENCE` (AGPL-3.0), `ADDITIONAL_TERMS` (§7), `THIRD-PARTY-NOTICES` (OFL-Fonts) · `d4f7124`
+- [x] AGPL-Kopfkommentar in allen Quelldateien · `988e7fa`
+- [x] Pflicht-Footer „Powered by PiSton · Quellcode (AGPLv3)“ · `67d304d`
+- [x] Lokale Variable Fonts: Inter, JetBrains Mono, Pixelify Sans · `c60b872`
+- [x] Design-Tokens aus dem Styleguide-Mockup · `f42cc37`
+- [x] Grundstile: Reset, Typo, Fokus, Utilities · `3391b01`
+- [x] Komponenten-Styles · `f6b7032`
+- [x] Web Components + i18n · `066e13e`
+- [x] `main.css` als CSS-Einstieg · `c089555`
+- [x] Komponenten-Übersicht `components.html` · `870c033`
+
+## Phase 1 – App-Shell
+
+✅ abgeschlossen
+
+- [x] Layout-Styles + Layout-Tokens (`css/layout.css`) · `ecdcb50`
+- [x] i18n: `LOCALES`, Rückfall auf Deutsch, `setLocale()`, `translate()` für `data-i18n` · `bdd4a08`
+- [x] Hash-Routing `#/home`, `#/konsole`, `#/einstellungen` + Seiten-Platzhalter · `be16173`
+- [x] Sprachumschalter `<lang-switch>` (Englisch „geplant“) · `1ab9235`
+- [x] Sidebar nach Mockup 02, Topbar + Slide-in auf schmalen Bildschirmen · `11faa81`
+
+## Phase 2 – Backend-Grundgerüst
+
+🚧 als Nächstes
+
+- [ ] Anbieter-Karten aus Mockup 04 (Frontend, Forge/NeoForge als „Geplant – noch nicht enthalten“)
+- [ ] `package.json` (`"type": "module"`, `"license": "AGPL-3.0-or-later"`)
+- [ ] `server/config.js` – `panel.config.json` + Umgebungsvariablen laden und validieren
+- [ ] `panel.config.example.json`
+- [ ] `server/index.js` – statischer HTTP-Server für `public/`, gebunden an die LAN-IP
+- [ ] `node --test` eingerichtet
+
+## Phase 3 – `server.properties`
+
+- [ ] `server/properties.js` – Parser/Serializer, erhält Kommentare, Leerzeilen, Reihenfolge
+- [ ] Java-Properties-Escaping (`\:`, `\=`, Unicode im MOTD)
+- [ ] Atomar schreiben (Temp-Datei + `rename`, vorher `.bak`)
+- [ ] Validierung je Schlüssel (Typ, Bereich, Enum)
+- [ ] Tests: Round-Trip mit Kommentaren
+
+## Phase 4 – Konsole
+
+- [ ] `server/rcon.js` – eigener RCON-Client mit Reconnect + Backoff
+- [ ] `server/logwatch.js` – `latest.log` mitlesen, Log-Rotation, Puffer ~500 Zeilen
+- [ ] WebSocket `/ws` mit `Origin`-Prüfung
+- [ ] Konsole-Seite nach Mockup 03: Filter, Live-Ausgabe, Eingabe, häufige Befehle
+- [ ] Tests: RCON-Paketcodierung, Log-Zeilen-Parser
+
+## Phase 5 – Home
+
+- [ ] `server/service.js` – start / stop / restart über die drei erlaubten `systemctl`-Aufrufe
+- [ ] `server/metrics.js` – Spieler, TPS, RAM, CPU (Polling ≥ 5 s, nur mit Clients)
+- [ ] `GET /api/status`, `POST /api/server/*`
+- [ ] Home-Seite nach Mockup 02: Kennzahlen, Spielerliste, letzte Konsolenausgabe, Schnellaktionen
+- [ ] Servername + Adresse in der Sidebar aus echten Daten
+
+## Phase 6 – Einstellungen
+
+- [ ] `GET/PUT /api/properties`
+- [ ] Einstellungen-Seite nach Mockup 04 inkl. Validierung
+- [ ] „Speichern“ und „Speichern & neu starten“
+- [ ] Listen (Whitelist, OPs, Bans): bei laufendem Server nur über RCON
+
+## Phase 7 – Versionswechsel
+
+- [ ] `server/backup.js` – Welt-Backups (tar.gz), Pflicht vor jedem Wechsel
+- [ ] `server/java.js` – installierte Java-Versionen
+- [ ] Versionsvergleich für altes (`1.x.y`) und neues Schema (`26.x`) + Tests
+- [ ] Provider Vanilla, danach Paper, Fabric (Tests mit gemockten Antworten)
+- [ ] Ablauf mit Fortschritt per WebSocket, Rückfall auf `server.jar.prev`
+- [ ] Downgrade nur mit Bestätigung, EULA-Hinweis
+
+## Phase 8 – Release
+
+- [ ] `systemd/piston.service` + `sudoers-piston` (Beispiel)
+- [ ] README: Installation, Sicherheitshinweis, ufw-Regeln
+- [ ] Screenshots
+
+## Später / Ideen
+
+- 🌐 Englische Oberfläche: `js/i18n/en.js` anlegen und in `LOCALES` eintragen – der Umschalter ist schon da
+- 🧩 Forge / NeoForge – bewusst nicht enthalten, nur als „geplant“ im UI
+
+---
+
+## Offene Punkte & Aufräumarbeiten
+
+- [ ] **Gitignored, fehlt bei frischem Klon:** `AGENTS.md`, `design/` – und `.gitignore` ignoriert sich selbst. Entscheiden, ob sie ins Repo gehören.
+- [ ] `AGENTS.md` §4 beschreibt die Soll-Struktur, nicht den Ist-Zustand (siehe [Ordnerstruktur](#ordnerstruktur))
+- [ ] Platzhalterfarbe `#757575` hat auf `#18191B` nur ~3,8:1 Kontrast (Ziel ≥ 4,5:1)
+- [ ] Fonts als WOFF2 statt TTF (~60–70 % kleiner)
+- [ ] Ungenutzte statische Inter-Schnitte in `public/assets/fonts/Inter/static/` (nur die Variable Fonts werden geladen)
+- [ ] Komponenten bisher nur visuell geprüft, keine automatisierten Tests
+- [x] `README.md` mit Beschreibung, Lizenz, Disclaimer, Sicherheitshinweis
+- [x] Repo aus dem Synology-Drive-Ordner nach `~/dev.local/piston` umgezogen
+- [x] `index.html` lädt `js/main.js`, Favicon-Typ korrigiert
+
+---
 
 ## Getroffene Entscheidungen
 
@@ -41,18 +150,17 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - **Jede neue Quelldatei** (JS, CSS, HTML) beginnt mit dem AGPL-Kopfkommentar. Vorlage: Anfang von `public/css/tokens.css`.
 - `LICENCE` enthält ausschließlich den unveränderten AGPL-Text (damit GitHub die Lizenz erkennt).
 
-### Ordnerstruktur (Ist-Zustand, weicht von AGENTS.md §4 ab)
-Bewusst so belassen – vorhandene Dateien wurden nur nach `public/` verschoben, nicht umbenannt:
+### Ordnerstruktur
+Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden nur verschoben, nicht umbenannt:
 
 | AGENTS.md | tatsächlich |
 |---|---|
 | `public/fonts/` | `public/assets/fonts/` |
 | `public/brand/` | `public/assets/logo/` |
 | `public/css/base.css` | `public/css/style.css` |
-| `public/js/app.js` | `public/js/main.js` |
+| `public/js/app.js` | `public/js/main.js` (Einstieg) + `router.js` + `nav.js` |
 | `docs/design/` | `design/mockups/` (gitignored) |
 | – | `public/main.css` (CSS-Einstieg, `@import` aller Stylesheets) |
-| `public/js/app.js` (Routing) | `public/js/router.js` + `public/js/nav.js`, verdrahtet in `main.js` |
 | – | `public/css/layout.css` (App-Shell) |
 
 ### Komponenten
@@ -66,36 +174,20 @@ Bewusst so belassen – vorhandene Dateien wurden nur nach `public/` verschoben,
   - `<mc-stepper>` – umschließt `<input type="number">`, −/+ an min/max gesperrt.
   - `<mc-range>` – umschließt `<input type="range">`, füllt die Spur, schreibt Wert in `<output for>`.
   - `<status-badge status="online|offline|starting|stopping">` – Text + Form-Marker, `role="status"`.
-- UI-Texte zentral in `js/i18n/de.js`, Zugriff über `t('status.online')` aus `js/i18n/index.js`.
-  Statisches HTML: `data-i18n="nav.home"` (Text) bzw. `data-i18n-label` (aria-label), befüllt von `translate()`.
+  - `<lang-switch>` – Sprachumschalter aus `LOCALES`, native Radios als Segment-Schalter.
 
 ### App-Shell (`index.html`, `css/layout.css`)
-- Sidebar 240 px nach Mockup 02: Logo 40 px + Schriftzug + Servername (`#server-name`), Nav, Adresse-Box (`#server-address`).
+- Sidebar 240 px nach Mockup 02: Logo 40 px + Schriftzug + Servername (`#server-name`), Nav, Adresse-Box (`#server-address`), Sprachumschalter.
   Servername und Adresse zeigen Platzhalter (`[SERVER NAME]`, `[IP ADRESS:PORT]`), bis das Backend sie liefert.
 - Unter 900 px: Topbar mit Menü-Button, Sidebar gleitet über den Inhalt (`.app[data-nav-open]`).
   Schließen per Escape, Klick auf den Hintergrund oder Navigation; Fokus wandert in die Nav bzw. zurück zum Button.
-- Hash-Routing `#/home`, `#/konsole`, `#/einstellungen`; Unbekanntes → `#/home`. Seiten in `js/pages/`
-  exportieren `titleKey` und `render(root)` (optional Rückgabe einer Cleanup-Funktion). Nach Navigation Fokus auf `<h1>`.
-- Sprachumschalter `<lang-switch>` unter der Adresse-Box (Vorbereitung): Sprachen in `LOCALES` (`js/i18n/index.js`),
-  Englisch ist als „geplant“ deaktiviert. Regeln dazu in AGENTS.md §7 „Sprache (i18n)“.
+- Seiten in `js/pages/` exportieren `titleKey` und `render(root)` (optional Rückgabe einer Cleanup-Funktion).
+  Unbekannte Hashes → `#/home`. Nach Navigation Fokus auf `<h1>`.
 - Pflicht-Namensnennung als Footer **in der Inhaltsspalte** – so ist sie auch auf schmalen Bildschirmen
   sichtbar, wenn die Sidebar eingeklappt ist.
 
-## Offene Punkte / bekannte Probleme
-
-- **Gitignored, geht bei frischem Klon verloren:** `AGENTS.md`, `design/` – und `.gitignore` ignoriert sich selbst.
-  Entscheiden, ob sie ins Repo gehören. (Repo liegt seit 28.10. unter `~/dev.local/piston`, außerhalb des Sync-Ordners.)
-- Seiten sind nur Platzhalter („Inhalt folgt.“).
-- Englische Übersetzung fehlt: `js/i18n/en.js` anlegen und in `LOCALES` eintragen, dann ist der Umschalter aktiv.
-- Platzhalterfarbe `#757575` (aus den Mockups) hat auf `#18191B` nur ~3,8:1 Kontrast (< 4,5:1 laut AGENTS.md).
-- Fonts liegen als TTF vor; WOFF2 würde ~60–70 % sparen.
-- `README.md` ist leer – fehlt: Beschreibung, Copyright/Lizenz, Mojang-Disclaimer, Sicherheitshinweis (AGENTS.md §1, §8).
-- Noch kein `package.json` (später `"type": "module"`, `"license": "AGPL-3.0-or-later"`), keine Tests.
-- AGENTS.md §4 beschreibt noch die Soll-Struktur, nicht den Ist-Zustand oben.
-- Komponenten wurden nur vom Menschen visuell geprüft, nicht automatisiert getestet.
-
-## Nächste Schritte
-
-1. Pushen.
-2. Anbieter-Karten (Vanilla / Paper / Fabric, Forge/NeoForge deaktiviert) aus Mockup 04.
-3. Backend nach AGENTS.md §12: `package.json`, `server/config.js`, statischer HTTP-Server für `public/`, dann `properties.js` mit Tests.
+### Sprache (i18n)
+- UI-Texte zentral in `js/i18n/de.js`, Zugriff über `t('status.online')`.
+  Statisches HTML: `data-i18n` (Text) bzw. `data-i18n-label` (aria-label), befüllt von `translate()`.
+- Sprachen in `LOCALES` (`js/i18n/index.js`); Deutsch ist Standard und Rückfall für fehlende Schlüssel.
+- Auswahl in `localStorage` (`piston.locale`), Wechsel lädt die Seite neu. Regeln: `AGENTS.md` §7 „Sprache (i18n)“.
