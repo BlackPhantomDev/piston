@@ -172,6 +172,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [ ] Fonts als WOFF2 statt TTF (~60–70 % kleiner)
 - [ ] Ungenutzte statische Inter-Schnitte in `public/assets/fonts/Inter/static/` (nur die Variable Fonts werden geladen)
 - [ ] Komponenten bisher nur visuell geprüft, keine automatisierten Tests
+- [x] Display-Schrift Chakra Petch statt Pixelify Sans (Titel, Überschriften, Kennzahlen, Avatare); Pixelify nur noch im Logo (`--font-logo`)
 - [x] `README.md` mit Beschreibung, Lizenz, Disclaimer, Sicherheitshinweis
 - [x] Repo aus dem Synology-Drive-Ordner nach `~/dev.local/piston` umgezogen
 - [x] `index.html` lädt `js/main.js`, Favicon-Typ korrigiert
