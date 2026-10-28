@@ -26,15 +26,26 @@ const DEFAULT_LIMIT = 500; // same as the backend buffer (AGENTS.md §6.1)
 // Chat lines look like "<Alex> hello" – the sender is highlighted
 const CHAT = /^<([^<>]{1,32})> ([\s\S]*)$/;
 
+// Level → line modifier; everything unknown counts as info.
+// CMD = a command typed in this panel, RCON = the server's answer to it.
+const LEVEL_CLASSES = { WARN: 'warn', ERROR: 'error', FATAL: 'error', CMD: 'cmd', RCON: 'rcon' };
+
 /**
  * Console output, newest line at the bottom. Keeps at most `limit` lines.
  * Everything goes in via textContent: log lines and chat are user input.
- * `live` adds role="log" so screen readers announce new lines.
+ *
+ * Attributes:
+ *   limit="8"     max. lines kept (default 500)
+ *   live          role="log" – screen readers announce new lines
+ *   follow        when the element scrolls: stay at the newest line,
+ *                 unless the user has scrolled up
+ *   filter="warn" show one level only: info | warn | error (CSS, see components.css)
  *
  * <log-view limit="8"></log-view>   then   el.add(lines)
  */
 export class LogView extends HTMLElement {
   #list = document.createElement('ol');
+  #query = '';
 
   connectedCallback() {
     if (this.#list.isConnected) return;
@@ -48,16 +59,49 @@ export class LogView extends HTMLElement {
     return limit > 0 ? limit : DEFAULT_LIMIT;
   }
 
+  /** Text search: only lines containing it stay visible (case-insensitive). */
+  get query() {
+    return this.#query;
+  }
+
+  set query(value) {
+    this.#query = value.trim().toLowerCase();
+    for (const li of this.#list.children) this.#applyQuery(/** @type {HTMLElement} */ (li));
+  }
+
+  /** True when the newest line is in view (always true if the element does not scroll). */
+  get atEnd() {
+    return this.scrollHeight - this.scrollTop - this.clientHeight < 2;
+  }
+
+  scrollToEnd() {
+    this.scrollTop = this.scrollHeight;
+  }
+
   /** @param {LogLine[]} lines  oldest first */
   add(lines) {
-    this.#list.append(...lines.map(logLine));
+    const follow = this.hasAttribute('follow') && this.atEnd;
+    const items = lines.map(logLine);
+    for (const li of items) this.#applyQuery(li);
+    this.#list.append(...items);
     while (this.#list.childElementCount > this.limit) {
       this.#list.firstElementChild?.remove();
     }
+    if (follow) this.scrollToEnd();
   }
 
   clear() {
     this.#list.replaceChildren();
+  }
+
+  /** All kept lines (also filtered ones) as plain text, like latest.log. */
+  toText() {
+    return [...this.#list.children].map((li) => /** @type {HTMLElement} */ (li).dataset.raw).join('\n');
+  }
+
+  /** @param {HTMLElement} li */
+  #applyQuery(li) {
+    li.hidden = this.#query !== '' && !(li.textContent ?? '').toLowerCase().includes(this.#query);
   }
 }
 
@@ -65,6 +109,7 @@ export class LogView extends HTMLElement {
 function logLine({ time, level, text }) {
   const li = document.createElement('li');
   li.className = `log__line log__line--${levelClass(level)}`;
+  li.dataset.raw = `[${time}] [${level}]: ${text}`;
 
   const timeEl = span('log__time', `[${time}]`);
   const levelEl = span('log__level', level);
@@ -83,9 +128,7 @@ function logLine({ time, level, text }) {
 
 /** @param {string} level */
 function levelClass(level) {
-  if (level === 'WARN') return 'warn';
-  if (level === 'ERROR' || level === 'FATAL') return 'error';
-  return 'info';
+  return LEVEL_CLASSES[/** @type {keyof typeof LEVEL_CLASSES} */ (level)] ?? 'info';
 }
 
 /** @param {string} className @param {string} text */

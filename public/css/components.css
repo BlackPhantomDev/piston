@@ -1004,6 +1004,10 @@ log-view {
   color: var(--redstone-hover);
 }
 
+.log__line--warn .log__level {
+  font-weight: var(--fw-semibold);
+}
+
 .log__line--error .log__level {
   justify-self: start;
   padding: 0 var(--space-1);
@@ -1013,11 +1017,35 @@ log-view {
   font-weight: var(--fw-semibold);
 }
 
+/* Command typed in this panel and the server's answer to it */
+.log__line--cmd .log__level,
+.log__line--cmd .log__text {
+  color: var(--grass-hover);
+  font-weight: var(--fw-semibold);
+}
+
+.log__line--rcon .log__text {
+  color: var(--color-text-muted);
+}
+
+/* filter="…" on <log-view>: show one level only */
+log-view[filter="info"] .log__line:not(.log__line--info),
+log-view[filter="warn"] .log__line:not(.log__line--warn),
+log-view[filter="error"] .log__line:not(.log__line--error) {
+  display: none;
+}
+
 /* One line per entry, cut with "…" – for short previews like on Home */
 .log--truncate .log__text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Larger text for the full console (mockup 03) */
+.log--lg .log {
+  font-size: var(--fs-mono);
+  line-height: 24px;
 }
 
 /* =========================================================================
