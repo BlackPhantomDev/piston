@@ -47,7 +47,7 @@ const DEFAULTS = {
 
 let properties = {
   ...DEFAULTS,
-  motd: 'Willkommen auf [SERVER-NAME]!',
+  motd: 'Willkommen in der Survival-Welt!',
   difficulty: 'normal',
   'simulation-distance': 8,
 };

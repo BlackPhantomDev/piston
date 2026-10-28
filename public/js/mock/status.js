@@ -22,6 +22,8 @@
 // Sample data in the format of GET /api/status, used until the backend exists.
 // Pages never import this file – only js/api.js does. Removed before release.
 
+import { mockOnList } from './lists.js';
+
 const MINUTE = 60_000;
 const TRANSITION_MS = 2000; // how long "starting" / "stopping" take in the demo
 
@@ -37,14 +39,14 @@ const ago = (minutes) => new Date(Date.now() - minutes * MINUTE).toISOString();
 const SERVER_NAME = 'Survival-Welt';
 const SERVER_ADDRESS = '192.168.178.42:25565';
 
-/** @type {import('../api.js').Player[]} */
+// Who is OP comes from the sample ops list (lists.js)
 const players = [
-  { name: 'Steve', dimension: 'overworld', joinedAt: ago(47), pingMs: 23, op: true },
-  { name: 'Alex', dimension: 'overworld', joinedAt: ago(65), pingMs: 41, op: false },
-  { name: 'Mia_Baut', dimension: 'nether', joinedAt: ago(12), pingMs: 88, op: false },
-  { name: 'Builder_Max', dimension: 'overworld', joinedAt: ago(150), pingMs: 19, op: false },
-  { name: 'Creeperfan', dimension: 'end', joinedAt: ago(8), pingMs: 57, op: false },
-  { name: 'Lena_MC', dimension: 'overworld', joinedAt: ago(33), pingMs: 30, op: false },
+  { name: 'Steve', dimension: 'overworld', joinedAt: ago(47), pingMs: 23 },
+  { name: 'Alex', dimension: 'overworld', joinedAt: ago(65), pingMs: 41 },
+  { name: 'Mia_Baut', dimension: 'nether', joinedAt: ago(12), pingMs: 88 },
+  { name: 'Builder_Max', dimension: 'overworld', joinedAt: ago(150), pingMs: 19 },
+  { name: 'Creeperfan', dimension: 'end', joinedAt: ago(8), pingMs: 57 },
+  { name: 'Lena_MC', dimension: 'overworld', joinedAt: ago(33), pingMs: 30 },
 ];
 
 /**
@@ -63,7 +65,7 @@ export function mockStatus() {
     players: {
       online: running ? players.length : 0,
       max: 20,
-      list: running ? structuredClone(players) : [],
+      list: running ? players.map((player) => ({ ...player, op: mockOnList('ops', player.name) })) : [],
     },
     tps: running ? 19.6 + Math.random() * 0.4 : null,
     memory: { usedMb: running ? 2560 + Math.round(Math.random() * 200) : 0, maxMb: 4096 },
@@ -86,19 +88,6 @@ export function mockOnlineNames() {
 export function mockRemovePlayer(name) {
   const index = players.findIndex((player) => player.name === name);
   if (index !== -1) players.splice(index, 1);
-}
-
-/**
- * op / deop on a sample player.
- * @param {string} name  exactly as in the list
- * @param {boolean} op
- * @returns {boolean} false if nothing changed
- */
-export function mockSetOp(name, op) {
-  const player = players.find((candidate) => candidate.name === name);
-  if (!player || player.op === op) return false;
-  player.op = op;
-  return true;
 }
 
 /** Pretends to archive the world; resolves when done. */

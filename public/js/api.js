@@ -22,6 +22,7 @@
 // The pages' only way to server data. Serves sample data from js/mock/
 // for now; later fetch + WebSocket (AGENTS.md §9) – pages stay unchanged.
 
+import { mockChangeList, mockLists } from './mock/lists.js';
 import { mockCommand, mockLogBacklog, mockLogLine } from './mock/log.js';
 import { mockDefaultProperties, mockGetSettings, mockSaveSettings, mockVersions } from './mock/settings.js';
 import { mockCreateBackup, mockResetWorld, mockServerAction, mockStatus, mockSwitchVersion } from './mock/status.js';
@@ -59,6 +60,16 @@ import { mockCreateBackup, mockResetWorld, mockServerAction, mockStatus, mockSwi
  * @property {Record<string, string | number | boolean>} properties  server.properties, keyed like the file
  * @property {{ memoryMb: number, autoRestart: string }} panel  panel-side settings; autoRestart "HH:MM" or "off"
  */
+
+/**
+ * @typedef {object} ListEntry  one player in whitelist.json, ops.json or banned-players.json
+ * @property {string} name
+ * @property {number} [level]  ops only: permission level 1–4
+ * @property {string} [reason]  bans only
+ * @property {string} [created]  bans only: ISO date
+ */
+
+/** @typedef {{ whitelist: ListEntry[], ops: ListEntry[], bans: ListEntry[] }} Lists */
 
 /**
  * @typedef {object} LogLine  one parsed line of latest.log (AGENTS.md §6.1)
@@ -213,4 +224,37 @@ export async function switchVersion(target, onStep) {
  */
 export async function resetWorld() {
   await mockResetWorld(broadcastStatus);
+}
+
+/**
+ * Whitelist, operators and banned players (later GET /api/lists, a draft in AGENTS.md §9).
+ * @returns {Promise<Lists>}
+ */
+export async function getLists() {
+  return mockLists();
+}
+
+/** The RCON command for each list change – what the backend sends while the server runs. */
+const LIST_COMMANDS = {
+  whitelist: { add: (name) => `whitelist add ${name}`, remove: (name) => `whitelist remove ${name}` },
+  ops: { add: (name) => `op ${name}`, remove: (name) => `deop ${name}` },
+  bans: { add: (name, reason) => (reason ? `ban ${name} ${reason}` : `ban ${name}`), remove: (name) => `pardon ${name}` },
+};
+
+/**
+ * Puts a player on a list or takes them off (later POST /api/lists/<list>, a draft in AGENTS.md §9).
+ * Like the backend will (AGENTS.md §6.3): RCON while the server runs, the file only while it is stopped.
+ * Changes apply at once – no save, no restart.
+ * @param {keyof Lists} list
+ * @param {'add' | 'remove'} action
+ * @param {string} name
+ * @param {{ reason?: string }} [options]  bans only
+ * @returns {Promise<void>}
+ */
+export async function changeList(list, action, name, { reason = '' } = {}) {
+  if (mockStatus().state === 'online') {
+    await sendCommand(LIST_COMMANDS[list][action](name, reason));
+  } else {
+    mockChangeList(list, action, name, reason);
+  }
 }
