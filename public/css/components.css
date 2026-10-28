@@ -920,6 +920,17 @@ status-badge[data-state="stopping"] .status-badge__marker {
   white-space: nowrap;
 }
 
+/* The dots of the "⋯" button line up with the text edge of the card header */
+.list-row > action-menu {
+  margin-right: -12px;
+}
+
+/* Instead of an empty list: <p class="card__empty">Gerade ist niemand online.</p> */
+.card__empty {
+  padding: var(--card-pad);
+  color: var(--color-text-muted);
+}
+
 /* Square initial, e.g. for players: <span class="avatar" aria-hidden="true">S</span> */
 .avatar {
   display: grid;
@@ -1387,6 +1398,75 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 12px;
+}
+
+/* =========================================================================
+   Action menu – built by <action-menu>: "⋯" button + popover with entries
+   ========================================================================= */
+
+action-menu {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* The button stays highlighted while its menu is open */
+action-menu > [aria-expanded="true"] {
+  background-color: var(--color-surface-raised);
+}
+
+.menu {
+  /* The browser centres popovers; <action-menu> sets top and right instead */
+  position: fixed;
+  inset: auto;
+  min-width: 200px;
+  max-width: calc(100vw - 2 * var(--space-1));
+  margin: 0;
+  padding: var(--space-1);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.menu__item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--control-h-m);
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.menu__item:hover,
+.menu__item:focus-visible {
+  background-color: var(--color-surface-raised);
+}
+
+.menu__item:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: calc(var(--focus-width) * -1);
+}
+
+/* Redstone-hover: 6:1 on the menu, 5.4:1 on hover – plain redstone stays below 4.5:1 */
+.menu__item--danger {
+  color: var(--color-offline-text);
+}
+
+.menu__item--danger:focus-visible {
+  outline: var(--focus-ring-danger);
+}
+
+.menu__separator {
+  margin: var(--space-1) 0;
+  border: 0;
+  border-top: var(--border-width) solid var(--color-border);
 }
 
 /* =========================================================================

@@ -27,3 +27,4 @@ import './mc-range.js';
 import './status-badge.js';
 import './lang-switch.js';
 import './log-view.js';
+import './action-menu.js';
