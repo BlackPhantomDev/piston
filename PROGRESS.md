@@ -1,6 +1,6 @@
 # 🗺️ PiSton – Roadmap
 
-**Stand:** 28.10.2026 · **Aktuelle Phase:** 2 – Home (UI) / 4 – Einstellungen (UI)
+**Stand:** 28.10.2026 · **Aktuelle Phase:** 4 – Einstellungen (UI), danach 5 – Feinschliff
 
 ```
 Frontend  ▰▰▰▱▱▱  3 von 6 Phasen
@@ -36,7 +36,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 | 1 | [App-Shell](#phase-1--app-shell) | Sidebar, Hash-Routing, Sprachumschalter | ✅ |
 | 2 | [Home (UI)](#phase-2--home-ui) | Datenschicht mit Beispieldaten, Home-Seite | 🚧 |
 | 3 | [Konsole (UI)](#phase-3--konsole-ui) | Log-Ansicht, Filter, Befehlseingabe | ✅ |
-| 4 | [Einstellungen (UI)](#phase-4--einstellungen-ui) | Properties-Formular, Anbieter-Karten, Versionswechsel | ⬜ |
+| 4 | [Einstellungen (UI)](#phase-4--einstellungen-ui) | Properties-Formular, Anbieter-Karten, Versionswechsel | 🚧 |
 | 5 | [Feinschliff](#phase-5--feinschliff) | Zustände, schmale Bildschirme, Barrierefreiheit | ⬜ |
 | | **Backend** | | |
 | 6 | [Backend-Grundgerüst](#phase-6--backend-grundgerüst) | Node-Server, Konfiguration, `server.properties`-Parser | ⬜ |
@@ -110,13 +110,20 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 4 – Einstellungen (UI)
 
-- [ ] Formular für `server.properties` nach Mockup 04, gruppiert, mit Validierung im Browser
-- [ ] „Speichern“ und „Speichern & neu starten“, Hinweis auf ungespeicherte Änderungen
-- [ ] Anbieter-Karten: Vanilla / Paper / Fabric, Forge/NeoForge als „Geplant – noch nicht enthalten“
-- [ ] Versionsauswahl (altes und neues Versionsschema)
-- [ ] Ablauf des Versionswechsels mit Schritt-Fortschritt, Bestätigung bei Downgrade
-- [ ] EULA-Hinweis, falls nicht akzeptiert
-- [ ] Listen: Whitelist, OPs, Bans
+🚧 fast fertig
+
+- [x] Seite nach Mockup 04: Abschnitte Allgemein, Welt, Spieler & Regeln, Leistung & Netzwerk, Server-Version, Gefahrenzone
+- [x] Sprungnavigation zu den Abschnitten, markiert den Abschnitt im Blick
+- [x] Validierung im Browser (Pflichtfelder, Zahlenbereiche), Fehler am Feld, Fokus aufs erste falsche Feld
+- [x] Speicherleiste: „Verwerfen“, „Speichern“, „Speichern & neu starten“, Hinweis auf ungespeicherte Änderungen
+- [x] Server-Port nur bei gestopptem Server änderbar
+- [x] Anbieter-Karten: Vanilla / Paper / Fabric, Forge/NeoForge als „Geplant – noch nicht enthalten“
+- [x] Versionsauswahl (altes und neues Versionsschema, `js/versions.js`), Snapshots optional
+- [x] Prüfung vor dem Wechsel: Java-Anforderung, Backup, gleiche Version, Downgrade, EULA (mit Link)
+- [x] Ablauf des Versionswechsels mit Schritt-Fortschritt, Bestätigung bei Downgrade
+- [x] Gefahrenzone: Welt zurücksetzen, Standardwerte – beide mit Bestätigungsdialog (`js/dialogs.js`)
+- [ ] Listen: Whitelist, OPs, Bans – nicht im Mockup, Gestaltung offen
+- [ ] Warnung bei ungespeicherten Änderungen auch beim Seitenwechsel im Panel (bisher nur beim Schließen des Tabs)
 
 ## Phase 5 – Feinschliff
 
@@ -156,6 +163,9 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 ## Phase 9 – Einstellungen live
 
 - [ ] `GET/PUT /api/properties` mit serverseitiger Validierung, RCON-Werte nie ans Frontend
+- [ ] Endpunkt für Panel-Einstellungen (RAM/-Xmx, automatischer Neustart) – fehlt in AGENTS.md §9
+- [ ] Automatischer Neustart: Zeitplan im Backend (Timer muss sich laut AGENTS.md §2 rechtfertigen) oder per systemd-Timer
+- [ ] Welt zurücksetzen: Endpunkt fehlt in AGENTS.md §9
 - [ ] Listen: bei laufendem Server nur über RCON, sonst direkt in die Dateien
 - [ ] Einstellungen-Seite auf echte Daten umstellen
 
@@ -250,8 +260,8 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   Schließen per Escape, Klick auf den Hintergrund oder Navigation; Fokus wandert in die Nav bzw. zurück zum Button.
 - Seiten in `js/pages/` exportieren `titleKey` und `render(root)` (optional Rückgabe einer Cleanup-Funktion).
   Unbekannte Hashes → `#/home`. Nach Navigation Fokus auf `<h1>`.
-- Pflicht-Namensnennung als Footer **in der Inhaltsspalte** – so ist sie auch auf schmalen Bildschirmen
-  sichtbar, wenn die Sidebar eingeklappt ist.
+- Pflicht-Namensnennung **unten in der Sidebar** (breite Bildschirme, dort immer sichtbar) und als **Footer unter
+  dem Inhalt** auf schmalen Bildschirmen, wo die Sidebar eingeklappt ist. Je Breite ist genau eine davon sichtbar.
 
 ### Versionierung
 - Semantic Versioning, aktuell **`0.1.0-alpha.1`**. Quelle: `package.json`; Kopie für den Browser in `public/js/version.js`
