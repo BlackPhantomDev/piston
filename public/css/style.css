@@ -125,3 +125,7 @@ svg {
   font-size: var(--fs-label);
   line-height: var(--lh-label);
 }
+
+.legal-notice__version {
+  font-family: var(--font-mono);
+}

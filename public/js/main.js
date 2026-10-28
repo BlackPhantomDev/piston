@@ -26,6 +26,10 @@ import { startRouter } from './router.js';
 import * as home from './pages/home.js';
 import * as consolePage from './pages/console.js'; // not `console` – would shadow the global
 import * as settings from './pages/settings.js';
+import { VERSION } from './version.js';
+
+// Version next to the attribution in the footer (index.html and components.html)
+for (const el of document.querySelectorAll('[data-version]')) el.textContent = VERSION;
 
 // components.html loads this module too, but has no app shell
 const app = document.querySelector('.app');
