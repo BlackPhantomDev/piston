@@ -47,7 +47,7 @@ function errorIcon() {
  * Form field wrapper: label above, help text and error message below.
  * Wires label/for, aria-describedby and aria-invalid on the first control inside.
  *
- * <mc-field label="Server-Port" help="Standard: 25565">
+ * <mc-field label="Server-Port" help="Default: 25565">
  *   <input class="input input--mono" name="server-port">
  * </mc-field>
  *

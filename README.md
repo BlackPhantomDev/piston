@@ -119,7 +119,7 @@ public/
 ├─ css/                tokens, base styles, components, layout
 ├─ js/
 │  ├─ main.js          entry point
-│  ├─ router.js        hash routing (#/home, #/konsole, #/einstellungen)
+│  ├─ router.js        hash routing (#/home, #/console, #/settings)
 │  ├─ components/      Web Components (<mc-toggle>, <status-badge>, …)
 │  ├─ i18n/            UI strings
 │  └─ pages/           one module per page

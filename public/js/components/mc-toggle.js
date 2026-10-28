@@ -26,7 +26,7 @@ import { uid } from './uid.js';
  * Form-associated: submits `value` (default "on") when checked. Fires `change` on toggle.
  *
  * <mc-toggle name="pvp" checked>PvP erlaubt</mc-toggle>
- * <mc-toggle layout="row" description="Spieler können Netherportale benutzen.">Nether aktiv</mc-toggle>
+ * <mc-toggle layout="row" description="Players can use nether portals.">Nether enabled</mc-toggle>
  */
 export class McToggle extends HTMLElement {
   static formAssociated = true;

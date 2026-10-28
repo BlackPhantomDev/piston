@@ -25,8 +25,8 @@ export default {
     label: 'Hauptnavigation',
     menu: 'Menü',
     home: 'Home',
-    konsole: 'Konsole',
-    einstellungen: 'Einstellungen',
+    console: 'Konsole',
+    settings: 'Einstellungen',
   },
   sidebar: {
     address: 'Adresse',

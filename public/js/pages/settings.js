@@ -21,7 +21,7 @@
 
 import { pageTitle, placeholder } from './page-header.js';
 
-export const titleKey = 'nav.einstellungen';
+export const titleKey = 'nav.settings';
 
 /** @param {HTMLElement} root */
 export function render(root) {
