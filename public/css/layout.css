@@ -1,0 +1,270 @@
+/*
+ * PiSton - A tiny web panel for your Minecraft server on a Raspberry Pi
+ * Copyright (C) 2026 Mischa S.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * Additional terms apply under Section 7 of the license;
+ * see the ADDITIONAL_TERMS file in the root of this repository.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/* App shell: sidebar + content – source: design/mockups/02-Home.svg */
+
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* =========================================================================
+   Wordmark – only "Pi" is green
+   ========================================================================= */
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: var(--fs-wordmark);
+  line-height: var(--lh-wordmark);
+  font-weight: var(--fw-bold);
+}
+
+.wordmark__pi {
+  color: var(--grass);
+}
+
+/* =========================================================================
+   Sidebar
+   ========================================================================= */
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-4) + var(--space-1));
+  height: 100vh;
+  height: 100dvh;
+  padding: var(--space-4) var(--space-3);
+  overflow-y: auto;
+  border-right: var(--border);
+  background-color: var(--color-surface);
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: var(--space-2);
+}
+
+.sidebar__brand img {
+  width: var(--logo-size);
+  height: var(--logo-size);
+}
+
+.sidebar__server {
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Brand text column may shrink so long server names get an ellipsis */
+.sidebar__brand > div {
+  min-width: 0;
+}
+
+/* ---------- Navigation ---------- */
+
+.nav ul {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--control-h-m);
+  padding: 0 12px;
+  border-radius: var(--radius-control);
+  color: var(--color-text);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+}
+
+.nav__link svg {
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+
+.nav__link:hover {
+  background-color: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.nav__link[aria-current="page"] {
+  background-color: var(--color-online-bg);
+  color: var(--grass-hover);
+  font-weight: var(--fw-semibold);
+}
+
+/* ---------- Bottom: server address + language switch ---------- */
+
+.sidebar__bottom {
+  display: grid;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.sidebar__bottom lang-switch {
+  padding-left: 14px; /* aligns the legend with the address text */
+}
+
+.sidebar__address {
+  padding: 12px 14px;
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.sidebar__address-label {
+  color: var(--color-text-muted);
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+}
+
+.sidebar__address-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: var(--lh-mono);
+}
+
+/* =========================================================================
+   Content column
+   ========================================================================= */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100vh;
+}
+
+.page {
+  flex: 1;
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+}
+
+/* Focus is moved to the page title on navigation; no ring needed there */
+.page h1[tabindex="-1"]:focus {
+  outline: none;
+}
+
+.content > .legal-notice {
+  padding-inline: var(--space-6);
+}
+
+/* =========================================================================
+   Narrow screens: top bar + sidebar slides over the content
+   ========================================================================= */
+
+.topbar,
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 899.98px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: var(--topbar-h);
+    padding: 0 var(--space-3) 0 var(--space-1);
+    border-bottom: var(--border);
+    background-color: var(--color-surface);
+  }
+
+  .topbar__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .topbar__brand img {
+    width: var(--logo-size-s);
+    height: var(--logo-size-s);
+  }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 3;
+    width: var(--sidebar-w);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform var(--transition-slide), visibility 0s linear var(--transition-slide);
+  }
+
+  .app[data-nav-open] .sidebar {
+    transform: none;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  .app[data-nav-open] .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    display: block;
+    background-color: var(--backdrop);
+  }
+
+  body:has(.app[data-nav-open]) {
+    overflow: hidden;
+  }
+
+  .content {
+    min-height: calc(100vh - var(--topbar-h));
+  }
+
+  .page {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .content > .legal-notice {
+    padding-inline: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar {
+    transition: none;
+  }
+}

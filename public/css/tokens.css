@@ -91,6 +91,8 @@
   --fs-overline: 12px;                   /* mono caps, e.g. "STANDARD" */
   --ls-overline: .08em;
   --fs-display: 48px;                    /* large metrics */
+  --fs-small: 12px;   --lh-small: 16px;  /* sidebar server name, address label */
+  --fs-wordmark: 20px; --lh-wordmark: 24px; /* Pixelify 700 – "PiSton" in the sidebar */
 
   /* ---------- Spacing (8 px grid) ---------- */
   --space-1: 4px;
@@ -128,6 +130,13 @@
   --badge-h: 28px;
   --badge-dot: 8px;
 
+  /* ---------- Layout ---------- */
+  --sidebar-w: 240px;
+  --logo-size: 40px;    /* sidebar head */
+  --logo-size-s: 32px;  /* mobile top bar */
+  --topbar-h: 56px;
+  --backdrop: rgb(0 0 0 / .5); /* behind the sliding sidebar on narrow screens */
+
   /* ---------- Focus ---------- */
   --focus-width: 2px;
   --focus-offset: 2px;
@@ -138,4 +147,5 @@
 
   /* ---------- Motion ---------- */
   --transition-fast: 120ms ease-out;
+  --transition-slide: 200ms ease-out; /* sidebar on narrow screens */
 }
