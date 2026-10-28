@@ -11,6 +11,7 @@
 
 <p align="center">
   <a href="LICENCE"><img src="https://img.shields.io/badge/license-AGPL--3.0--or--later-6DB33F" alt="License: AGPL-3.0-or-later"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.1.0--alpha.1-A3A19C" alt="Version 0.1.0-alpha.1"></a>
   <img src="https://img.shields.io/badge/status-early%20development-A3A19C" alt="Status: early development">
   <img src="https://img.shields.io/badge/node-%E2%89%A5%2022-3A3B40" alt="Node.js 22 or newer">
 </p>
@@ -27,6 +28,7 @@ PiSton is in **early development** and cannot manage a server yet. What exists t
 frontend foundation: design system, base components and the app shell with navigation.
 The pages are built next, first with sample data; the Node.js backend follows once the frontend is complete.
 
+Current version: **0.1.0-alpha.1** – see the [changelog](CHANGELOG.md).
 Progress is tracked in the [roadmap](PROGRESS.md) (German).
 
 ## Features

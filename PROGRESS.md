@@ -12,8 +12,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 > [!TIP]
 > **Als Nächstes**
-> Home-Seite fertigstellen (Mockup 02): Spielerliste mit Dimension, Online-Zeit und Aktionsmenü;
-> Servername + Adresse in der Sidebar
+> Home-Seite fertigstellen (Mockup 02): Aktionsmenü je Spieler; Servername + Adresse in der Sidebar
 
 > [!NOTE]
 > **Reihenfolge: erst das Frontend, dann das Backend.** Alle Seiten entstehen zuerst vollständig mit
@@ -87,7 +86,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] `js/mock/` – Beispieldaten im Format der geplanten API-Antworten, inkl. simulierter Live-Updates
 - [x] Seitenkopf: Status-Badge + „Vanilla 26.3 · läuft seit …“
 - [x] Kennzahl-Karten: Spieler, TPS, Arbeitsspeicher, CPU (mit Balken)
-- [ ] Spielerliste mit Dimension, Online-Zeit, Ping, Aktionsmenü
+- [x] Spielerliste mit Dimension und Ping (Online-Zeit bewusst weggelassen)
+- [ ] Aktionsmenü je Spieler (…)
 - [x] Letzte Konsolenausgabe (Ausschnitt) mit `<log-view>`
 - [x] Schnellaktionen: Welt speichern, Backup erstellen, Nachricht an alle (Dialog), Tag setzen
 - [x] Gliederung: Server-Monitoring, System-Monitoring, Spieler + Konsole, Schnellaktionen
@@ -130,7 +130,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 - [ ] **Zuerst: Demo-Sicherung** – Kopie von `js/mock/` (Logs, Systemwerte, alles bis dahin Dazugekommene)
       und der Mock-Variante von `js/api.js`, z. B. nach `demo/`. Erst danach etwas auf echte Daten umstellen.
-- [ ] `package.json` (`"type": "module"`, `"license": "AGPL-3.0-or-later"`), `node --test` eingerichtet
+- [x] `package.json` (`"type": "module"`, `"license": "AGPL-3.0-or-later"`, Version) – vorgezogen
+- [ ] `node --test` eingerichtet, Test: `public/js/version.js` = `version` in `package.json`
 - [ ] `server/config.js` + `panel.config.example.json` – Datei + Umgebungsvariablen, validiert
 - [ ] `server/index.js` – statischer HTTP-Server für `public/`, gebunden an die LAN-IP
 - [ ] `server/properties.js` – erhält Kommentare, Leerzeilen, Reihenfolge; Java-Escaping; atomar schreiben
@@ -251,6 +252,12 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   Unbekannte Hashes → `#/home`. Nach Navigation Fokus auf `<h1>`.
 - Pflicht-Namensnennung als Footer **in der Inhaltsspalte** – so ist sie auch auf schmalen Bildschirmen
   sichtbar, wenn die Sidebar eingeklappt ist.
+
+### Versionierung
+- Semantic Versioning, aktuell **`0.1.0-alpha.1`**. Quelle: `package.json`; Kopie für den Browser in `public/js/version.js`
+  (beide gemeinsam ändern). Anzeige im Footer neben „Powered by PiSton“. Änderungen in `CHANGELOG.md`.
+- Fahrplan: `0.1.0-alpha.N` (je abgeschlossener Frontend-Phase +1) → `0.1.0-beta.N` (Backend angebunden)
+  → `0.1.0` (erste brauchbare Version) → `1.0.0` (stabil). Regeln: `AGENTS.md` §10 „Versionierung“.
 
 ### Sprache (i18n)
 - UI-Texte zentral in `js/i18n/de.js`, Zugriff über `t('status.online')`.
