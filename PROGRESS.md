@@ -1,9 +1,10 @@
 # 🗺️ PiSton – Roadmap
 
-**Stand:** 28.10.2026 · **Aktuelle Phase:** 2 – Backend-Grundgerüst
+**Stand:** 28.10.2026 · **Aktuelle Phase:** 2 – Home (UI)
 
 ```
-Fortschritt  ▰▰▱▱▱▱▱▱▱  2 von 9 Phasen
+Frontend  ▰▰▱▱▱▱  2 von 6 Phasen
+Backend   ▱▱▱▱▱▱  0 von 6 Phasen
 ```
 
 Übergabe-Notiz für die nächste Session. Verbindliche Projektregeln stehen in `AGENTS.md`,
@@ -11,8 +12,13 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 > [!TIP]
 > **Als Nächstes**
-> 1. Anbieter-Karten (Vanilla / Paper / Fabric, Forge/NeoForge deaktiviert) aus Mockup 04 – reines Frontend, passt noch zur App-Shell
-> 2. `package.json` + `server/config.js` + statischer HTTP-Server für `public/`
+> 1. `js/api.js` mit Beispieldaten aus `js/mock/` – die Seiten holen ihre Daten nur über `api.js`
+> 2. Home-Seite nach Mockup 02
+
+> [!NOTE]
+> **Reihenfolge: erst das Frontend, dann das Backend.** Alle Seiten entstehen zuerst vollständig mit
+> Beispieldaten. Das Backend ersetzt danach Seite für Seite die Beispieldaten durch echte – die Seiten selbst
+> sollen sich dabei kaum ändern.
 
 ---
 
@@ -20,17 +26,22 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 | # | Phase | Ergebnis | Status |
 |:-:|---|---|:-:|
+| | **Frontend** | | |
 | 0 | [Fundament](#phase-0--fundament) | Lizenz, Fonts, Design-Tokens, Basis-Komponenten | ✅ |
 | 1 | [App-Shell](#phase-1--app-shell) | Sidebar, Hash-Routing, Sprachumschalter | ✅ |
-| 2 | [Backend-Grundgerüst](#phase-2--backend-grundgerüst) | Node-Server liefert das Panel aus | 🚧 |
-| 3 | [`server.properties`](#phase-3--serverproperties) | Parser mit Round-Trip-Tests | ⬜ |
-| 4 | [Konsole](#phase-4--konsole) | Live-Log + Befehle über RCON | ⬜ |
-| 5 | [Home](#phase-5--home) | Status, Kennzahlen, Start/Stopp | ⬜ |
-| 6 | [Einstellungen](#phase-6--einstellungen) | Properties bearbeiten, Speichern & Neustart | ⬜ |
-| 7 | [Versionswechsel](#phase-7--versionswechsel) | Backup + Vanilla, Paper, Fabric | ⬜ |
-| 8 | [Release](#phase-8--release) | systemd, README, Screenshots | ⬜ |
+| 2 | [Home (UI)](#phase-2--home-ui) | Datenschicht mit Beispieldaten, Home-Seite | 🚧 |
+| 3 | [Konsole (UI)](#phase-3--konsole-ui) | Log-Ansicht, Filter, Befehlseingabe | ⬜ |
+| 4 | [Einstellungen (UI)](#phase-4--einstellungen-ui) | Properties-Formular, Anbieter-Karten, Versionswechsel | ⬜ |
+| 5 | [Feinschliff](#phase-5--feinschliff) | Zustände, schmale Bildschirme, Barrierefreiheit | ⬜ |
+| | **Backend** | | |
+| 6 | [Backend-Grundgerüst](#phase-6--backend-grundgerüst) | Node-Server, Konfiguration, `server.properties`-Parser | ⬜ |
+| 7 | [Konsole live](#phase-7--konsole-live) | RCON, Live-Log, WebSocket | ⬜ |
+| 8 | [Home live](#phase-8--home-live) | Status, Kennzahlen, Start/Stopp | ⬜ |
+| 9 | [Einstellungen live](#phase-9--einstellungen-live) | Properties lesen und speichern | ⬜ |
+| 10 | [Versionswechsel live](#phase-10--versionswechsel-live) | Backup + Vanilla, Paper, Fabric | ⬜ |
+| 11 | [Release](#phase-11--release) | systemd, Installation, Screenshots | ⬜ |
 
-✅ erledigt · 🚧 in Arbeit · ⬜ offen
+✅ erledigt · 🚧 als Nächstes · ⬜ offen
 
 ---
 
@@ -59,62 +70,91 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] Hash-Routing `#/home`, `#/konsole`, `#/einstellungen` + Seiten-Platzhalter · `be16173`
 - [x] Sprachumschalter `<lang-switch>` (Englisch „geplant“) · `1ab9235`
 - [x] Sidebar nach Mockup 02, Topbar + Slide-in auf schmalen Bildschirmen · `11faa81`
+- [x] README, Roadmap · `155162b`, `730e0fc`
 
-## Phase 2 – Backend-Grundgerüst
+## Phase 2 – Home (UI)
 
 🚧 als Nächstes
 
-- [ ] Anbieter-Karten aus Mockup 04 (Frontend, Forge/NeoForge als „Geplant – noch nicht enthalten“)
-- [ ] `package.json` (`"type": "module"`, `"license": "AGPL-3.0-or-later"`)
-- [ ] `server/config.js` – `panel.config.json` + Umgebungsvariablen laden und validieren
-- [ ] `panel.config.example.json`
+- [ ] `js/api.js` – Schnittstelle der Seiten zu den Daten (später `fetch` + WebSocket nach AGENTS.md §9)
+- [ ] `js/mock/` – Beispieldaten im Format der geplanten API-Antworten, inkl. simulierter Live-Updates
+- [ ] Seitenkopf: Status-Badge + „Vanilla 26.3 · läuft seit …“
+- [ ] Kennzahl-Karten: Spieler, TPS, Arbeitsspeicher (mit Balken)
+- [ ] Spielerliste mit Dimension, Online-Zeit, Ping, Aktionsmenü
+- [ ] Letzte Konsolenausgabe (Ausschnitt)
+- [ ] Schnellaktionen: Welt speichern, Backup erstellen, Nachricht an alle
+- [ ] Start / Stopp / Neustart (Hauptaktion je nach Status)
+- [ ] Servername + Adresse in der Sidebar aus `api.js`
+
+## Phase 3 – Konsole (UI)
+
+- [ ] Log-Ansicht nach Mockup 03: Zeit, Level, Text; WARN/ERROR hervorgehoben
+- [ ] Filter: Alle, Info, Warnungen, Fehler
+- [ ] Befehlseingabe mit Verlauf (↑/↓) und Antwort im Log
+- [ ] Häufige Befehle als Chips (füllen das Eingabefeld)
+- [ ] Automatisch mitscrollen, pausiert beim Hochscrollen
+- [ ] Log-Zeilen nur per `textContent` (Chat ist Nutzereingabe)
+
+## Phase 4 – Einstellungen (UI)
+
+- [ ] Formular für `server.properties` nach Mockup 04, gruppiert, mit Validierung im Browser
+- [ ] „Speichern“ und „Speichern & neu starten“, Hinweis auf ungespeicherte Änderungen
+- [ ] Anbieter-Karten: Vanilla / Paper / Fabric, Forge/NeoForge als „Geplant – noch nicht enthalten“
+- [ ] Versionsauswahl (altes und neues Versionsschema)
+- [ ] Ablauf des Versionswechsels mit Schritt-Fortschritt, Bestätigung bei Downgrade
+- [ ] EULA-Hinweis, falls nicht akzeptiert
+- [ ] Listen: Whitelist, OPs, Bans
+
+## Phase 5 – Feinschliff
+
+- [ ] Zustände auf allen Seiten: Server offline, lädt, Panel nicht erreichbar, leere Listen
+- [ ] Fehlermeldungen im Format `{ error: { code, message } }` anzeigen
+- [ ] Schmale Bildschirme: alle Seiten durchgehen
+- [ ] Barrierefreiheit: Tastatur, Fokus, Screenreader, Kontrast (inkl. Platzhalterfarbe)
+- [ ] Komponenten-Übersicht um neue Bausteine ergänzen
+
+## Phase 6 – Backend-Grundgerüst
+
+- [ ] `package.json` (`"type": "module"`, `"license": "AGPL-3.0-or-later"`), `node --test` eingerichtet
+- [ ] `server/config.js` + `panel.config.example.json` – Datei + Umgebungsvariablen, validiert
 - [ ] `server/index.js` – statischer HTTP-Server für `public/`, gebunden an die LAN-IP
-- [ ] `node --test` eingerichtet
+- [ ] `server/properties.js` – erhält Kommentare, Leerzeilen, Reihenfolge; Java-Escaping; atomar schreiben
+- [ ] Tests: properties-Round-Trip mit Kommentaren
 
-## Phase 3 – `server.properties`
-
-- [ ] `server/properties.js` – Parser/Serializer, erhält Kommentare, Leerzeilen, Reihenfolge
-- [ ] Java-Properties-Escaping (`\:`, `\=`, Unicode im MOTD)
-- [ ] Atomar schreiben (Temp-Datei + `rename`, vorher `.bak`)
-- [ ] Validierung je Schlüssel (Typ, Bereich, Enum)
-- [ ] Tests: Round-Trip mit Kommentaren
-
-## Phase 4 – Konsole
+## Phase 7 – Konsole live
 
 - [ ] `server/rcon.js` – eigener RCON-Client mit Reconnect + Backoff
 - [ ] `server/logwatch.js` – `latest.log` mitlesen, Log-Rotation, Puffer ~500 Zeilen
 - [ ] WebSocket `/ws` mit `Origin`-Prüfung
-- [ ] Konsole-Seite nach Mockup 03: Filter, Live-Ausgabe, Eingabe, häufige Befehle
+- [ ] Konsole-Seite von Beispieldaten auf echte Daten umstellen
 - [ ] Tests: RCON-Paketcodierung, Log-Zeilen-Parser
 
-## Phase 5 – Home
+## Phase 8 – Home live
 
-- [ ] `server/service.js` – start / stop / restart über die drei erlaubten `systemctl`-Aufrufe
+- [ ] `server/service.js` – nur die drei erlaubten `systemctl`-Aufrufe
 - [ ] `server/metrics.js` – Spieler, TPS, RAM, CPU (Polling ≥ 5 s, nur mit Clients)
-- [ ] `GET /api/status`, `POST /api/server/*`
-- [ ] Home-Seite nach Mockup 02: Kennzahlen, Spielerliste, letzte Konsolenausgabe, Schnellaktionen
-- [ ] Servername + Adresse in der Sidebar aus echten Daten
+- [ ] `GET /api/status`, `POST /api/server/start|stop|restart`
+- [ ] Home-Seite und Sidebar auf echte Daten umstellen
 
-## Phase 6 – Einstellungen
+## Phase 9 – Einstellungen live
 
-- [ ] `GET/PUT /api/properties`
-- [ ] Einstellungen-Seite nach Mockup 04 inkl. Validierung
-- [ ] „Speichern“ und „Speichern & neu starten“
-- [ ] Listen (Whitelist, OPs, Bans): bei laufendem Server nur über RCON
+- [ ] `GET/PUT /api/properties` mit serverseitiger Validierung, RCON-Werte nie ans Frontend
+- [ ] Listen: bei laufendem Server nur über RCON, sonst direkt in die Dateien
+- [ ] Einstellungen-Seite auf echte Daten umstellen
 
-## Phase 7 – Versionswechsel
+## Phase 10 – Versionswechsel live
 
 - [ ] `server/backup.js` – Welt-Backups (tar.gz), Pflicht vor jedem Wechsel
 - [ ] `server/java.js` – installierte Java-Versionen
 - [ ] Versionsvergleich für altes (`1.x.y`) und neues Schema (`26.x`) + Tests
 - [ ] Provider Vanilla, danach Paper, Fabric (Tests mit gemockten Antworten)
 - [ ] Ablauf mit Fortschritt per WebSocket, Rückfall auf `server.jar.prev`
-- [ ] Downgrade nur mit Bestätigung, EULA-Hinweis
 
-## Phase 8 – Release
+## Phase 11 – Release
 
+- [ ] Beispieldaten (`js/mock/`) entfernen
 - [ ] `systemd/piston.service` + `sudoers-piston` (Beispiel)
-- [ ] README: Installation, Sicherheitshinweis, ufw-Regeln
+- [ ] README: Installation
 - [ ] Screenshots
 
 ## Später / Ideen
