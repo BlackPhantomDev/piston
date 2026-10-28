@@ -1,6 +1,6 @@
 # 🗺️ PiSton – Roadmap
 
-**Stand:** 28.10.2026 · **Version:** `0.1.0-alpha.3` · **Aktuelle Phase:** 5 – Feinschliff
+**Stand:** 28.10.2026 · **Version:** `0.1.0-alpha.4` · **Aktuelle Phase:** 5 – Feinschliff
 
 ```
 Frontend  ▰▰▰▰▰▱  5 von 6 Phasen
@@ -212,7 +212,14 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 - [ ] Zustände auf allen Seiten: Server offline, lädt, Panel nicht erreichbar, leere Listen
 - [ ] Fehlermeldungen im Format `{ error: { code, message } }` anzeigen
-- [ ] Schmale Bildschirme: alle Seiten durchgehen
+- [x] Schmale Bildschirme: alle Seiten von 320 bis 1280 px geprüft, keine ist breiter als der Bildschirm.
+  - Ursache war ein Seitenraster mit `auto`-Spalte: Gekürzte Zeilen (lange Spielernamen) zählten mit ihrer vollen Breite.
+    Jetzt `minmax(0, 1fr)` für `.page` und `.page__narrow`.
+  - Speicherleiste bei 320 px: Die Button-Beschriftung darf zweizeilig werden.
+  - Die Seite hinter der offenen Sidebar scrollt nicht mehr, die Sidebar bleibt oben.
+- [x] Adresse in der Sidebar kopieren:
+  - Button mit Tooltip „Adresse kopieren“ und grüner Bestätigung „In die Zwischenablage kopiert“.
+  - Ohne HTTPS (normal im LAN) per `execCommand`; klappt beides nicht, wird die Adresse markiert (`js/clipboard.js`).
 - [ ] Barrierefreiheit: Tastatur, Fokus, Screenreader, Kontrast (inkl. Platzhalterfarbe)
 - [ ] `<lang-switch>`: Das `fieldset` hat ohne die entfernte Legend keinen zugänglichen Namen → unsichtbares `aria-label`
 - [ ] Komponenten-Übersicht um neue Bausteine ergänzen
@@ -343,6 +350,8 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   - `.avatar` – quadratisches Initial für Spieler.
   - `.card__empty` – Hinweis statt leerer Liste; `.list-add` – Name (+ Grund) und Button in einer Zeile;
     `.list-note` – kurzer Hinweis über einer Liste; `.choice-chip__count` – Anzahl im Chip.
+  - `.tooltip` – kurzer Hinweis über einem Control (`aria-hidden`, der Name kommt aus `aria-label`).
+    Sichtbar bei Hover (nur wo es Hover gibt), Tastaturfokus und solange das Eltern-Element `data-state` hat.
 - **Web Components** (Light DOM, registrieren sich beim Import, gesammelt in `js/components/index.js`):
   - `<mc-field label help error>` – Label/Hilfe/Fehler, verdrahtet `for`, `aria-describedby`, `aria-invalid`; Fehler per `el.error = '…'`.
   - `<mc-toggle checked disabled name value description layout="row">` – `<button role="switch">`, form-associated, feuert `change`. `layout="row"` = große Einstellungszeile (52 × 28) aus Mockup 04.
@@ -373,11 +382,14 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   dem Inhalt** auf schmalen Bildschirmen, wo die Sidebar eingeklappt ist. Je Breite ist genau eine davon sichtbar.
 
 ### Versionierung
-- Semantic Versioning, aktuell **`0.1.0-alpha.3`**. Quelle: `package.json`; Kopie für den Browser in `public/js/version.js`
+- Semantic Versioning, aktuell **`0.1.0-alpha.4`**. Quelle: `package.json`; Kopie für den Browser in `public/js/version.js`
   (beide gemeinsam ändern). Anzeige bei der Namensnennung, also im Sidebar-Fuß bzw. auf schmalen Bildschirmen im Footer.
   Änderungen in `CHANGELOG.md`.
-- Fahrplan: `0.1.0-alpha.N` (je abgeschlossener Roadmap-Phase +1) → `0.1.0-beta.N` (Backend angebunden, Test auf dem Pi)
-  → `0.1.0` (erste brauchbare Version) → `0.x.0` (neue Funktionen) → `1.0.0` (stabil). Regeln: `AGENTS.md` §10 „Versionierung“.
+- Fahrplan: `0.1.0-alpha.N` (`N` +1 je getaggtem Zwischenstand, z. B. abgeschlossene Phase oder Demo-Upload)
+  → `0.1.0-beta.N` (Backend angebunden, Test auf dem Pi) → `0.1.0` (erste brauchbare Version)
+  → `0.x.0` (neue Funktionen) → `1.0.0` (stabil). Regeln: `AGENTS.md` §10 „Versionierung“.
+- Kein `0.1.1-…` vor `0.1.0`: Die Patch-Stelle zählt Fehlerkorrekturen *nach* einem Release.
+  Bis dahin zählt nur `N` hoch, auch zweistellig.
 
 ### Sprache (i18n)
 - UI-Texte zentral in `js/i18n/de.js`, Zugriff über `t('status.online')`.
