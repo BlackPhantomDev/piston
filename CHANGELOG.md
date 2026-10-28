@@ -7,6 +7,21 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+## [0.1.0-alpha.4] – 2026-10-28
+
+First polish: small phone screens and a copy button.
+
+### Added
+
+- Copy button for the server address in the sidebar, with a tooltip and a confirmation.
+  It also works on plain HTTP in the LAN, where browsers block the modern clipboard API.
+
+### Fixed
+
+- The settings page no longer gets wider than small phone screens (320 px),
+  and the save bar fits there.
+- The page behind the open sidebar no longer scrolls on narrow screens.
+
 ## [0.1.0-alpha.3] – 2026-10-28
 
 All three pages are complete, still on sample data.
@@ -68,7 +83,8 @@ First tagged state: the frontend runs on sample data, there is no backend yet.
 - Language switch prepared (German active, English planned).
 - Required "Powered by PiSton" attribution on every page (AGPL-3.0 §7).
 
-[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.3...HEAD
+[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.4...HEAD
+[0.1.0-alpha.4]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.3...v0.1.0-alpha.4
 [0.1.0-alpha.3]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.2...v0.1.0-alpha.3
 [0.1.0-alpha.2]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.1...v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/BlackPhantomDev/piston/releases/tag/v0.1.0-alpha.1

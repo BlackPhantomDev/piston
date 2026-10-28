@@ -15,7 +15,7 @@
 
 <p align="center">
   <a href="LICENCE"><img src="https://img.shields.io/badge/license-AGPL--3.0--or--later-6DB33F" alt="License: AGPL-3.0-or-later"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.1.0--alpha.3-A3A19C" alt="Version 0.1.0-alpha.3"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.1.0--alpha.4-A3A19C" alt="Version 0.1.0-alpha.4"></a>
   <img src="https://img.shields.io/badge/status-early%20development-A3A19C" alt="Status: early development">
   <img src="https://img.shields.io/badge/node-%E2%89%A5%2022-3A3B40" alt="Node.js 22 or newer">
 </p>
@@ -32,7 +32,7 @@ PiSton is in **early development** and cannot manage a real server yet. The fron
 Home, Console and Settings – and run on sample data that reacts like a vanilla server.
 Next comes the polish (loading and error states, narrow screens, accessibility), then the Node.js backend.
 
-Current version: **0.1.0-alpha.3** – see the [changelog](CHANGELOG.md).
+Current version: **0.1.0-alpha.4** – see the [changelog](CHANGELOG.md).
 Progress is tracked in the [roadmap](PROGRESS.md) (German).
 
 ## Features
