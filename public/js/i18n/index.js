@@ -99,7 +99,8 @@ export function setLocale(code) {
 }
 
 /**
- * Fills static markup: data-i18n sets the text, data-i18n-label the aria-label.
+ * Fills static markup: data-i18n sets the text, data-i18n-label the aria-label,
+ * data-i18n-placeholder the placeholder.
  * Also sets <html lang> to the active language.
  * @param {ParentNode} [root]
  */
@@ -110,5 +111,8 @@ export function translate(root = document) {
   }
   for (const el of root.querySelectorAll('[data-i18n-label]')) {
     el.setAttribute('aria-label', t(el.dataset.i18nLabel));
+  }
+  for (const el of root.querySelectorAll('[data-i18n-placeholder]')) {
+    el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder));
   }
 }
