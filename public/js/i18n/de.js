@@ -48,6 +48,17 @@ export default {
     console: "Letzte Konsolenausgabe",
     consoleLink: "Zur Konsole",
   },
+  when: {
+    today: 'heute {time}',
+    yesterday: 'gestern {time}',
+    date: '{date} {time}',
+  },
+  duration: {
+    lessThanMinute: '< 1 min',
+    minutes: '{m} min',
+    hours: '{h} h {m} min',
+    days: '{d} d {h} h',
+  },
   status: {
     online: 'Online',
     offline: 'Offline',
