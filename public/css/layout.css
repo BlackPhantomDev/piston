@@ -138,24 +138,6 @@
   padding-left: 14px; /* aligns the legend with the address text */
 }
 
-.sidebar__address {
-  padding: 12px 14px;
-  border: var(--border);
-  border-radius: var(--radius-card);
-}
-
-.sidebar__address-label {
-  color: var(--color-text-muted);
-  font-size: var(--fs-small);
-  line-height: var(--lh-small);
-}
-
-.sidebar__address-value {
-  font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  line-height: var(--lh-mono);
-}
-
 /* =========================================================================
    Content column
    ========================================================================= */

@@ -752,20 +752,355 @@ status-badge[data-state="stopping"] .status-badge__marker {
 }
 
 /* =========================================================================
-   Card
+   Card – source: design/mockups/02-Home.svg, 04-Erweiterte-Einstellungen.svg
+   Plain box:   <div class="card">…</div>
+   With header: <section class="card">
+                  <header class="card__header"><h2>Title</h2><p class="card__meta">…</p></header>
+                  <div class="card__body">…</div>  and/or  <ul class="card__list">…</ul>
+                </section>
+   A card with a header (or .card--flush) has no padding itself;
+   header, body and list rows bring their own.
    ========================================================================= */
 
 .card {
-  padding: var(--space-4);
+  padding: var(--card-pad);
   border: var(--border);
   border-radius: var(--radius-card);
   background-color: var(--color-surface);
 }
 
+.card--flush,
+.card:has(> .card__header) {
+  padding: 0;
+}
+
+/* Cards with a header stack their parts, so a console body can fill the height */
+.card:has(> .card__header) {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Only a border, no surface – e.g. the address box in the sidebar */
+.card--outline {
+  background-color: transparent;
+}
+
+.card--compact {
+  padding: 12px 14px;
+}
+
+/* Small label/value pair, e.g. "Address" / "192.168.1.20:25565" */
+.card__label {
+  color: var(--color-text-muted);
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+}
+
+.card__value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: var(--lh-mono);
+}
+
+.card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--card-pad);
+  border-bottom: var(--border);
+}
+
+.card__meta {
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+}
+
+/* Link in the header, e.g. "Go to console →" – the arrow comes from CSS */
+.card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+}
+
+.card__link::after {
+  content: "→";
+  content: "→" / ""; /* decorative: not read out by screen readers */
+  transition: transform var(--transition-fast);
+}
+
+.card__link:hover::after {
+  transform: translateX(2px);
+}
+
+.card__body {
+  padding: var(--card-pad);
+}
+
+/* Dark console area inside a card */
+.card__body--console {
+  flex: 1;
+  background-color: var(--color-console-bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: var(--lh-mono);
+}
+
+.card__body--console:last-child {
+  border-radius: 0 0 calc(var(--radius-card) - var(--border-width)) calc(var(--radius-card) - var(--border-width));
+}
+
+/* Setting rows (<mc-toggle layout="row">) inside a card */
+.card > .setting-list > * {
+  padding-inline: var(--card-pad);
+}
+
+.card__body + .setting-list {
+  border-top: var(--border-width) solid var(--color-divider);
+}
+
+/* ---------- List rows: <ul class="card__list"><li class="list-row">… ---------- */
+
+.card__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card__list > * + * {
+  border-top: var(--border-width) solid var(--color-divider);
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 56px;
+  padding: 12px var(--card-pad);
+}
+
+.list-row__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.list-row__title,
+.list-row__sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-row__title {
+  font-weight: var(--fw-semibold);
+}
+
+.list-row__sub {
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+}
+
+.list-row__meta {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  white-space: nowrap;
+}
+
+/* Square initial, e.g. for players: <span class="avatar" aria-hidden="true">S</span> */
+.avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border-radius: var(--radius-small);
+  background-color: var(--deepslate-500);
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+}
+
+/* =========================================================================
+   Card grid – cards side by side, wrapping on narrow screens
+   ========================================================================= */
+
+/* auto-fit: with fewer cards than columns the cards share the full width */
+.card-grid {
+  --_min: var(--card-min-w);
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--_min), 100%), 1fr));
+  gap: var(--card-gap);
+}
+
+/* Wider minimum for content cards (lists, console) – stacks earlier */
+.card-grid--wide {
+  --_min: var(--card-min-w-wide);
+}
+
+/* =========================================================================
+   Stat card – metric with optional bar or hint
+   <div class="card stat">
+     <p class="stat__label">Players online</p>
+     <p class="stat__value">6<span class="stat__unit"> / 20</span></p>
+     <meter class="stat__meter" min="0" max="20" value="6">6 of 20</meter>
+     or <p class="stat__hint">Target 20 · smooth</p>
+   </div>
+   ========================================================================= */
+
+.stat {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  padding: var(--card-pad-s) var(--card-pad-s) var(--space-4);
+}
+
+.stat__label,
+.stat__hint {
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+}
+
+.stat__label {
+  font-weight: var(--fw-medium);
+}
+
+.stat__value {
+  font-family: var(--font-display);
+  font-size: var(--fs-stat);
+  line-height: var(--lh-stat);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat__unit {
+  color: var(--color-text-muted);
+  font-size: var(--fs-stat-unit);
+}
+
+/* Native <meter>: green, red past a limit (the value is shown as text too).
+   For a red zone set low and high to the limit and optimum="0":
+   <meter min="0" max="4" low="3.4" high="3.4" optimum="0" value="3.8"> */
+.stat__meter {
+  display: block;
+  width: 100%;
+  height: var(--meter-h);
+  margin-top: var(--space-1);
+  border: 0;
+  border-radius: var(--radius-marker);
+  background: var(--color-bg);
+  appearance: none;
+}
+
+.stat__meter::-webkit-meter-bar {
+  height: var(--meter-h);
+  border: 0;
+  border-radius: var(--radius-marker);
+  background: var(--color-bg);
+}
+
+.stat__meter::-webkit-meter-optimum-value,
+.stat__meter::-webkit-meter-suboptimum-value {
+  background: var(--grass);
+}
+
+.stat__meter::-webkit-meter-even-less-good-value {
+  background: var(--redstone);
+}
+
+.stat__meter::-moz-meter-bar {
+  background: var(--grass);
+}
+
+.stat__meter:-moz-meter-sub-sub-optimum::-moz-meter-bar {
+  background: var(--redstone);
+}
+
+/* =========================================================================
+   Action card – whole card is one button
+   <button class="action-card" type="button">
+     <span class="action-card__icon"><svg aria-hidden="true">…</svg></span>
+     <span class="action-card__text">
+       <span class="action-card__title">Save world</span>
+       <span class="action-card__sub">save-all</span>
+     </span>
+   </button>
+   ========================================================================= */
+
+.action-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 74px;
+  padding: var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.action-card:hover:not(:disabled) {
+  background-color: var(--color-surface-raised);
+}
+
+.action-card:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.action-card__icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--tile-size);
+  height: var(--tile-size);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface-raised);
+  color: var(--grass);
+  transition: background-color var(--transition-fast);
+}
+
+.action-card:hover:not(:disabled) .action-card__icon {
+  background-color: var(--deepslate-500);
+}
+
+.action-card__icon svg {
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+
+.action-card__text {
+  display: grid;
+  min-width: 0;
+}
+
+.action-card__title {
+  font-weight: var(--fw-semibold);
+}
+
+.action-card__sub {
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* =========================================================================
    Console input
    <form class="console-input"><span class="console-input__prompt">&gt;</span>
-     <input> <button class="btn btn--primary btn--s">Senden</button></form>
+     <input> <button class="btn btn--primary btn--s">Send</button></form>
    ========================================================================= */
 
 .console-input {

@@ -33,7 +33,7 @@
     <style>
         /* Layout of this overview page only */
         .demo { max-width: 1280px; margin: 0 auto; padding: var(--space-6) var(--space-4); display: grid; gap: var(--space-6); }
-        .demo section { display: grid; gap: var(--space-3); }
+        .demo > section { display: grid; gap: var(--space-3); }
         .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
         .demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-4); align-items: start; }
     </style>
@@ -135,6 +135,149 @@
         </div>
         <div class="card demo-row">
             <lang-switch></lang-switch>
+        </div>
+    </section>
+
+    <section>
+        <h2>Boxen</h2>
+
+        <h3>Kennzahl-Karten <code>.card.stat</code> in <code>.card-grid</code></h3>
+        <div class="card-grid">
+            <div class="card stat">
+                <p class="stat__label">Spieler online</p>
+                <p class="stat__value">6<span class="stat__unit"> / 20</span></p>
+                <meter class="stat__meter" min="0" max="20" value="6">6 von 20</meter>
+            </div>
+            <div class="card stat">
+                <p class="stat__label">TPS</p>
+                <p class="stat__value">19.9</p>
+                <p class="stat__hint">Ziel 20 · flüssig</p>
+            </div>
+            <div class="card stat">
+                <p class="stat__label">Arbeitsspeicher</p>
+                <p class="stat__value">2.6<span class="stat__unit"> / 4 GB</span></p>
+                <meter class="stat__meter" min="0" max="4" low="3.4" high="3.4" optimum="0" value="2.6">2,6 von 4 GB</meter>
+            </div>
+            <div class="card stat">
+                <p class="stat__label">Arbeitsspeicher (knapp)</p>
+                <p class="stat__value">3.8<span class="stat__unit"> / 4 GB</span></p>
+                <meter class="stat__meter" min="0" max="4" low="3.4" high="3.4" optimum="0" value="3.8">3,8 von 4 GB</meter>
+            </div>
+        </div>
+
+        <h3>Panel mit Kopf und Liste <code>.card__header</code> + <code>.card__list</code> in <code>.card-grid--wide</code></h3>
+        <div class="card-grid card-grid--wide">
+            <section class="card">
+                <header class="card__header">
+                    <h2>Spieler</h2>
+                    <p class="card__meta">3 online</p>
+                </header>
+                <ul class="card__list">
+                    <li class="list-row">
+                        <span class="avatar" aria-hidden="true">S</span>
+                        <div class="list-row__main">
+                            <p class="list-row__title">Steve</p>
+                            <p class="list-row__sub">Overworld · seit 47 min</p>
+                        </div>
+                        <span class="list-row__meta">23 ms</span>
+                        <button class="btn btn--ghost btn--icon btn--s" type="button" aria-label="Aktionen für Steve">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+                        </button>
+                    </li>
+                    <li class="list-row">
+                        <span class="avatar" aria-hidden="true">M</span>
+                        <div class="list-row__main">
+                            <p class="list-row__title">Mia_Baut</p>
+                            <p class="list-row__sub">Nether · seit 12 min</p>
+                        </div>
+                        <span class="list-row__meta">88 ms</span>
+                        <button class="btn btn--ghost btn--icon btn--s" type="button" aria-label="Aktionen für Mia_Baut">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+                        </button>
+                    </li>
+                    <li class="list-row">
+                        <span class="avatar" aria-hidden="true">C</span>
+                        <div class="list-row__main">
+                            <p class="list-row__title">Creeperfan</p>
+                            <p class="list-row__sub">The End · seit 8 min</p>
+                        </div>
+                        <span class="list-row__meta">57 ms</span>
+                        <button class="btn btn--ghost btn--icon btn--s" type="button" aria-label="Aktionen für Creeperfan">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+                        </button>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <header class="card__header">
+                    <h2>Letzte Konsolenausgabe</h2>
+                    <a class="card__link" href="index.html#/console">Zur Konsole</a>
+                </header>
+                <div class="card__body card__body--console">
+                    <p><span class="text-muted">[14:58:02]</span> Steve joined the game</p>
+                    <p><span class="text-muted">[15:05:14]</span> Saved the game</p>
+                </div>
+            </section>
+        </div>
+
+        <h3>Einstellungsgruppe <code>.card__body</code> + <code>.setting-list</code></h3>
+        <section class="card">
+            <header class="card__header">
+                <h2>Welt</h2>
+            </header>
+            <div class="card__body demo-grid">
+                <mc-field label="Weltname">
+                    <input class="input" value="world">
+                </mc-field>
+                <mc-field label="Seed" help="Gilt nur für neu erzeugte Welten.">
+                    <input class="input input--mono" placeholder="leer = zufällig">
+                </mc-field>
+            </div>
+            <div class="setting-list">
+                <mc-toggle layout="row" checked description="Spieler können Netherportale benutzen.">Nether aktiv</mc-toggle>
+                <mc-toggle layout="row" checked description="Dörfer, Tempel und Festungen in neuen Chunks.">Strukturen generieren</mc-toggle>
+            </div>
+        </section>
+
+        <h3>Aktions-Karten <code>.action-card</code></h3>
+        <div class="card-grid">
+            <button class="action-card" type="button">
+                <span class="action-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><rect x="8" y="13" width="8" height="7"/><line x1="8" y1="4" x2="8" y2="8"/></svg></span>
+                <span class="action-card__text">
+                    <span class="action-card__title">Welt speichern</span>
+                    <span class="action-card__sub text-mono">save-all</span>
+                </span>
+            </button>
+            <button class="action-card" type="button">
+                <span class="action-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><polyline points="4 4 4 9 9 9"/><polyline points="12 8 12 12 15 14"/></svg></span>
+                <span class="action-card__text">
+                    <span class="action-card__title">Backup erstellen</span>
+                    <span class="action-card__sub">Letztes: heute 06:00</span>
+                </span>
+            </button>
+            <button class="action-card" type="button">
+                <span class="action-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg></span>
+                <span class="action-card__text">
+                    <span class="action-card__title">Nachricht an alle</span>
+                    <span class="action-card__sub text-mono">say …</span>
+                </span>
+            </button>
+            <button class="action-card" type="button" disabled>
+                <span class="action-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg></span>
+                <span class="action-card__text">
+                    <span class="action-card__title">Tag setzen</span>
+                    <span class="action-card__sub">Server offline</span>
+                </span>
+            </button>
+        </div>
+
+        <h3>Info-Box <code>.card--outline.card--compact</code></h3>
+        <div class="demo-row">
+            <div class="card card--outline card--compact">
+                <p class="card__label">Adresse</p>
+                <p class="card__value">192.168.1.20:25565</p>
+            </div>
         </div>
     </section>
 

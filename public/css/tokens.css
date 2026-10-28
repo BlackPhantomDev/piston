@@ -93,6 +93,8 @@
   --ls-overline: .08em;
   --fs-display: 48px;                    /* large metrics */
   --fs-small: 12px;   --lh-small: 16px;  /* sidebar server name, address label */
+  --fs-stat: 36px;    --lh-stat: 44px;   /* Chakra Petch 700 – metric value in stat cards */
+  --fs-stat-unit: 20px;                  /* Chakra Petch 700 – " / 20", " / 4 GB" */
   --fs-wordmark: 20px; --lh-wordmark: 24px; /* Pixelify 700 – "PiSton" in the sidebar */
 
   /* ---------- Spacing (8 px grid) ---------- */
@@ -130,6 +132,16 @@
   --checkbox-size: 20px;
   --badge-h: 28px;
   --badge-dot: 8px;
+
+  /* ---------- Cards ---------- */
+  --card-pad: var(--space-4);  /* card body, header, list rows */
+  --card-pad-s: 20px;          /* stat and action cards (mockup 02) */
+  --card-gap: var(--space-3);  /* between cards in a grid */
+  --card-min-w: 220px;         /* narrowest card in a .card-grid */
+  --card-min-w-wide: 400px;    /* narrowest card in a .card-grid--wide */
+  --avatar-size: 32px;         /* player initial in list rows */
+  --tile-size: 40px;           /* icon tile in action cards */
+  --meter-h: 8px;              /* bar in stat cards */
 
   /* ---------- Layout ---------- */
   --sidebar-w: 240px;
