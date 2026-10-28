@@ -121,6 +121,9 @@
   --toggle-w: 44px;
   --toggle-h: 24px;
   --toggle-knob: 18px;
+  --toggle-w-l: 52px;  /* setting rows */
+  --toggle-h-l: 28px;
+  --toggle-knob-l: 20px;
   --checkbox-size: 20px;
   --badge-h: 28px;
   --badge-dot: 8px;
@@ -131,6 +134,7 @@
   --focus-ring: var(--focus-width) solid var(--grass);
   --focus-ring-danger: var(--focus-width) solid var(--redstone);
   --focus-glow: 0 0 0 3px rgb(109 179 63 / .25); /* input focus */
+  --focus-glow-danger: 0 0 0 3px rgb(240 90 79 / .25);
 
   /* ---------- Motion ---------- */
   --transition-fast: 120ms ease-out;

@@ -1,0 +1,724 @@
+/*
+ * PiSton - A tiny web panel for your Minecraft server on a Raspberry Pi
+ * Copyright (C) 2026 Mischa S.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * Additional terms apply under Section 7 of the license;
+ * see the ADDITIONAL_TERMS file in the root of this repository.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/* Components – source: design/mockups/01-Styleguide.svg (sections 03, 04, badges) */
+
+mc-field:not(:defined),
+mc-toggle:not(:defined),
+mc-stepper:not(:defined),
+status-badge:not(:defined) {
+  visibility: hidden;
+}
+
+/* =========================================================================
+   Buttons
+   <button class="btn btn--primary">, sizes .btn--s / .btn--l, .btn--icon
+   ========================================================================= */
+
+.btn {
+  --_pad-x: 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--control-h-m);
+  padding: 0 var(--_pad-x);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-control);
+  background-clip: padding-box;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.btn svg {
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/* Primary & danger: solid face with a darker 3 px bottom edge */
+.btn--primary,
+.btn--danger {
+  border-width: 0 0 var(--edge-width);
+  color: var(--color-text-on-accent);
+}
+
+.btn--primary:active:not(:disabled),
+.btn--danger:active:not(:disabled) {
+  border-bottom-color: transparent;
+  transform: translateY(var(--press-offset));
+}
+
+.btn--primary {
+  background-color: var(--grass);
+  border-bottom-color: var(--grass-edge);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background-color: var(--grass-hover);
+}
+
+.btn--danger {
+  background-color: var(--redstone);
+  border-bottom-color: var(--redstone-edge);
+}
+
+.btn--danger:hover:not(:disabled) {
+  background-color: var(--redstone-hover);
+}
+
+.btn--danger:focus-visible {
+  outline: var(--focus-ring-danger);
+}
+
+.btn--primary:disabled,
+.btn--danger:disabled {
+  background-color: var(--deepslate-500);
+  border-bottom-color: var(--deepslate-600);
+  color: var(--color-text-muted);
+}
+
+/* Secondary */
+.btn--secondary {
+  background-color: var(--deepslate-600);
+  border-color: var(--deepslate-500);
+  color: var(--color-text);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background-color: var(--deepslate-500);
+  border-color: var(--deepslate-300);
+}
+
+.btn--secondary:disabled {
+  background-color: var(--deepslate-700);
+  border-color: var(--deepslate-600);
+  color: var(--color-text-muted);
+}
+
+/* Ghost */
+.btn--ghost {
+  --_pad-x: 16px;
+
+  background-color: transparent;
+  color: var(--color-text);
+  font-weight: var(--fw-medium);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background-color: var(--deepslate-600);
+}
+
+.btn--ghost:disabled {
+  color: var(--color-text-muted);
+}
+
+/* Sizes */
+.btn--s {
+  --_pad-x: 16px;
+
+  height: var(--control-h-s);
+  font-size: var(--fs-label);
+}
+
+.btn--l {
+  --_pad-x: 24px;
+
+  height: var(--control-h-l);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+}
+
+/* Icon-only: always needs aria-label */
+.btn--icon {
+  width: var(--control-h-m);
+  padding: 0;
+}
+
+.btn--icon.btn--s { width: var(--control-h-s); }
+.btn--icon.btn--l { width: var(--control-h-l); }
+
+.icon--danger {
+  color: var(--redstone);
+}
+
+/* =========================================================================
+   Field: label above, control, help / error below
+   <mc-field label="…" help="…"><input class="input"></mc-field>
+   ========================================================================= */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.field__label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-medium);
+}
+
+.field:focus-within .field__label,
+.field--invalid .field__label {
+  color: var(--color-text);
+}
+
+.field__label output {
+  color: var(--color-text);
+  font-family: var(--font-mono);
+}
+
+.field__help,
+.field__error {
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+}
+
+.field__help {
+  color: var(--color-text-muted);
+}
+
+.field__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--redstone);
+}
+
+.field__error svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* =========================================================================
+   Text input & select
+   ========================================================================= */
+
+.input {
+  width: 100%;
+  height: var(--control-h-m);
+  padding: 0 14px;
+  border: var(--border);
+  border-radius: var(--radius-control);
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
+  font-size: var(--fs-body);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input::placeholder {
+  color: var(--color-placeholder);
+  opacity: 1;
+}
+
+.input--mono {
+  font-family: var(--font-mono);
+}
+
+.input:focus,
+.input-group:focus-within {
+  outline: none;
+  border-color: var(--grass);
+  box-shadow: var(--focus-glow);
+}
+
+.input[aria-invalid="true"],
+.field--invalid .input-group {
+  border-color: var(--redstone);
+}
+
+.input[aria-invalid="true"]:focus,
+.field--invalid .input-group:focus-within {
+  box-shadow: var(--focus-glow-danger);
+}
+
+.input:disabled,
+.input-group:has(input:disabled) {
+  background-color: var(--deepslate-700);
+  border-color: var(--deepslate-600);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* Select: <div class="select"><select class="input">…</select></div> */
+.select {
+  position: relative;
+}
+
+.select select {
+  padding-right: 40px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.select::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  width: 7px;
+  height: 7px;
+  border: solid var(--color-text-muted);
+  border-width: 0 2px 2px 0;
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+/* =========================================================================
+   Input group: input with unit addon, base for the stepper
+   <div class="input-group"><input> <span class="input-group__addon">MB</span></div>
+   ========================================================================= */
+
+.input-group {
+  display: flex;
+  align-items: stretch;
+  height: var(--control-h-m);
+  overflow: hidden;
+  border: var(--border);
+  border-radius: var(--radius-control);
+  background-color: var(--color-input-bg);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input-group input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+}
+
+.input-group input:focus {
+  outline: none;
+}
+
+.input-group__addon {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  border-left: var(--border);
+  background-color: var(--deepslate-600);
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+}
+
+/* Stepper: <mc-stepper><input type="number" min max></mc-stepper> */
+.stepper input {
+  text-align: center;
+  appearance: textfield;
+}
+
+.stepper input::-webkit-inner-spin-button,
+.stepper input::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.stepper__btn {
+  width: var(--control-h-m);
+  padding: 0;
+  border: 0;
+  background-color: var(--deepslate-600);
+  color: var(--color-text);
+  font-size: 18px;
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+
+.stepper__btn:first-child { border-right: var(--border); }
+.stepper__btn:last-child  { border-left: var(--border); }
+
+.stepper__btn:hover:not(:disabled) {
+  background-color: var(--deepslate-500);
+}
+
+.stepper__btn:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* =========================================================================
+   Range slider
+   <mc-range><input type="range" id="…"></mc-range> (+ optional <output for="…">)
+   ========================================================================= */
+
+.range {
+  --_track: 6px;
+  --_thumb: 18px;
+  --_fill: linear-gradient(to right,
+    var(--grass) var(--range-fill, 0%),
+    var(--deepslate-500) var(--range-fill, 0%));
+
+  width: 100%;
+  height: var(--control-h-m);
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: var(--_track);
+  border-radius: 3px;
+  background: var(--_fill);
+}
+
+.range::-moz-range-track {
+  height: var(--_track);
+  border-radius: 3px;
+  background: var(--deepslate-500);
+}
+
+.range::-moz-range-progress {
+  height: var(--_track);
+  border-radius: 3px;
+  background: var(--grass);
+}
+
+.range::-webkit-slider-thumb {
+  width: var(--_thumb);
+  height: var(--_thumb);
+  margin-top: calc((var(--_track) - var(--_thumb)) / 2);
+  border: 3px solid var(--grass);
+  border-radius: var(--radius-control);
+  background: var(--deepslate-100);
+  appearance: none;
+}
+
+.range::-moz-range-thumb {
+  width: var(--_thumb);
+  height: var(--_thumb);
+  box-sizing: border-box;
+  border: 3px solid var(--grass);
+  border-radius: var(--radius-control);
+  background: var(--deepslate-100);
+}
+
+.range:focus-visible {
+  outline-offset: 0;
+}
+
+.range:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
+
+/* =========================================================================
+   Toggle switch
+   <mc-toggle description="…" layout="row">Label</mc-toggle>
+   renders <button role="switch" aria-checked> + <label>
+   ========================================================================= */
+
+mc-toggle {
+  --_w: var(--toggle-w);
+  --_h: var(--toggle-h);
+  --_knob: var(--toggle-knob);
+  --_inset: calc((var(--_h) - var(--_knob)) / 2);
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--control-h-m);
+}
+
+mc-toggle[layout="row"] {
+  --_w: var(--toggle-w-l);
+  --_h: var(--toggle-h-l);
+  --_knob: var(--toggle-knob-l);
+
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+}
+
+.toggle__switch {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--_w);
+  height: var(--_h);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background-color: var(--deepslate-500);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.toggle__knob {
+  position: absolute;
+  top: var(--_inset);
+  left: var(--_inset);
+  width: var(--_knob);
+  height: var(--_knob);
+  border-radius: var(--radius-small);
+  background-color: var(--deepslate-300);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+
+.toggle__switch[aria-checked="true"] {
+  background-color: var(--grass);
+}
+
+.toggle__switch[aria-checked="true"] .toggle__knob {
+  background-color: var(--deepslate-900);
+  transform: translateX(calc(var(--_w) - var(--_knob) - 2 * var(--_inset)));
+}
+
+.toggle__switch:hover:not(:disabled) .toggle__knob {
+  background-color: var(--deepslate-100);
+}
+
+.toggle__switch[aria-checked="true"]:hover:not(:disabled) {
+  background-color: var(--grass-hover);
+}
+
+.toggle__switch[aria-checked="true"]:hover:not(:disabled) .toggle__knob {
+  background-color: var(--deepslate-900);
+}
+
+.toggle__switch:disabled {
+  background-color: var(--deepslate-600);
+  cursor: not-allowed;
+}
+
+.toggle__switch:disabled .toggle__knob {
+  background-color: var(--deepslate-500);
+}
+
+.toggle__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggle__label {
+  cursor: pointer;
+}
+
+mc-toggle[layout="row"] .toggle__label {
+  font-weight: var(--fw-semibold);
+}
+
+.toggle__description {
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+}
+
+mc-toggle[disabled] .toggle__label {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* Stack of setting rows separated by dividers */
+.setting-list > * + * {
+  border-top: var(--border-width) solid var(--color-divider);
+}
+
+/* =========================================================================
+   Checkbox
+   <label class="checkbox"><input type="checkbox"> Label</label>
+   ========================================================================= */
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--control-h-m);
+  cursor: pointer;
+}
+
+.checkbox input {
+  display: grid;
+  place-items: center;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  margin: 0;
+  border: var(--border-width) solid var(--deepslate-300);
+  border-radius: var(--radius-small);
+  background-color: transparent;
+  appearance: none;
+  cursor: pointer;
+}
+
+.checkbox input::before {
+  content: "";
+  width: 5px;
+  height: 10px;
+  margin-top: -2px;
+  border: solid var(--color-text-on-accent);
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform var(--transition-fast);
+}
+
+.checkbox input:checked {
+  border-color: var(--grass);
+  background-color: var(--grass);
+}
+
+.checkbox input:checked::before {
+  transform: rotate(45deg) scale(1);
+}
+
+.checkbox input:disabled,
+.checkbox:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: .5;
+}
+
+/* =========================================================================
+   Status badge – always text + shape marker, never colour alone
+   <status-badge status="online|offline|starting|stopping">
+   ========================================================================= */
+
+status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--badge-h);
+  padding: 0 12px;
+  border-radius: var(--radius-control);
+  background-color: var(--deepslate-600);
+  color: var(--color-text);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+
+.status-badge__marker {
+  width: var(--badge-dot);
+  height: var(--badge-dot);
+  border-radius: var(--radius-marker);
+  background-color: currentColor;
+}
+
+status-badge[data-state="online"] {
+  background-color: var(--color-online-bg);
+  color: var(--color-online-text);
+}
+
+status-badge[data-state="online"] .status-badge__marker {
+  background-color: var(--color-online);
+}
+
+status-badge[data-state="offline"] {
+  background-color: var(--color-offline-bg);
+  color: var(--color-offline-text);
+}
+
+status-badge[data-state="offline"] .status-badge__marker {
+  background-color: var(--color-offline);
+}
+
+/* Transitional states: hollow square */
+status-badge[data-state="starting"] .status-badge__marker,
+status-badge[data-state="stopping"] .status-badge__marker {
+  border: 2px solid var(--color-text-muted);
+  border-radius: 1px;
+  background-color: transparent;
+}
+
+/* =========================================================================
+   Card
+   ========================================================================= */
+
+.card {
+  padding: var(--space-4);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+}
+
+/* =========================================================================
+   Console input
+   <form class="console-input"><span class="console-input__prompt">&gt;</span>
+     <input> <button class="btn btn--primary btn--s">Senden</button></form>
+   ========================================================================= */
+
+.console-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 54px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius-control);
+  background-color: var(--color-console-bg);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.console-input:focus-within {
+  border-color: var(--grass);
+  box-shadow: var(--focus-glow);
+}
+
+.console-input__prompt {
+  color: var(--grass);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: var(--fw-semibold);
+}
+
+.console-input input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+}
+
+.console-input input:focus {
+  outline: none;
+}
+
+.console-input input::placeholder {
+  color: var(--color-placeholder);
+  opacity: 1;
+}
+
+.console-input .btn {
+  font-size: 14px;
+}
