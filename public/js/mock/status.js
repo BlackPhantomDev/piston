@@ -29,6 +29,7 @@ const TRANSITION_MS = 2000; // how long "starting" / "stopping" take in the demo
 let state = 'online';
 let started = Date.now() - (3 * 60 + 12) * MINUTE;
 let lastBackup = new Date().setHours(6, 0, 0, 0); // today 06:00
+let installed = { provider: 'vanilla', version: '26.3' };
 
 /** @param {number} minutes */
 const ago = (minutes) => new Date(Date.now() - minutes * MINUTE).toISOString();
@@ -50,8 +51,8 @@ export function mockStatus() {
   const running = state === 'online';
   return {
     state,
-    provider: 'vanilla',
-    version: '26.3',
+    provider: installed.provider,
+    version: installed.version,
     startedAt: running ? new Date(started).toISOString() : null,
     players: {
       online: running ? players.length : 0,
@@ -62,6 +63,8 @@ export function mockStatus() {
     memory: { usedMb: running ? 2560 + Math.round(Math.random() * 200) : 0, maxMb: 4096 },
     cpuPercent: running ? 30 + Math.random() * 10 : 0,
     lastBackupAt: new Date(lastBackup).toISOString(),
+    java: [25],
+    eulaAccepted: true,
   };
 }
 
@@ -90,4 +93,61 @@ export function mockServerAction(action, onChange) {
       onChange();
     }, i * TRANSITION_MS);
   });
+}
+
+const wait = (/** @type {number} */ ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * @param {typeof state} next
+ * @param {() => void} onChange
+ */
+function setState(next, onChange) {
+  state = next;
+  if (state === 'online') started = Date.now();
+  onChange();
+}
+
+/**
+ * Plays the version switch of AGENTS.md §6.5 (Java check happens before, in the UI).
+ * onStep gets each step as it starts; onChange runs on every server state change.
+ * @param {{ provider: string, version: string }} target
+ * @param {(step: 'stop' | 'backup' | 'download' | 'swap' | 'start') => void} onStep
+ * @param {() => void} onChange
+ */
+export async function mockSwitchVersion(target, onStep, onChange) {
+  onStep('stop');
+  if (state !== 'offline') {
+    setState('stopping', onChange);
+    await wait(TRANSITION_MS);
+    setState('offline', onChange);
+  }
+  onStep('backup');
+  await wait(1200);
+  lastBackup = Date.now();
+  onStep('download');
+  await wait(1500);
+  onStep('swap');
+  await wait(600);
+  installed = { provider: target.provider, version: target.version };
+  onStep('start');
+  setState('starting', onChange);
+  await wait(TRANSITION_MS);
+  setState('online', onChange);
+}
+
+/**
+ * Stop, backup, delete and regenerate the world, start again.
+ * @param {() => void} onChange
+ */
+export async function mockResetWorld(onChange) {
+  if (state !== 'offline') {
+    setState('stopping', onChange);
+    await wait(TRANSITION_MS);
+    setState('offline', onChange);
+  }
+  await wait(1200);
+  lastBackup = Date.now();
+  setState('starting', onChange);
+  await wait(TRANSITION_MS);
+  setState('online', onChange);
 }

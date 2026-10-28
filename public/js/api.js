@@ -23,7 +23,8 @@
 // for now; later fetch + WebSocket (AGENTS.md §9) – pages stay unchanged.
 
 import { mockCommand, mockLogBacklog, mockLogLine } from './mock/log.js';
-import { mockCreateBackup, mockServerAction, mockStatus } from './mock/status.js';
+import { mockDefaultProperties, mockGetSettings, mockSaveSettings, mockVersions } from './mock/settings.js';
+import { mockCreateBackup, mockResetWorld, mockServerAction, mockStatus, mockSwitchVersion } from './mock/status.js';
 
 /**
  * @typedef {object} Player
@@ -44,6 +45,16 @@ import { mockCreateBackup, mockServerAction, mockStatus } from './mock/status.js
  * @property {{ usedMb: number, maxMb: number }} memory
  * @property {number} cpuPercent
  * @property {string | null} lastBackupAt  ISO date, null if there is none
+ * @property {number[]} java  installed Java major versions, e.g. [25, 21]
+ * @property {boolean} eulaAccepted  eula.txt says eula=true
+ */
+
+/** @typedef {{ id: string, stable: boolean }} McVersion  AGENTS.md §6.5 */
+
+/**
+ * @typedef {object} Settings
+ * @property {Record<string, string | number | boolean>} properties  server.properties, keyed like the file
+ * @property {{ memoryMb: number, autoRestart: string }} panel  panel-side settings; autoRestart "HH:MM" or "off"
  */
 
 /**
@@ -137,4 +148,62 @@ export async function sendCommand(command) {
 export async function createBackup() {
   await mockCreateBackup();
   broadcastStatus();
+}
+
+/**
+ * Current settings (later GET /api/properties; the panel part needs its own endpoint,
+ * which AGENTS.md §9 does not list yet). RCON values are never included.
+ * @returns {Promise<Settings>}
+ */
+export async function getSettings() {
+  return mockGetSettings();
+}
+
+/**
+ * Values of a fresh server.properties, for "Auf Standardwerte zurücksetzen".
+ * @returns {Promise<Settings['properties']>}
+ */
+export async function getDefaultProperties() {
+  return mockDefaultProperties();
+}
+
+/**
+ * Saves settings (later PUT /api/properties, validated on the server).
+ * They take effect after a restart – pass restart: true to do it right away.
+ * @param {Settings} settings
+ * @param {{ restart?: boolean }} [options]
+ * @returns {Promise<void>}
+ */
+export async function saveSettings(settings, { restart = false } = {}) {
+  await mockSaveSettings(settings);
+  if (restart) await serverAction('restart');
+}
+
+/**
+ * Versions a provider offers, newest first (later GET /api/versions?provider=…).
+ * @param {string} provider  'vanilla' | 'paper' | 'fabric'
+ * @param {{ snapshots?: boolean }} [options]
+ * @returns {Promise<McVersion[]>}
+ */
+export async function getVersions(provider, { snapshots = false } = {}) {
+  return mockVersions(provider, snapshots);
+}
+
+/**
+ * Runs the version switch (later POST /api/versions/switch, progress via WebSocket).
+ * @param {{ provider: string, version: string, confirmDowngrade?: boolean }} target
+ * @param {(step: 'stop' | 'backup' | 'download' | 'swap' | 'start') => void} onStep  called as each step starts
+ * @returns {Promise<void>} resolves when the server is up again
+ */
+export async function switchVersion(target, onStep) {
+  await mockSwitchVersion(target, onStep, broadcastStatus);
+  broadcastStatus();
+}
+
+/**
+ * Deletes the world and lets the server generate it again – after a backup.
+ * @returns {Promise<void>}
+ */
+export async function resetWorld() {
+  await mockResetWorld(broadcastStatus);
 }
