@@ -1,0 +1,80 @@
+/*
+ * PiSton - A tiny web panel for your Minecraft server on a Raspberry Pi
+ * Copyright (C) 2026 Mischa S.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * Additional terms apply under Section 7 of the license;
+ * see the ADDITIONAL_TERMS file in the root of this repository.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// The pages' only way to server data. Serves sample data from js/mock/
+// for now; later fetch + WebSocket (AGENTS.md §9) – pages stay unchanged.
+
+import { mockLogBacklog, mockLogLine } from './mock/log.js';
+import { mockStatus } from './mock/status.js';
+
+/**
+ * @typedef {object} Player
+ * @property {string} name
+ * @property {'overworld' | 'nether' | 'end'} dimension
+ * @property {string} joinedAt  ISO date
+ * @property {number} pingMs
+ */
+
+/**
+ * @typedef {object} Status  shape of GET /api/status
+ * @property {'online' | 'offline' | 'starting' | 'stopping'} state
+ * @property {string} provider  'vanilla' | 'paper' | 'fabric'
+ * @property {string} version
+ * @property {string | null} startedAt  ISO date, null while offline
+ * @property {{ online: number, max: number, list: Player[] }} players
+ * @property {number | null} tps  null if unknown
+ * @property {{ usedMb: number, maxMb: number }} memory
+ * @property {number} cpuPercent
+ */
+
+/**
+ * @typedef {object} LogLine  one parsed line of latest.log (AGENTS.md §6.1)
+ * @property {string} time  "HH:MM:SS"
+ * @property {string} level  'INFO' | 'WARN' | 'ERROR' | …
+ * @property {string} text
+ */
+
+const STATUS_INTERVAL_MS = 5000; // AGENTS.md §6.4: polling ≥ 5 s
+const MOCK_LOG_INTERVAL_MS = 4000; // sample data only – the real log is pushed via WebSocket
+
+/**
+ * Calls back right away with the current status and again on every update.
+ * Return the result from a page's render() so updates stop on navigation.
+ * @param {(status: Status) => void} callback
+ * @returns {() => void} unsubscribe
+ */
+export function onStatus(callback) {
+  callback(mockStatus());
+  const timer = setInterval(() => callback(mockStatus()), STATUS_INTERVAL_MS);
+  return () => clearInterval(timer);
+}
+
+/**
+ * Calls back right away with the buffered lines, then with each new line.
+ * Lines are always oldest first – pass them straight to <log-view>.add().
+ * @param {(lines: LogLine[]) => void} callback
+ * @returns {() => void} unsubscribe
+ */
+export function onLog(callback) {
+  callback(mockLogBacklog());
+  const timer = setInterval(() => callback([mockLogLine()]), MOCK_LOG_INTERVAL_MS);
+  return () => clearInterval(timer);
+}
