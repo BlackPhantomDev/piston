@@ -931,6 +931,46 @@ status-badge[data-state="stopping"] .status-badge__marker {
   color: var(--color-text-muted);
 }
 
+/* A list below a card body, e.g. the player lists in the settings */
+.card__body ~ .card__list,
+.card__body ~ .card__empty {
+  border-top: var(--border-width) solid var(--color-divider);
+}
+
+/* ---------- Add to a list: name (+ reason) and button in one row ---------- */
+
+.list-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.list-add > mc-field {
+  flex: 1 1 220px;
+}
+
+/* Lines up with the inputs: label height + gap of .field */
+.list-add > .btn {
+  margin-top: calc(var(--lh-label) + var(--space-2));
+}
+
+@media (max-width: 599px) {
+  .list-add > .btn {
+    flex: 1 1 100%;
+    margin-top: 0;
+  }
+}
+
+/* Short note above a list, e.g. "the whitelist is switched off" */
+.list-note {
+  padding-left: 12px;
+  border-left: 3px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+}
+
 /* Square initial, e.g. for players: <span class="avatar" aria-hidden="true">S</span> */
 .avatar {
   display: grid;
@@ -1174,6 +1214,13 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
 .choice-chip:has(input:focus-visible) {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
+}
+
+/* Number in a chip, e.g. "Whitelist 7" – same colour as the label, set apart by the mono font */
+.choice-chip__count {
+  margin-left: var(--space-2);
+  font-family: var(--font-mono);
+  font-weight: var(--fw-regular);
 }
 
 /* =========================================================================

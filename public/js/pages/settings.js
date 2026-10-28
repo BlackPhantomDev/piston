@@ -21,8 +21,9 @@
 
 import * as api from '../api.js';
 import { confirmDialog } from '../dialogs.js';
-import { providerName } from '../format.js';
+import { formatWhen, providerName } from '../format.js';
 import { t } from '../i18n/index.js';
+import { onBeforeLeave } from '../router.js';
 import { compareVersions, requiredJava } from '../versions.js';
 import { fields, view } from './view.js';
 
@@ -32,6 +33,7 @@ const AUTO_RESTART_TIMES = ['03:00', '04:00', '05:00', '06:00'];
 const SWITCH_STEPS = ['stop', 'backup', 'download', 'swap', 'start'];
 const EULA_URL = 'https://aka.ms/MinecraftEULA';
 const SPY_LINE_PX = 120; // section counts as "in view" once its top passes this line
+const PLAYER_NAME = /^\w{3,16}$/; // Minecraft names: 3–16 letters, digits or _
 
 // Page skeleton (mockup 04). Fields carry the server.properties key as name;
 // data-scope="panel" marks panel-side settings that are not in that file.
@@ -49,6 +51,7 @@ const VIEW = `
       <button class="choice-chip" type="button" data-target="settings-world" data-i18n="settings.sections.world"></button>
       <button class="choice-chip" type="button" data-target="settings-players" data-i18n="settings.sections.players"></button>
       <button class="choice-chip" type="button" data-target="settings-performance" data-i18n="settings.sections.performance"></button>
+      <button class="choice-chip" type="button" data-target="settings-lists" data-i18n="settings.sections.lists"></button>
       <button class="choice-chip" type="button" data-target="settings-version" data-i18n="settings.sections.version"></button>
       <button class="choice-chip" type="button" data-target="settings-danger" data-i18n="settings.sections.danger"></button>
     </nav>
@@ -177,6 +180,37 @@ const VIEW = `
       </section>
     </form>
 
+    <!-- Outside the form: list changes apply at once, without the save bar -->
+    <section class="card page-anchor" id="settings-lists" aria-labelledby="settings-lists-title">
+      <header class="card__header">
+        <h2 id="settings-lists-title" tabindex="-1" data-i18n="settings.sections.lists"></h2>
+        <span class="card__meta" data-i18n="settings.lists.immediate"></span>
+      </header>
+      <div class="card__body card__body--stack">
+        <fieldset class="choice-chips" data-field="listTabs">
+          <legend class="visually-hidden" data-i18n="settings.lists.label"></legend>
+          <label class="choice-chip"><input type="radio" name="settings-list" value="whitelist" checked><span data-i18n="settings.lists.whitelist"></span><span class="choice-chip__count" data-count="whitelist"></span></label>
+          <label class="choice-chip"><input type="radio" name="settings-list" value="ops"><span data-i18n="settings.lists.ops"></span><span class="choice-chip__count" data-count="ops"></span></label>
+          <label class="choice-chip"><input type="radio" name="settings-list" value="bans"><span data-i18n="settings.lists.bans"></span><span class="choice-chip__count" data-count="bans"></span></label>
+        </fieldset>
+        <p class="list-note" hidden data-field="listNote"></p>
+        <form class="list-add" novalidate data-field="listForm">
+          <mc-field data-field="nameField">
+            <label data-i18n="settings.lists.name"></label>
+            <input class="input" name="player" maxlength="16" autocomplete="off" autocapitalize="off" spellcheck="false">
+          </mc-field>
+          <mc-field hidden data-field="reasonField">
+            <label data-i18n="settings.lists.reason"></label>
+            <input class="input" name="reason" maxlength="100" autocomplete="off">
+          </mc-field>
+          <button class="btn btn--primary" type="submit" data-field="addBtn"></button>
+        </form>
+      </div>
+      <ul class="card__list" data-field="entries"></ul>
+      <p class="card__empty" hidden data-field="entriesEmpty"></p>
+      <p class="visually-hidden" role="status" data-field="listStatus"></p>
+    </section>
+
     <section class="card page-anchor" id="settings-version" aria-labelledby="settings-version-title">
       <header class="card__header">
         <h2 id="settings-version-title" tabindex="-1" data-i18n="settings.sections.version"></h2>
@@ -268,6 +302,17 @@ const VIEW = `
       <button class="btn btn--primary" type="submit" form="settings-form" value="restart" disabled data-field="saveRestartBtn" data-i18n="settings.saveRestart"></button>
     </div>
   </div>`;
+
+// One player on a list, created in listRow().
+const LIST_ROW = `
+  <li class="list-row">
+    <span class="avatar" aria-hidden="true" data-field="initial"></span>
+    <div class="list-row__main">
+      <p class="list-row__title" data-field="name"></p>
+      <p class="list-row__sub" data-field="details"></p>
+    </div>
+    <button class="btn btn--ghost" type="button" data-field="removeBtn"></button>
+  </li>`;
 
 /** @param {HTMLElement} root */
 export function render(root) {
@@ -415,6 +460,7 @@ export function render(root) {
     saving = false;
     setSaveStatus(restart ? 'saved' : 'savedRestart');
     updateSaveBar();
+    updateListControls(); // the whitelist may have been switched on or off
   });
 
   f.discardBtn.addEventListener('click', () => {
@@ -424,11 +470,130 @@ export function render(root) {
     updateSaveBar();
   });
 
-  // Leaving the browser tab with unsaved changes asks first
+  // Leaving the browser tab with unsaved changes asks first (the browser's own dialog) …
   function onBeforeUnload(event) {
     if (isDirty()) event.preventDefault();
   }
   window.addEventListener('beforeunload', onBeforeUnload);
+
+  // … and so does going to another page of the panel
+  const stopLeaveGuard = onBeforeLeave(
+    () =>
+      !isDirty() ||
+      confirmDialog({
+        title: t('settings.leaveDialog.title'),
+        text: t('settings.leaveDialog.text'),
+        confirmLabel: t('settings.leaveDialog.confirm'),
+        danger: true,
+      }),
+  );
+
+  // ---------- Player lists: apply at once, not part of the form (AGENTS.md §6.3) ----------
+
+  /** @type {import('../api.js').Lists | null} */
+  let lists = null;
+  let listChanging = false;
+
+  function selectedList() {
+    return f.listTabs.querySelector('input:checked').value;
+  }
+
+  function renderList() {
+    const list = selectedList();
+    f.reasonField.hidden = list !== 'bans';
+    f.addBtn.textContent = t(`settings.lists.add.${list}`);
+    if (lists) {
+      for (const count of f.listTabs.querySelectorAll('[data-count]')) {
+        count.textContent = String(lists[count.dataset.count].length);
+      }
+      const entries = [...lists[list]].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+      f.entries.replaceChildren(...entries.map((entry) => listRow(list, entry)));
+      f.entries.hidden = entries.length === 0;
+      f.entriesEmpty.hidden = entries.length > 0;
+      f.entriesEmpty.textContent = t(`settings.lists.empty.${list}`);
+    }
+    updateListControls();
+  }
+
+  // While the server starts or stops, neither RCON nor the files are safe to use
+  function updateListControls() {
+    const busy = status?.state === 'starting' || status?.state === 'stopping';
+    f.addBtn.disabled = busy || !lists;
+    for (const button of f.entries.querySelectorAll('button')) button.disabled = busy;
+
+    let note = '';
+    if (busy) note = t('settings.lists.busy');
+    else if (selectedList() === 'whitelist' && saved && !saved.properties['white-list']) note = t('settings.lists.whitelistOff');
+    f.listNote.textContent = note;
+    f.listNote.hidden = !note;
+  }
+
+  /** Error text for the name field, '' if it can be added. */
+  function checkName(list, name) {
+    if (!name) return t('settings.errors.required');
+    if (!PLAYER_NAME.test(name)) return t('settings.lists.errors.name');
+    if (lists[list].some((entry) => entry.name.toLowerCase() === name.toLowerCase())) {
+      return t('settings.lists.errors.duplicate', { name });
+    }
+    return '';
+  }
+
+  /** @returns {Promise<boolean>} false if the page is gone */
+  async function changeList(list, action, name, reason = '') {
+    listChanging = true;
+    try {
+      await api.changeList(list, action, name, { reason });
+      const next = await api.getLists();
+      if (!alive) return false;
+      lists = next;
+    } finally {
+      listChanging = false;
+    }
+    renderList();
+    f.listStatus.textContent = t(`settings.lists.${action === 'add' ? 'added' : 'removed'}.${list}`, { name });
+    return true;
+  }
+
+  f.listTabs.addEventListener('change', () => {
+    f.nameField.error = '';
+    renderList();
+  });
+
+  f.listForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (listChanging || f.addBtn.disabled) return;
+    const list = selectedList();
+    const input = f.listForm.elements.player;
+    const name = input.value.trim();
+    const error = checkName(list, name);
+    f.nameField.error = error;
+    if (error) {
+      input.focus();
+      return;
+    }
+    const reason = list === 'bans' ? f.listForm.elements.reason.value.replace(/\s+/g, ' ').trim() : '';
+    if (await changeList(list, 'add', name, reason)) {
+      f.listForm.reset();
+      input.focus();
+    }
+  });
+
+  // A shown error goes away as soon as the name is fixed
+  f.listForm.addEventListener('input', () => {
+    if (f.nameField.error) f.nameField.error = checkName(selectedList(), f.listForm.elements.player.value.trim());
+  });
+
+  f.entries.addEventListener('click', async (event) => {
+    const button = event.target.closest('button[data-name]');
+    if (!button || button.disabled || listChanging) return;
+    const index = [...f.entries.children].indexOf(button.closest('li'));
+    if (!(await changeList(selectedList(), 'remove', button.dataset.name))) return;
+    // Carry on with the row that moved up, or the name field once the list is empty
+    const next = f.entries.children[Math.min(index, f.entries.children.length - 1)];
+    (next?.querySelector('button') ?? f.listForm.elements.player).focus();
+  });
+
+  renderList();
 
   // ---------- Server version ----------
 
@@ -625,6 +790,7 @@ export function render(root) {
       loadVersions();
     }
     updateChecks();
+    updateListControls();
   });
 
   api.getSettings().then((settings) => {
@@ -633,11 +799,19 @@ export function render(root) {
     fillForm(settings);
     setSaveStatus('saved');
     updateSaveBar();
+    updateListControls();
+  });
+
+  api.getLists().then((next) => {
+    if (!alive) return;
+    lists = next;
+    renderList();
   });
 
   return () => {
     alive = false;
     stopStatus();
+    stopLeaveGuard();
     window.removeEventListener('beforeunload', onBeforeUnload);
     window.removeEventListener('scroll', onScroll);
     cancelAnimationFrame(spyFrame);
@@ -650,6 +824,27 @@ function option(value, label) {
   el.value = value;
   el.textContent = label;
   return el;
+}
+
+/**
+ * @param {keyof import('../api.js').Lists} list
+ * @param {import('../api.js').ListEntry} entry
+ */
+function listRow(list, entry) {
+  const fragment = view(LIST_ROW);
+  const f = fields(fragment);
+  f.initial.textContent = entry.name[0];
+  f.name.textContent = entry.name;
+  const details = [];
+  if (entry.level) details.push(t('settings.lists.level', { level: entry.level }));
+  if (entry.reason) details.push(entry.reason);
+  if (entry.created) details.push(formatWhen(entry.created));
+  f.details.textContent = details.join(' · ');
+  f.details.hidden = details.length === 0;
+  f.removeBtn.textContent = t(`settings.lists.remove.${list}`);
+  f.removeBtn.setAttribute('aria-label', t(`settings.lists.removeLabel.${list}`, { name: entry.name }));
+  f.removeBtn.dataset.name = entry.name;
+  return fragment;
 }
 
 /** @param {string} result @param {string} text @param {HTMLElement | null} [extra] */
