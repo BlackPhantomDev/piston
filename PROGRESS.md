@@ -1,9 +1,9 @@
 # 🗺️ PiSton – Roadmap
 
-**Stand:** 28.10.2026 · **Aktuelle Phase:** 2 – Home (UI)
+**Stand:** 28.10.2026 · **Aktuelle Phase:** 2 – Home (UI) / 4 – Einstellungen (UI)
 
 ```
-Frontend  ▰▰▱▱▱▱  2 von 6 Phasen
+Frontend  ▰▰▰▱▱▱  3 von 6 Phasen
 Backend   ▱▱▱▱▱▱  0 von 6 Phasen
 ```
 
@@ -36,7 +36,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 | 0 | [Fundament](#phase-0--fundament) | Lizenz, Fonts, Design-Tokens, Basis-Komponenten | ✅ |
 | 1 | [App-Shell](#phase-1--app-shell) | Sidebar, Hash-Routing, Sprachumschalter | ✅ |
 | 2 | [Home (UI)](#phase-2--home-ui) | Datenschicht mit Beispieldaten, Home-Seite | 🚧 |
-| 3 | [Konsole (UI)](#phase-3--konsole-ui) | Log-Ansicht, Filter, Befehlseingabe | ⬜ |
+| 3 | [Konsole (UI)](#phase-3--konsole-ui) | Log-Ansicht, Filter, Befehlseingabe | ✅ |
 | 4 | [Einstellungen (UI)](#phase-4--einstellungen-ui) | Properties-Formular, Anbieter-Karten, Versionswechsel | ⬜ |
 | 5 | [Feinschliff](#phase-5--feinschliff) | Zustände, schmale Bildschirme, Barrierefreiheit | ⬜ |
 | | **Backend** | | |
@@ -96,13 +96,17 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 3 – Konsole (UI)
 
+✅ abgeschlossen
+
 - [x] `<log-view>`: Zeit, Level, Text; WARN/ERROR hervorgehoben, Chat-Absender grün
-- [ ] Log-Ansicht nach Mockup 03 auf der Konsole-Seite
-- [ ] Filter: Alle, Info, Warnungen, Fehler
-- [ ] Befehlseingabe mit Verlauf (↑/↓) und Antwort im Log
-- [ ] Häufige Befehle als Chips (füllen das Eingabefeld)
-- [ ] Automatisch mitscrollen, pausiert beim Hochscrollen
-- [ ] Log-Zeilen nur per `textContent` (Chat ist Nutzereingabe)
+- [x] Konsole-Seite nach Mockup 03: Kopf mit Status, Panel mit Befehlszeile, „Häufige Befehle“
+- [x] Filter: Alle, Info, Warnungen, Fehler (`filter`-Attribut, reines CSS) + Textsuche
+- [x] Befehlseingabe mit Verlauf (↑/↓); eigener Befehl (CMD) + Antwort (RCON) im Log
+- [x] Häufige Befehle als Chips (füllen das Eingabefeld, Cursor dahinter)
+- [x] Automatisch mitscrollen, pausiert beim Hochscrollen, Button „Zu den neuesten Zeilen“
+- [x] „Log herunterladen“ (Puffer der Ansicht als .log) und „Ansicht leeren“
+- [x] Offline: Eingabe und Chips gesperrt, Hinweis im Eingabefeld
+- [x] Log-Zeilen nur per `textContent` (Chat ist Nutzereingabe)
 
 ## Phase 4 – Einstellungen (UI)
 
@@ -138,6 +142,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [ ] `server/logwatch.js` – `latest.log` mitlesen, Log-Rotation, Puffer ~500 Zeilen
 - [ ] WebSocket `/ws` mit `Origin`-Prüfung
 - [ ] Konsole-Seite von Beispieldaten auf echte Daten umstellen
+- [ ] „Log herunterladen“: liefert bisher nur den Puffer der Ansicht – für die ganze `latest.log` fehlt ein Endpunkt (nicht in AGENTS.md §9)
 - [ ] Tests: RCON-Paketcodierung, Log-Zeilen-Parser
 
 ## Phase 8 – Home live
