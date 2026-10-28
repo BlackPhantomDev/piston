@@ -1,6 +1,6 @@
 {
   "name": "piston",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "A tiny web panel for your Minecraft server on a Raspberry Pi",
   "license": "AGPL-3.0-or-later",
   "author": "Mischa S.",

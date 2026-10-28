@@ -22,4 +22,4 @@
 // Panel version for the browser. The source of truth is "version" in package.json –
 // the browser cannot read that file (it lives outside public/), so it is repeated here.
 // Change both together; a test will compare them once node --test is set up (phase 6).
-export const VERSION = '0.1.0-alpha.2';
+export const VERSION = '0.1.0-alpha.3';

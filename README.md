@@ -15,7 +15,7 @@
 
 <p align="center">
   <a href="LICENCE"><img src="https://img.shields.io/badge/license-AGPL--3.0--or--later-6DB33F" alt="License: AGPL-3.0-or-later"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.1.0--alpha.2-A3A19C" alt="Version 0.1.0-alpha.2"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.1.0--alpha.3-A3A19C" alt="Version 0.1.0-alpha.3"></a>
   <img src="https://img.shields.io/badge/status-early%20development-A3A19C" alt="Status: early development">
   <img src="https://img.shields.io/badge/node-%E2%89%A5%2022-3A3B40" alt="Node.js 22 or newer">
 </p>
@@ -28,11 +28,11 @@
 
 ## Status
 
-PiSton is in **early development** and cannot manage a server yet. What exists today is the
-frontend foundation: design system, base components and the app shell with navigation.
-The pages are built next, first with sample data; the Node.js backend follows once the frontend is complete.
+PiSton is in **early development** and cannot manage a real server yet. The frontend pages are done –
+Home, Console and Settings – and run on sample data that reacts like a vanilla server.
+Next comes the polish (loading and error states, narrow screens, accessibility), then the Node.js backend.
 
-Current version: **0.1.0-alpha.2** – see the [changelog](CHANGELOG.md).
+Current version: **0.1.0-alpha.3** – see the [changelog](CHANGELOG.md).
 Progress is tracked in the [roadmap](PROGRESS.md) (German).
 
 ## Features
@@ -41,6 +41,7 @@ Planned for the first release:
 
 - **Server control** – start, stop and restart via systemd
 - **Live console** – follow `latest.log` in real time and send commands over RCON
+- **Players** – message, op, kick and ban players; manage the whitelist, operators and bans
 - **Settings** – edit `server.properties` in a GUI with validation; comments and order are kept
 - **Version switching** – change version and server type with a mandatory world backup first
 - **Metrics** – players online, TPS, RAM and CPU of the server process
@@ -78,6 +79,9 @@ Planned for the first release:
 The Minecraft server is expected in `/opt/minecraft`, owned by a `minecraft` user and running as
 `minecraft.service` with RCON enabled. Installation instructions will follow with the first release.
 
+PiSton never accepts the [Minecraft EULA](https://aka.ms/MinecraftEULA) for you – you confirm it yourself.
+It also never ships a `server.jar`: server files are downloaded straight from Mojang or the chosen provider.
+
 ## Security
 
 PiSton has no accounts and no login by design. Protection comes from keeping it inside your home network:
@@ -104,6 +108,7 @@ sudo ufw enable
 ## Development
 
 There is no backend yet, so the frontend can be previewed with any static file server.
+It runs on sample data: starting and stopping, console commands, kicks and list changes are simulated.
 It has to be served over HTTP because ES modules do not load from `file://`.
 
 ```sh
@@ -126,7 +131,9 @@ public/
 ├─ js/
 │  ├─ main.js          entry point
 │  ├─ router.js        hash routing (#/home, #/console, #/settings)
-│  ├─ components/      Web Components (<mc-toggle>, <status-badge>, …)
+│  ├─ api.js           the pages' only access to server data
+│  ├─ mock/            sample data until the backend exists
+│  ├─ components/      Web Components (<action-menu>, <log-view>, <status-badge>, …)
 │  ├─ i18n/            UI strings
 │  └─ pages/           one module per page
 └─ assets/             logo and fonts

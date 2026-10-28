@@ -7,6 +7,24 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+## [0.1.0-alpha.3] – 2026-10-28
+
+All three pages are complete, still on sample data.
+
+### Added
+
+- Player menu on the home page: send a private message, give or take operator rights,
+  kick and ban (both ask first). Works with mouse and keyboard.
+- Server name and address in the sidebar, an "online" count on the player list
+  and a note instead of an empty list.
+- Player lists in the settings: whitelist, operators and bans – add and remove players,
+  ban with a reason. Changes apply at once, without saving.
+- Leaving the settings with unsaved changes asks first – for links inside the panel
+  and for the browser's back and forward buttons.
+- The sample data reacts like a vanilla server to `op`, `deop`, `ban`, `pardon`,
+  `whitelist`, `kick` and `tell` – on the console page, too.
+- README: the EULA is never accepted for you, and no `server.jar` is ever shipped.
+
 ### Changed
 
 - New logo: a cylindrical piston with π on its head, plus a light variant for light backgrounds.
@@ -50,6 +68,7 @@ First tagged state: the frontend runs on sample data, there is no backend yet.
 - Language switch prepared (German active, English planned).
 - Required "Powered by PiSton" attribution on every page (AGPL-3.0 §7).
 
-[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.2...HEAD
+[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.3...HEAD
+[0.1.0-alpha.3]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.2...v0.1.0-alpha.3
 [0.1.0-alpha.2]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.1...v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/BlackPhantomDev/piston/releases/tag/v0.1.0-alpha.1
