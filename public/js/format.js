@@ -68,6 +68,14 @@ export function formatWhen(isoDate) {
   return t('when.date', { date: dayMonth.format(date), time });
 }
 
+/**
+ * Log-style clock time "HH:MM:SS" (24 h, like latest.log).
+ * @param {Date} [date]
+ */
+export function formatLogTime(date = new Date()) {
+  return date.toTimeString().slice(0, 8);
+}
+
 /** @param {Date} date */
 function startOfDay(date) {
   return new Date(date).setHours(0, 0, 0, 0);

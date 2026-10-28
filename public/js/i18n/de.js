@@ -65,6 +65,31 @@ export default {
       send: 'Senden',
     },
   },
+  console: {
+    subtitle: 'Live-Ausgabe von latest.log',
+    download: 'Log herunterladen',
+    clear: 'Ansicht leeren',
+    filter: {
+      label: 'Nach Level filtern',
+      all: 'Alle',
+      info: 'Info',
+      warn: 'Warnungen',
+      error: 'Fehler',
+    },
+    search: 'Ausgabe durchsuchen',
+    output: 'Konsolenausgabe',
+    jump: 'Zu den neuesten Zeilen',
+    input: {
+      label: 'Befehl',
+      placeholder: 'Befehl eingeben, z. B. say Hallo',
+      offline: 'Server ist offline – keine Befehle möglich',
+    },
+    send: 'Senden',
+    common: {
+      title: 'Häufige Befehle',
+      hint: 'Klick fügt den Befehl ins Eingabefeld ein',
+    },
+  },
   server: {
     start: 'Starten',
     stop: 'Stoppen',
