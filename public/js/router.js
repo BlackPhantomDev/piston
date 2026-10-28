@@ -25,6 +25,23 @@
  * @typedef {{ titleKey: string, render: (root: HTMLElement) => (void | (() => void)) }} Page
  */
 
+/** @type {(() => boolean | Promise<boolean>) | null} */
+let leaveGuard = null;
+
+/**
+ * Lets the page on screen hold up a navigation inside the panel, e.g. to ask
+ * about unsaved changes. The guard returns (or resolves to) true to leave.
+ * Call the returned function from the page's cleanup.
+ * @param {() => boolean | Promise<boolean>} guard
+ * @returns {() => void} removes the guard
+ */
+export function onBeforeLeave(guard) {
+  leaveGuard = guard;
+  return () => {
+    if (leaveGuard === guard) leaveGuard = null;
+  };
+}
+
 /**
  * Hash router for #/<name>. Unknown or empty hashes are replaced by the fallback.
  * After a navigation (not the first render) focus moves to the page's <h1>,
@@ -40,24 +57,76 @@ export function startRouter({ routes, fallback, outlet, onRoute }) {
   /** @type {(() => void) | undefined} */
   let cleanup;
   let first = true;
+  let current = '';
+  let index = -1; // position of the entry on screen in the history, kept in history.state
+  let leaving = false; // a guard said yes – the next hashchange must not ask again
+  let asking = false;
+
+  function routeOf(/** @type {string} */ hash) {
+    const name = hash.replace(/^#\//, '');
+    return Object.hasOwn(routes, name) ? name : fallback;
+  }
+
+  /** Asks the page's guard; a second navigation while it asks is refused. */
+  async function mayLeave() {
+    if (!leaveGuard) return true;
+    if (asking) return false;
+    asking = true;
+    try {
+      return await leaveGuard();
+    } finally {
+      asking = false;
+    }
+  }
 
   function show() {
-    let name = location.hash.replace(/^#\//, '');
-    if (!Object.hasOwn(routes, name)) {
-      name = fallback;
-      history.replaceState(null, '', `#/${name}`);
-    }
+    const name = routeOf(location.hash);
+    // A new entry has no number yet – it comes right after the one we left
+    index = history.state?.index ?? index + 1;
+    history.replaceState({ ...history.state, index }, '', `#/${name}`);
     const page = routes[name];
 
     cleanup?.();
     outlet.replaceChildren();
     cleanup = page.render(outlet) ?? undefined;
+    current = name;
     onRoute?.(name, page);
 
     if (!first) outlet.querySelector('h1')?.focus();
     first = false;
   }
 
-  window.addEventListener('hashchange', show);
+  // Links inside the panel: ask before the URL changes, so history stays clean
+  document.addEventListener('click', async (event) => {
+    const link = /** @type {Element} */ (event.target).closest?.('a[href^="#/"]');
+    if (!link || !leaveGuard || event.defaultPrevented) return;
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; // new tab
+    const href = /** @type {string} */ (link.getAttribute('href'));
+    if (routeOf(href) === current) return;
+    event.preventDefault();
+    if (await mayLeave()) {
+      leaving = true;
+      location.hash = href;
+    }
+  });
+
+  // Back / forward buttons: the URL has changed already – undo the step if the guard says no
+  window.addEventListener('hashchange', async () => {
+    if (routeOf(location.hash) === current) {
+      // Unknown hash: the fallback is on screen already, only the URL needs fixing
+      if (location.hash !== `#/${current}`) history.replaceState({ ...history.state, index }, '', `#/${current}`);
+      return;
+    }
+    if (!leaving && !(await mayLeave())) {
+      // Back to the entry on screen: forward after "back", back after a new entry
+      const target = history.state?.index;
+      if (typeof target === 'number') history.go(index - target);
+      else history.back();
+      return;
+    }
+    leaving = false;
+    show();
+  });
+
   show();
 }
