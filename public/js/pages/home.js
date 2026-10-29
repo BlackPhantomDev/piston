@@ -21,6 +21,7 @@
 
 import * as api from "../api.js";
 import { confirmDialog } from "../dialogs.js";
+import { errorText, setStatusText, showError } from "../errors.js";
 import { dimensionName, formatSince, formatWhen, providerName } from "../format.js";
 import { t } from "../i18n/index.js";
 import { fields, view } from "./view.js";
@@ -149,6 +150,7 @@ const VIEW = `
         <input class="input" id="home-message-input" name="message" maxlength="200" required autocomplete="off" aria-describedby="home-message-help">
         <p class="field__help" id="home-message-help" data-field="messageHelp"></p>
       </div>
+      <p class="form-error" role="alert" data-field="messageError"></p>
       <div class="dialog__actions">
         <button class="btn btn--ghost" type="button" data-field="messageCancel" data-i18n="common.cancel"></button>
         <button class="btn btn--primary" type="submit" data-i18n="home.sayDialog.send"></button>
@@ -248,6 +250,8 @@ export function render(root) {
     updateQuickActions(lastStatus);
     try {
       await api.createBackup();
+    } catch (error) {
+      showError(t("home.errors.backup"), error);
     } finally {
       backupRunning = false;
       updateQuickActions(lastStatus);
@@ -260,10 +264,10 @@ export function render(root) {
     if (!button || button.disabled) return;
     switch (button.dataset.quick) {
       case "save":
-        api.sendCommand("save-all");
+        run("save-all", t("home.errors.save"));
         break;
       case "day":
-        api.sendCommand("time set day");
+        run("time set day", t("home.errors.day"));
         break;
       case "say":
         openMessageDialog(null);
@@ -274,8 +278,18 @@ export function render(root) {
     }
   });
 
+  /** Sends a console command; if it fails, a notice says what did not happen. */
+  async function run(command, title) {
+    try {
+      await api.sendCommand(command);
+    } catch (error) {
+      showError(title, error);
+    }
+  }
+
   // Message dialog: to everyone (say) or, from the player menu, to one player (tell)
   let messageTarget = null;
+  let sending = false;
 
   function openMessageDialog(player) {
     messageTarget = player;
@@ -284,16 +298,28 @@ export function render(root) {
     f.messageDialog.showModal();
   }
 
-  // One line, whitespace collapsed so it stays a single command
-  f.messageForm.addEventListener("submit", (event) => {
+  // One line, whitespace collapsed so it stays a single command.
+  // The dialog closes once the message is out – if it fails, the text stays for another try.
+  f.messageForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = f.messageForm.elements.message.value.replace(/\s+/g, " ").trim();
-    if (!message) return;
-    api.sendCommand(messageTarget ? `tell ${messageTarget} ${message}` : `say ${message}`);
-    f.messageDialog.close();
+    if (!message || sending) return;
+    sending = true;
+    setStatusText(f.messageError, "");
+    try {
+      await api.sendCommand(messageTarget ? `tell ${messageTarget} ${message}` : `say ${message}`);
+      f.messageDialog.close();
+    } catch (error) {
+      setStatusText(f.messageError, t("home.sayDialog.failed", { reason: errorText(error) }), { error: true });
+    } finally {
+      sending = false;
+    }
   });
   f.messageCancel.addEventListener("click", () => f.messageDialog.close());
-  f.messageDialog.addEventListener("close", () => f.messageForm.reset());
+  f.messageDialog.addEventListener("close", () => {
+    f.messageForm.reset();
+    setStatusText(f.messageError, "");
+  });
 
   // Player menu (<action-menu> fires "action"); kick and ban ask first
   f.players.addEventListener("action", async (event) => {
@@ -304,7 +330,7 @@ export function render(root) {
     if (action === "tell") {
       openMessageDialog(name);
     } else if (action === "op" || action === "deop") {
-      api.sendCommand(`${action} ${name}`);
+      run(`${action} ${name}`, t(`home.errors.${action}`, { name }));
     } else if (action === "kick" || action === "ban") {
       const confirmed = await confirmDialog({
         title: t(`home.${action}Dialog.title`, { name }),
@@ -312,16 +338,22 @@ export function render(root) {
         confirmLabel: t(`home.${action}Dialog.confirm`),
         danger: true,
       });
-      if (confirmed) api.sendCommand(`${action} ${name}`);
+      if (confirmed) run(`${action} ${name}`, t(`home.errors.${action}`, { name }));
     }
   });
 
   let refocus = false;
-  f.actions.addEventListener("click", (event) => {
+  f.actions.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-action]");
     if (!button || button.disabled) return;
+    const action = button.dataset.action;
     refocus = true;
-    api.serverAction(button.dataset.action);
+    try {
+      await api.serverAction(action);
+    } catch (error) {
+      refocus = false; // nothing changes – focus stays on the button
+      showError(t(`home.errors.${action}`), error);
+    }
   });
 
   function updatePlayersData(players, state) {

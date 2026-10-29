@@ -1815,7 +1815,7 @@ action-menu > [aria-expanded="true"] {
 
 /* =========================================================================
    Steps – numbered progress of a multi-step action
-   <ol class="steps"><li class="steps__item" data-state="done|active|">Stoppen</li>…</ol>
+   <ol class="steps"><li class="steps__item" data-state="done|active|failed|">Stoppen</li>…</ol>
    Active step: aria-current="step".
    ========================================================================= */
 
@@ -1859,6 +1859,17 @@ action-menu > [aria-expanded="true"] {
 .steps__item[data-state="active"] {
   color: var(--color-text);
   font-weight: var(--fw-semibold);
+}
+
+/* The step the action stopped at – the status line below says why */
+.steps__item[data-state="failed"] {
+  color: var(--redstone-hover);
+  font-weight: var(--fw-semibold);
+}
+
+.steps__item[data-state="failed"]::before {
+  content: "✕" / "";
+  margin-right: var(--space-1);
 }
 
 /* =========================================================================
@@ -1960,6 +1971,134 @@ action-menu > [aria-expanded="true"] {
   color: var(--color-text-muted);
   font-size: var(--fs-label);
   line-height: var(--lh-label);
+}
+
+/* =========================================================================
+   Errors – what went wrong, always with icon and words (js/errors.js)
+   ========================================================================= */
+
+/* A status line that turned into an error: icon + text in Redstone */
+.error-text {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--redstone-hover);
+}
+
+.error-text > svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: calc((1lh - 16px) / 2);
+}
+
+/* Error line in a form or dialog; takes no room while empty
+   <p class="form-error" role="alert"></p> */
+.form-error {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.form-error:empty {
+  display: none;
+}
+
+/* Could not load: reason + "Erneut versuchen", in place of the missing content
+   <div hidden data-field="…"></div> – filled by showLoadError() */
+.load-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px var(--space-3);
+  padding: 12px var(--space-3);
+  border: var(--border-width) solid var(--redstone-edge);
+  border-radius: var(--radius-card);
+  background-color: var(--color-offline-bg);
+}
+
+.load-error > svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--redstone-hover);
+}
+
+.load-error__text {
+  flex: 1 1 220px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.load-error__text strong {
+  font-weight: var(--fw-semibold);
+}
+
+/* ---------- Notices: bottom right, newest at the bottom, stay until closed ---------- */
+
+.notices {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 1;
+  display: grid;
+  gap: var(--space-2);
+  width: min(400px, calc(100% - 2 * var(--space-4)));
+}
+
+.notices:empty {
+  display: none;
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: var(--space-2) var(--space-1) var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--redstone-edge);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface-raised);
+}
+
+.notice > svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 12px;
+  color: var(--redstone-hover);
+}
+
+.notice__body {
+  flex: 1;
+  min-width: 0;
+  padding-block: 10px;
+  overflow-wrap: anywhere;
+}
+
+.notice__title {
+  font-weight: var(--fw-semibold);
+}
+
+.notice__message {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.notice__close {
+  flex-shrink: 0;
+}
+
+/* The notice is Deepslate-600 already – hover one step lighter */
+.notice__close:hover:not(:disabled) {
+  background-color: var(--deepslate-500);
+}
+
+@media (max-width: 599.98px) {
+  .notices {
+    right: var(--space-3);
+    bottom: var(--space-3);
+    width: calc(100% - 2 * var(--space-3));
+  }
 }
 
 /* =========================================================================

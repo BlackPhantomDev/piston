@@ -23,6 +23,7 @@ import './components/index.js';
 import { onStatus } from './api.js';
 import { setupCopyButton } from './clipboard.js';
 import { initConnectionView } from './connection-view.js';
+import { clearNotices } from './errors.js';
 import { t, translate } from './i18n/index.js';
 import { initNav } from './nav.js';
 import { startRouter } from './router.js';
@@ -80,6 +81,7 @@ if (app) {
     onRoute(name, page) {
       document.title = `${t(page.titleKey)} – PiSton`;
       nav.setCurrent(name);
+      clearNotices(); // they were about the page that is gone
     },
   });
 }

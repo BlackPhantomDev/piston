@@ -21,6 +21,7 @@
 
 import * as api from './api.js';
 import { setupCopyButton } from './clipboard.js';
+import { clearNotices } from './errors.js';
 import { formatWhen } from './format.js';
 import { t } from './i18n/index.js';
 import { fields, view } from './pages/view.js';
@@ -270,10 +271,11 @@ export function initConnectionView(main) {
   }
 }
 
-/** Dialogs and menus belong to the page that just went out of reach. */
+/** Dialogs, menus and notices belong to the page that just went out of reach. */
 function closeOverlays() {
   for (const dialog of document.querySelectorAll('dialog[open]')) /** @type {HTMLDialogElement} */ (dialog).close();
   for (const popover of document.querySelectorAll(':popover-open')) /** @type {HTMLElement} */ (popover).hidePopover();
+  clearNotices();
 }
 
 /** @param {number} value */

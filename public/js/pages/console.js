@@ -20,6 +20,7 @@
  */
 
 import * as api from '../api.js';
+import { errorText } from '../errors.js';
 import { formatLogTime } from '../format.js';
 import { t } from '../i18n/index.js';
 import { fields, view } from './view.js';
@@ -180,8 +181,13 @@ export function render(root) {
 
     addLines([{ time: formatLogTime(), level: 'CMD', text: command }]);
     jumpToEnd(); // own command: always show it, even when scrolled up
-    const response = await api.sendCommand(command);
-    addLines(response.map((text) => ({ time: formatLogTime(), level: 'RCON', text })));
+    try {
+      const response = await api.sendCommand(command);
+      addLines(response.map((text) => ({ time: formatLogTime(), level: 'RCON', text })));
+    } catch (error) {
+      // Right below the command, like an answer – ↑ brings the command back
+      addLines([{ time: formatLogTime(), level: 'ERROR', text: t('console.notSent', { reason: errorText(error) }) }]);
+    }
   });
 
   f.input.addEventListener('keydown', (event) => {

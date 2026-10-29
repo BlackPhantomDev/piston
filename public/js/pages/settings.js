@@ -21,6 +21,7 @@
 
 import * as api from '../api.js';
 import { confirmDialog } from '../dialogs.js';
+import { errorText, hideLoadError, setStatusText, showLoadError } from '../errors.js';
 import { formatWhen, providerName } from '../format.js';
 import { t } from '../i18n/index.js';
 import { onBeforeLeave } from '../router.js';
@@ -55,6 +56,8 @@ const VIEW = `
       <button class="choice-chip" type="button" data-target="settings-version" data-i18n="settings.sections.version"></button>
       <button class="choice-chip" type="button" data-target="settings-danger" data-i18n="settings.sections.danger"></button>
     </nav>
+
+    <div hidden data-field="formError"></div>
 
     <form class="page__narrow" id="settings-form" novalidate inert aria-busy="true" data-field="form">
       <section class="card page-anchor" id="settings-general" aria-labelledby="settings-general-title">
@@ -205,6 +208,8 @@ const VIEW = `
           </mc-field>
           <button class="btn btn--primary" type="submit" data-field="addBtn"></button>
         </form>
+        <p class="form-error" role="alert" data-field="listError"></p>
+        <div hidden data-field="listsError"></div>
       </div>
       <ul class="card__list" hidden data-field="entries"></ul>
       <p class="card__empty" data-i18n="common.loading" data-field="entriesEmpty"></p>
@@ -257,7 +262,9 @@ const VIEW = `
           </label>
         </div>
 
-        <div class="check-list" aria-live="polite">
+        <div hidden data-field="versionsError"></div>
+
+        <div class="check-list" aria-live="polite" data-field="checkList">
           <p class="check-list__title" data-i18n="settings.checks.title"></p>
           <ul data-field="checks"></ul>
         </div>
@@ -413,10 +420,14 @@ export function render(root) {
 
   // ---------- Save bar ----------
 
-  /** @param {'saved' | 'savedRestart' | 'unsaved' | 'invalid' | ''} state */
-  function setSaveStatus(state) {
+  /**
+   * @param {'saved' | 'savedRestart' | 'unsaved' | 'invalid' | 'error' | ''} state
+   * @param {string} [text]  for 'error': what went wrong
+   */
+  function setSaveStatus(state, text = '') {
     const keys = { saved: 'settings.saved', savedRestart: 'settings.savedRestart', unsaved: 'settings.unsaved', invalid: 'settings.invalid' };
-    f.saveStatus.textContent = state ? t(keys[state]) : '';
+    const error = state === 'invalid' || state === 'error';
+    setStatusText(f.saveStatus, state === 'error' ? text : state ? t(keys[state]) : '', { error });
     f.saveStatus.dataset.state = state === 'unsaved' ? 'dirty' : state;
   }
 
@@ -454,7 +465,17 @@ export function render(root) {
     saving = true;
     updateSaveBar();
     const next = readForm();
-    await api.saveSettings(next, { restart });
+    try {
+      await api.saveSettings(next, { restart });
+    } catch (error) {
+      if (!alive) return;
+      // The changes stay in the form – saving again is one click
+      saving = false;
+      updateSaveBar();
+      setSaveStatus('error', t('settings.saveFailed', { reason: errorText(error) }));
+      if (document.activeElement === document.body) event.submitter?.focus();
+      return;
+    }
     if (!alive) return;
     saved = structuredClone(next);
     saving = false;
@@ -538,14 +559,20 @@ export function render(root) {
     return '';
   }
 
-  /** @returns {Promise<boolean>} false if the page is gone */
+  /** @returns {Promise<boolean>} false if it did not work or the page is gone */
   async function changeList(list, action, name, reason = '') {
     listChanging = true;
+    setStatusText(f.listError, '');
     try {
       await api.changeList(list, action, name, { reason });
       const next = await api.getLists();
       if (!alive) return false;
       lists = next;
+    } catch (error) {
+      if (alive) {
+        setStatusText(f.listError, t(`settings.lists.failed.${action}`, { name, reason: errorText(error) }), { error: true });
+      }
+      return false;
     } finally {
       listChanging = false;
     }
@@ -556,6 +583,7 @@ export function render(root) {
 
   f.listTabs.addEventListener('change', () => {
     f.nameField.error = '';
+    setStatusText(f.listError, '');
     renderList();
   });
 
@@ -580,6 +608,7 @@ export function render(root) {
 
   // A shown error goes away as soon as the name is fixed
   f.listForm.addEventListener('input', () => {
+    setStatusText(f.listError, '');
     if (f.nameField.error) f.nameField.error = checkName(selectedList(), f.listForm.elements.player.value.trim());
   });
 
@@ -601,11 +630,31 @@ export function render(root) {
     return f.providers.querySelector('input:checked')?.value ?? null;
   }
 
-  async function loadVersions() {
+  let versionsFailed = false;
+
+  /** @param {boolean} [retry]  "Erneut versuchen" was pressed – focus goes to the list once it is there */
+  async function loadVersions(retry = false) {
     const provider = selectedProvider();
     if (!provider) return;
-    const list = await api.getVersions(provider, { snapshots: f.snapshots.checked });
+    let list;
+    try {
+      list = await api.getVersions(provider, { snapshots: f.snapshots.checked });
+    } catch (error) {
+      if (!alive) return;
+      // Without versions there is nothing to check – the check list would only guess
+      versionsFailed = true;
+      f.versionSelect.replaceChildren(option('', t('settings.versionsFailed')));
+      f.checkList.hidden = true;
+      showLoadError(f.versionsError, t('settings.versionsLoadFailed'), error, () => loadVersions(true));
+      updateChecks();
+      return;
+    }
     if (!alive) return;
+    if (versionsFailed) {
+      versionsFailed = false;
+      f.checkList.hidden = false;
+      hideLoadError(f.versionsError);
+    }
     list.sort((a, b) => compareVersions(b.id, a.id));
 
     const previous = f.versionSelect.value;
@@ -618,6 +667,7 @@ export function render(root) {
     const preferred = [previous, provider === status?.provider ? status.version : null, latest];
     f.versionSelect.value = preferred.find((id) => id && ids.includes(id)) ?? ids[0] ?? '';
     updateChecks();
+    if (retry) f.versionSelect.focus();
   }
 
   let lastChecks = '';
@@ -660,12 +710,15 @@ export function render(root) {
       !target.version || same || !javaOk || !status.eulaAccepted || serverBusy || switching || resetting;
   }
 
-  /** Marks steps before `active` as done; 'all' marks every step done, null clears. */
-  function setSteps(active) {
+  /**
+   * Marks steps before `active` as done; 'all' marks every step done, null clears.
+   * failed: the switch stopped at `active`.
+   */
+  function setSteps(active, failed = false) {
     const index = active === 'all' ? SWITCH_STEPS.length : SWITCH_STEPS.indexOf(active);
     for (const [i, li] of [...f.steps.children].entries()) {
-      li.dataset.state = active === null ? '' : i < index ? 'done' : i === index ? 'active' : '';
-      if (i === index) li.setAttribute('aria-current', 'step');
+      li.dataset.state = active === null ? '' : i < index ? 'done' : i === index ? (failed ? 'failed' : 'active') : '';
+      if (i === index && !failed) li.setAttribute('aria-current', 'step');
       else li.removeAttribute('aria-current');
     }
   }
@@ -685,21 +738,35 @@ export function render(root) {
 
     switching = true;
     updateChecks();
-    await api.switchVersion({ ...target, confirmDowngrade: downgrade }, (step) => {
-      if (!alive) return;
-      setSteps(step);
-      const number = SWITCH_STEPS.indexOf(step) + 1;
-      f.switchStatus.textContent = `${t('settings.switching')} ${number}/${SWITCH_STEPS.length} · ${t(`settings.steps.${step}`)}`;
-    });
+    let current = null; // the step that is running
+    let failure = '';
+    try {
+      await api.switchVersion({ ...target, confirmDowngrade: downgrade }, (step) => {
+        if (!alive) return;
+        current = step;
+        setSteps(step);
+        const number = SWITCH_STEPS.indexOf(step) + 1;
+        setStatusText(f.switchStatus, `${t('settings.switching')} ${number}/${SWITCH_STEPS.length} · ${t(`settings.steps.${step}`)}`);
+      });
+    } catch (error) {
+      failure = errorText(error);
+    }
     if (!alive) return;
     switching = false;
-    setSteps('all');
-    f.switchStatus.textContent = t('settings.switched', { version: `${providerName(target.provider)} ${target.version}` });
+    if (failure) {
+      setSteps(current, true);
+      setStatusText(f.switchStatus, t('settings.switchFailed', { reason: failure }), { error: true });
+    } else {
+      setSteps('all');
+      setStatusText(f.switchStatus, t('settings.switched', { version: `${providerName(target.provider)} ${target.version}` }));
+    }
     updateChecks();
+    // The button was disabled while it ran; after a failure it is the way to try again
+    if (failure && document.activeElement === document.body) f.switchBtn.focus();
   }
 
-  f.providers.addEventListener('change', loadVersions);
-  f.snapshots.addEventListener('change', loadVersions);
+  f.providers.addEventListener('change', () => loadVersions());
+  f.snapshots.addEventListener('change', () => loadVersions());
   f.versionSelect.addEventListener('change', updateChecks);
   f.switchBtn.addEventListener('click', runSwitch);
 
@@ -716,14 +783,21 @@ export function render(root) {
     if (!ok || !alive) return;
     resetting = true;
     f.resetWorldBtn.disabled = true;
-    f.resetWorldStatus.textContent = t('settings.resettingWorld');
+    setStatusText(f.resetWorldStatus, t('settings.resettingWorld'));
     updateChecks();
-    await api.resetWorld();
+    let failure = '';
+    try {
+      await api.resetWorld();
+    } catch (error) {
+      failure = errorText(error);
+    }
     if (!alive) return;
     resetting = false;
     f.resetWorldBtn.disabled = false;
-    f.resetWorldStatus.textContent = t('settings.worldReset');
+    if (failure) setStatusText(f.resetWorldStatus, t('settings.resetWorldFailed', { reason: failure }), { error: true });
+    else setStatusText(f.resetWorldStatus, t('settings.worldReset'));
     updateChecks();
+    if (document.activeElement === document.body) f.resetWorldBtn.focus();
   });
 
   f.resetDefaultsBtn.addEventListener('click', async () => {
@@ -734,7 +808,15 @@ export function render(root) {
       danger: true,
     });
     if (!ok || !alive) return;
-    const defaults = await api.getDefaultProperties();
+    let defaults;
+    try {
+      defaults = await api.getDefaultProperties();
+    } catch (error) {
+      if (!alive) return;
+      setSaveStatus('error', t('settings.defaultsFailed', { reason: errorText(error) }));
+      f.saveStatus.scrollIntoView({ block: 'nearest' });
+      return;
+    }
     if (!alive) return;
     fillForm({ properties: defaults, panel: readForm().panel });
     updateSaveBar();
@@ -795,9 +877,22 @@ export function render(root) {
   });
 
   // Until the values are there, the form is out of reach – typing would be overwritten
-  f.saveStatus.textContent = t('settings.loading');
-  api.getSettings().then((settings) => {
+  /** @param {boolean} [retry]  "Erneut versuchen" was pressed – focus goes to the form once it is there */
+  async function loadSettings(retry = false) {
+    form.setAttribute('aria-busy', 'true');
+    setStatusText(f.saveStatus, t('settings.loading'));
+    let settings;
+    try {
+      settings = await api.getSettings();
+    } catch (error) {
+      if (!alive) return;
+      form.removeAttribute('aria-busy');
+      setSaveStatus('');
+      showLoadError(f.formError, t('settings.loadFailed'), error, () => loadSettings(true));
+      return;
+    }
     if (!alive) return;
+    hideLoadError(f.formError);
     saved = settings;
     fillForm(settings);
     form.inert = false;
@@ -805,13 +900,29 @@ export function render(root) {
     setSaveStatus('saved');
     updateSaveBar();
     updateListControls();
-  });
+    if (retry) root.querySelector('#settings-general-title')?.focus();
+  }
 
-  api.getLists().then((next) => {
+  /** @param {boolean} [retry]  as in loadSettings() */
+  async function loadLists(retry = false) {
+    let next;
+    try {
+      next = await api.getLists();
+    } catch (error) {
+      if (!alive) return;
+      f.entriesEmpty.hidden = true;
+      showLoadError(f.listsError, t('settings.lists.loadFailed'), error, () => loadLists(true));
+      return;
+    }
     if (!alive) return;
+    hideLoadError(f.listsError);
     lists = next;
     renderList();
-  });
+    if (retry) f.listForm.elements.player.focus();
+  }
+
+  loadSettings();
+  loadLists();
 
   return () => {
     alive = false;
