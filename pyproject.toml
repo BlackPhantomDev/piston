@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "piston"
+# PEP 440 form of 0.1.0-alpha.4 – keep in step with public/js/version.js (AGENTS.md §10)
+version = "0.1.0a4"
+description = "A tiny web panel for your Minecraft server on a Raspberry Pi"
+readme = "README.md"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENCE", "ADDITIONAL_TERMS", "THIRD-PARTY-NOTICES"]
+authors = [{ name = "Mischa S." }]
+requires-python = ">=3.11"
+# The only planned runtime dependency, aiohttp, comes with the backend (phase 6)
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/BlackPhantomDev/piston"
+Changelog = "https://github.com/BlackPhantomDev/piston/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+include = ["server*"]

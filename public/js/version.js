@@ -19,7 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Panel version for the browser. The source of truth is "version" in package.json –
+// Panel version for the browser. The source of truth is "version" in pyproject.toml –
 // the browser cannot read that file (it lives outside public/), so it is repeated here.
-// Change both together; a test will compare them once node --test is set up (phase 6).
+// pyproject.toml uses the PEP 440 form (0.1.0a4), this file the SemVer form (0.1.0-alpha.4).
+// Change both together; tests/test_version.py will compare them (phase 6).
 export const VERSION = '0.1.0-alpha.4';
