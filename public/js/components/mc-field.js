@@ -19,29 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { errorIcon } from './error-icon.js';
 import { uid } from './uid.js';
-
-const SVG_NS = 'http://www.w3.org/2000/svg';
-
-function errorIcon() {
-  const svg = document.createElementNS(SVG_NS, 'svg');
-  svg.setAttribute('viewBox', '0 0 24 24');
-  svg.setAttribute('fill', 'none');
-  svg.setAttribute('stroke', 'currentColor');
-  svg.setAttribute('stroke-width', '2.4');
-  svg.setAttribute('stroke-linecap', 'round');
-  svg.setAttribute('aria-hidden', 'true');
-  for (const [tag, attrs] of [
-    ['circle', { cx: 12, cy: 12, r: 9 }],
-    ['line', { x1: 12, y1: 7, x2: 12, y2: 13 }],
-    ['line', { x1: 12, y1: 17, x2: 12, y2: 17 }],
-  ]) {
-    const el = document.createElementNS(SVG_NS, tag);
-    for (const [name, value] of Object.entries(attrs)) el.setAttribute(name, String(value));
-    svg.append(el);
-  }
-  return svg;
-}
 
 /**
  * Form field wrapper: label above, help text and error message below.
