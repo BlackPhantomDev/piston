@@ -22,12 +22,16 @@
 // The pages' only way to server data (AGENTS.md §12). This file is the contract –
 // the types below – and picks where the data comes from:
 //   api/demo.js – sample data from js/mock/, no backend needed;
-//                 ?sim=lost shows what happens when the connection breaks
+//                 ?sim=lost shows what happens when the connection breaks,
+//                 ?sim=error what happens when the backend answers with an error
 //   api/live.js – the PiSton backend over fetch + WebSocket (comes with phase 7)
 // Pages never import those files directly. scripts/build_dist.py always builds
 // the demo, whatever the line below says.
+//
+// When the backend says no, a promise rejects with an ApiError ({ code, message }).
 
 export * from './api/demo.js';
+export { ApiError } from './api/error.js';
 
 /**
  * @typedef {object} Player
