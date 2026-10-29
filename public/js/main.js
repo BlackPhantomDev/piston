@@ -75,6 +75,13 @@ if (app) {
     }, COPIED_MS);
   });
 
+  // Skip link: focus the page content without touching the hash – it holds the route
+  document.querySelector('.skip-link')?.addEventListener('click', (event) => {
+    event.preventDefault();
+    const target = /** @type {HTMLElement} */ (document.querySelector('#main h1') ?? document.getElementById('main'));
+    target.focus();
+  });
+
   startRouter({
     routes: { home, console: consolePage, settings },
     fallback: 'home',

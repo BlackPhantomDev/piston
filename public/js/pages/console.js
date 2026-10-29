@@ -67,7 +67,7 @@ const VIEW = `
   </div>
 
   <section class="console-panel">
-    <log-view class="console-panel__output log--lg" live follow tabindex="0" role="region"
+    <log-view class="console-panel__output log--lg" live follow tabindex="0"
               data-i18n-label="console.output" data-field="log"></log-view>
     <button class="btn btn--secondary btn--s console-panel__jump" type="button" hidden data-field="jumpBtn">
       <span data-i18n="console.jump"></span><span aria-hidden="true">↓</span>

@@ -54,7 +54,7 @@
   --color-text: var(--deepslate-100);
   --color-text-muted: var(--deepslate-300);
   --color-text-on-accent: var(--deepslate-900);
-  --color-placeholder: #757575;
+  --color-placeholder: #8A8884; /* 5:1 on input fields (WCAG AA), still clearly dimmer than typed text */
 
   --color-primary: var(--grass);
   --color-primary-edge: var(--grass-edge);

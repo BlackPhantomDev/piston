@@ -24,6 +24,7 @@ export default {
   nav: {
     label: 'Hauptnavigation',
     menu: 'Menü',
+    skip: 'Zum Inhalt springen',
     home: 'Home',
     console: 'Konsole',
     settings: 'Einstellungen',

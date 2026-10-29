@@ -35,6 +35,8 @@ export class LangSwitch extends HTMLElement {
 
     const fieldset = document.createElement('fieldset');
     fieldset.className = 'lang-switch';
+    // No visible legend in the sidebar – the group still needs a name for screen readers
+    fieldset.setAttribute('aria-label', t('lang.label'));
 
     const options = document.createElement('div');
     options.className = 'lang-switch__options';

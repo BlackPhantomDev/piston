@@ -36,7 +36,9 @@ const LEVEL_CLASSES = { WARN: 'warn', ERROR: 'error', FATAL: 'error', CMD: 'cmd'
  *
  * Attributes:
  *   limit="8"     max. lines kept (default 500)
- *   live          role="log" – screen readers announce new lines
+ *   live          role="log" on the element – screen readers announce new lines.
+ *                 Not on the <ol>: a list with a role loses its list items for screen readers.
+ *                 Give the element a name (aria-label) and, if it scrolls, tabindex="0".
  *   follow        when the element scrolls: stay at the newest line,
  *                 unless the user has scrolled up
  *   filter="warn" show one level only: info | warn | error (CSS, see components.css)
@@ -50,7 +52,7 @@ export class LogView extends HTMLElement {
   connectedCallback() {
     if (this.#list.isConnected) return;
     this.#list.className = 'log';
-    if (this.hasAttribute('live')) this.#list.setAttribute('role', 'log');
+    if (this.hasAttribute('live')) this.setAttribute('role', 'log');
     this.append(this.#list);
   }
 
