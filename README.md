@@ -30,7 +30,8 @@
 
 PiSton is in **early development** and cannot manage a real server yet. The frontend pages are done –
 Home, Console and Settings – and run on sample data that reacts like a vanilla server.
-Next comes the polish (loading and error states, narrow screens, accessibility), then the Python backend.
+Loading states, narrow screens, accessibility and a "panel unreachable" screen are done; next come confirming the
+EULA in the panel and error messages, then the Python backend.
 
 Current version: **0.1.0-alpha.4** – see the [changelog](CHANGELOG.md).
 Progress is tracked in the [roadmap](PROGRESS.md) (German).
@@ -140,7 +141,8 @@ python3 -m http.server 8080 --directory public
 ```
 
 Then open <http://localhost:8080> for the panel and <http://localhost:8080/components.html>
-for an overview of all components and their states.
+for an overview of all components and their states. To see what happens when the panel cannot be
+reached, open <http://localhost:8080/?sim=lost> – the sample connection breaks after a few seconds.
 
 The backend will be a Python package in `server/`, started with `python -m server`; tests run with
 `python -m unittest`.

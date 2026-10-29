@@ -12,7 +12,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 > [!TIP]
 > **Als Nächstes**
-> Feinschliff (Phase 5): EULA im UI bestätigen, Zustände (offline, lädt, Fehler), schmale Bildschirme, Barrierefreiheit
+> Feinschliff (Phase 5): EULA im UI bestätigen, Fehlermeldungen im Format `{ error }` anzeigen, Komponenten-Übersicht ergänzen
 
 > [!NOTE]
 > **Reihenfolge: erst das Frontend, dann das Backend.** Alle Seiten entstehen zuerst vollständig mit
@@ -211,7 +211,18 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 5 – Feinschliff
 
-- [ ] Zustände auf allen Seiten: Server offline, lädt, Panel nicht erreichbar, leere Listen
+- [x] Zustände auf allen Seiten
+  - **Panel nicht erreichbar** (Mockups 06, `js/connection-view.js`):
+    - A: In den ersten 10 s nur ein Banner, die Seite ist abgedunkelt und gesperrt (`inert`).
+    - B/C: Danach der Screen mit Countdown (5 → 10 → 20 → 30 s), Versuchszähler, „Jetzt erneut versuchen“ und Prüfliste.
+      Kopierbare Befehle, Gerätename aus dem Status (`host`).
+    - D: „Verbindung wiederhergestellt“, die Seite ist wieder da, wie sie war (ungespeicherte Einstellungen bleiben).
+    - Die Sidebar bleibt bedienbar, die Adresse heißt dann „zuletzt bekannt“.
+    - Zum Vorführen: `index.html?sim=lost` (Ausfall nach 3 s, der 4. Versuch klappt).
+  - **Lädt**: Badge „Lädt …“ statt eines geratenen „Offline“, Werte „–“, Aktionen gesperrt.
+    Einstellungen bleiben gesperrt (`inert`, `aria-busy`), bis die Werte da sind. Die Beispieldaten kommen dafür mit 300 ms Verzögerung.
+  - **Server offline**: RAM und CPU zeigen „–“ statt 0.
+  - **Leer**: Konsole „Noch keine Ausgabe.“ bzw. „Keine Zeile passt zu Filter oder Suche.“; „Keine Versionen verfügbar“.
 - [ ] Fehlermeldungen im Format `{ error: { code, message } }` anzeigen
 - [x] Schmale Bildschirme: alle Seiten von 320 bis 1280 px geprüft, keine ist breiter als der Bildschirm.
   - Ursache war ein Seitenraster mit `auto`-Spalte: Gekürzte Zeilen (lange Spielernamen) zählten mit ihrer vollen Breite.
@@ -221,8 +232,16 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] Adresse in der Sidebar kopieren:
   - Button mit Tooltip „Adresse kopieren“ und grüner Bestätigung „In die Zwischenablage kopiert“.
   - Ohne HTTPS (normal im LAN) per `execCommand`; klappt beides nicht, wird die Adresse markiert (`js/clipboard.js`).
-- [ ] Barrierefreiheit: Tastatur, Fokus, Screenreader, Kontrast (inkl. Platzhalterfarbe)
-- [ ] `<lang-switch>`: Das `fieldset` hat ohne die entfernte Legend keinen zugänglichen Namen → unsichtbares `aria-label`
+- [x] Barrierefreiheit: geprüft mit axe-core (WCAG 2.2 AA + Best Practices) auf allen Seiten und in 15 Zuständen
+      (Menü offen, Dialoge, Fehler im Formular, Sidebar auf dem Handy, Server offline) – keine Verstöße mehr.
+  - Tastatur: Jeder Tab-Stopp hat einen sichtbaren Fokus (Home 21, Konsole 23, Einstellungen 50 Stopps).
+  - Neu: Link „Zum Inhalt springen“ als erster Tab-Stopp. Er springt zur `<h1>`, die Route im Hash bleibt.
+  - Konsole: `role="log"` sitzt auf `<log-view>` statt auf dem `<ol>`, damit die Zeilen eine Liste bleiben.
+  - Platzhalterfarbe `#8A8884` (5:1 statt 3,8:1).
+  - Schritte beim Versionswechsel: „erledigt“ jetzt mit ✓, nicht nur grün (WCAG 1.4.1).
+  - Windows-Kontrastmodus (`forced-colors`): Gewählte Chips, Sprache, Anbieter, aktuelle Seite und Schalter bekommen
+    Systemfarben; Eingabefelder zeigen den Fokus per Outline, weil der Kontrastmodus `box-shadow` entfernt.
+- [x] `<lang-switch>`: Das `fieldset` hat ein unsichtbares `aria-label` („Sprache“), die Legend fehlt ja.
 - [ ] Komponenten-Übersicht um neue Bausteine ergänzen
 
 ## Phase 6 – Backend-Grundgerüst
@@ -255,6 +274,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [ ] WebSocket `/ws` und alle zustandsändernden Anfragen mit `Origin`-Prüfung.
       Der Host aus `Origin` muss gleich dem `Host`-Header sein, sonst `403` (AGENTS.md §8).
 - [ ] RCON-Status („verbunden / getrennt“) ans Frontend melden und anzeigen (AGENTS.md §6.1). Im Typ `Status` gibt es dafür noch kein Feld.
+- [ ] Verbindungszustand (`onConnection`, `reconnectNow` in `api.js`) an den echten WebSocket hängen.
+      Der Ausfall-Mock (`?sim=lost`) bleibt in der Demo-Kopie.
 - [ ] Konsole-Seite von Beispieldaten auf echte Daten umstellen
 - [ ] „Log herunterladen“: liefert bisher nur den Puffer der Ansicht. Die ganze `latest.log` kommt über `GET /api/logs/latest` (Entwurf in AGENTS.md §9).
 - [ ] Tests: RCON-Paketcodierung, Log-Zeilen-Parser
@@ -264,7 +285,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [ ] `server/service.py`: nur die drei erlaubten `systemctl`-Aufrufe, per `asyncio.create_subprocess_exec` (nie `shell=True`)
 - [ ] `server/metrics.py`: Spieler, TPS, RAM, CPU (Polling ≥ 5 s, nur mit Clients)
 - [ ] `GET /api/status` mit allen Feldern des Typs `Status` in `js/api.js` (inkl. `name`, `address`, `java`, `eulaAccepted`,
-      `lastBackupAt`; `op` je Spieler aus `ops.json`), `POST /api/server/start|stop|restart`
+      `lastBackupAt`, `host` = Hostname des Geräts; `op` je Spieler aus `ops.json`), `POST /api/server/start|stop|restart`
   - JSON-Felder in camelCase, die Umwandlung von `snake_case` passiert an einer Stelle (AGENTS.md §10).
   - `address` = LAN-IP + `server-port`, also die Adresse für Mitspieler, nicht die Panel-URL.
 - [ ] Home-Seite und Sidebar auf echte Daten umstellen
@@ -320,7 +341,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
       Dringender, seit `.gitignore` auch `*.jar` und `.venv/` ausschließt: Ohne die Datei im Repo greifen diese Regeln
       bei einem frischen Klon nicht.
 - [ ] `AGENTS.md` §4 beschreibt die Soll-Struktur, nicht den Ist-Zustand (siehe [Ordnerstruktur](#ordnerstruktur))
-- [ ] Platzhalterfarbe `#757575` hat auf `#18191B` nur ~3,8:1 Kontrast (Ziel ≥ 4,5:1)
+- [x] Platzhalterfarbe `#757575` hatte auf `#18191B` nur ~3,8:1 Kontrast – jetzt `#8A8884` mit 5:1
 - [ ] Fonts als WOFF2 statt TTF (~60–70 % kleiner)
 - [ ] Ungenutzte Font-Dateien: die `static/`-Ordner von Inter, JetBrains Mono und Pixelify Sans sowie 7 Schnitte von
       Chakra Petch (geladen werden nur Medium, SemiBold und Bold). Das `dist/` für den FTP-Test lässt sie schon weg.
@@ -386,6 +407,9 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   - `.avatar` – quadratisches Initial für Spieler.
   - `.card__empty` – Hinweis statt leerer Liste; `.list-add` – Name (+ Grund) und Button in einer Zeile;
     `.list-note` – kurzer Hinweis über einer Liste; `.choice-chip__count` – Anzahl im Chip.
+  - `.command` – Befehl mit Kopier-Button, `.check-steps` – nummerierte Prüfliste; Kopieren mit Tooltip über
+    `setupCopyButton()` aus `js/clipboard.js`.
+  - `<status-badge>` kennt auch `loading` („Lädt …“, gepunkteter Marker), das ist der Standard ohne Status.
   - `.tooltip` – kurzer Hinweis über einem Control (`aria-hidden`, der Name kommt aus `aria-label`).
     Sichtbar bei Hover (nur wo es Hover gibt), Tastaturfokus und solange das Eltern-Element `data-state` hat.
 - **Web Components** (Light DOM, registrieren sich beim Import, gesammelt in `js/components/index.js`):
@@ -397,6 +421,7 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   - `<lang-switch>` – Sprachumschalter aus `LOCALES`, native Radios als Segment-Schalter (je 44 × 44 px).
   - `<log-view limit live follow filter>` – Konsolenausgabe, `el.add(lines)`; Spalten per Subgrid,
     `.log--truncate` für einzeilige Vorschau, `.log--lg` für die Konsole.
+    Mit `live` bekommt das Element selbst `role="log"`; dazu `aria-label` und, wenn es scrollt, `tabindex="0"`.
   - `<action-menu label>` – „⋯“-Button mit Menü aus den `<button value>`-Kindern (`<hr>` = Trenner, `data-danger` = rot).
     Natives Popover, Pfeiltasten/Home/End, feuert `action` mit `detail.value`. Klappt nach oben, wenn unten kein Platz ist.
 
@@ -414,6 +439,9 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
 - Seiten können einen Seitenwechsel aufhalten: `onBeforeLeave(guard)` aus `router.js`, Rückgabe in der Cleanup aufrufen.
   Links werden vor dem Wechsel der URL abgefangen. Zurück/Vor macht den Schritt rückgängig, dafür steht in
   `history.state` eine laufende Nummer (`index`).
+- Verbindung zum Panel weg: `js/connection-view.js` legt Banner und Screen „Panel nicht erreichbar“ über die Seite
+  (Mockups 06). Die Seite bleibt im DOM (nur `hidden`/`inert`), damit Eingaben erhalten bleiben. Der Screen ist ein
+  zweites `<main>`, sichtbar ist immer nur eins.
 - Pflicht-Namensnennung **unten in der Sidebar** (breite Bildschirme, dort immer sichtbar) und als **Footer unter
   dem Inhalt** auf schmalen Bildschirmen, wo die Sidebar eingeklappt ist. Je Breite ist genau eine davon sichtbar.
 
