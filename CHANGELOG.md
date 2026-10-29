@@ -7,6 +7,15 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+### Changed
+
+- The backend will be written in **Python 3.11+** (`asyncio` with `aiohttp`) instead of Node.js.
+  On the Pi, PiSton then needs only Python and Java.
+- `pyproject.toml` replaces `package.json` as the source of the version, in PEP 440 form (`0.1.0a4`);
+  `public/js/version.js` keeps the SemVer form (`0.1.0-alpha.4`).
+- README: Python requirements and virtual environment, how to reach the panel
+  (IP or `raspberrypi.local`, fixed IP via DHCP reservation), plain HTTP by design.
+
 ## [0.1.0-alpha.4] – 2026-10-28
 
 First polish: small phone screens and a copy button.

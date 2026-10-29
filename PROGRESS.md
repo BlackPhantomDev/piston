@@ -45,7 +45,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 | 4 | [Einstellungen (UI)](#phase-4--einstellungen-ui) | Properties-Formular, Spielerlisten, Versionswechsel | ✅ |
 | 5 | [Feinschliff](#phase-5--feinschliff) | Zustände, schmale Bildschirme, Barrierefreiheit | 🚧 |
 | | **Backend** | | |
-| 6 | [Backend-Grundgerüst](#phase-6--backend-grundgerüst) | Node-Server, Konfiguration, `server.properties`-Parser | ⬜ |
+| 6 | [Backend-Grundgerüst](#phase-6--backend-grundgerüst) | Python-Server (aiohttp), Konfiguration, `server.properties`-Parser | ⬜ |
 | 7 | [Konsole live](#phase-7--konsole-live) | RCON, Live-Log, WebSocket | ⬜ |
 | 8 | [Home live](#phase-8--home-live) | Status, Kennzahlen, Start/Stopp | ⬜ |
 | 9 | [Einstellungen live](#phase-9--einstellungen-live) | Properties lesen und speichern | ⬜ |
@@ -93,7 +93,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 - [x] Name „PiSton“ geprüft, „Minecraft“ kommt im Namen nicht vor
 - [x] „Minecraft“ und „Raspberry Pi“ nur beschreibend:
-      Tagline, README, `package.json`, im UI das Feld „Minecraft-Version“ und der EULA-Hinweis
+      Tagline, README, `pyproject.toml`, im UI das Feld „Minecraft-Version“ und der EULA-Hinweis
 - [x] Disclaimer im README
 - [x] Version wechseln ist gesperrt, solange die EULA nicht akzeptiert ist. Es gibt einen Prüfpunkt mit Link zur EULA.
 - [x] **Logo überarbeitet:** Der alte Würfel-Sockel erinnerte an den Minecraft-Kolben.
@@ -106,7 +106,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - Hinweis, wenn `eula.txt` nicht `true` ist: auf Home (der Server startet dann nicht) und in den Einstellungen.
   - Dazu ein Link zur EULA, eine Checkbox (nie vorausgewählt) und ein Button.
   - Bisher gibt es nur den Prüfpunkt beim Versionswechsel.
-- [ ] `.gitignore`: `*.jar` ausschließen, damit keine Server-Jar versehentlich im Repo landet (Phase 6)
+- [x] `.gitignore`: `*.jar` ausschließen, damit keine Server-Jar versehentlich im Repo landet.
+      Gilt bisher nur lokal, weil `.gitignore` selbst nicht im Repo ist (siehe Offene Punkte).
 - [ ] **EULA-Endpunkt** (Phase 9): `POST /api/eula` schreibt `eula=true` nur auf die ausdrückliche Bestätigung aus dem UI.
       Steht als Entwurf in AGENTS.md §9.
 - [ ] **Release** (Phase 11):
@@ -228,18 +229,31 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 - [ ] **Zuerst: Demo-Sicherung** – Kopie von `js/mock/` (Logs, Systemwerte, alles bis dahin Dazugekommene)
       und der Mock-Variante von `js/api.js`, z. B. nach `demo/`. Erst danach etwas auf echte Daten umstellen.
-- [x] `package.json` (`"type": "module"`, `"license": "AGPL-3.0-or-later"`, Version) – vorgezogen
-- [ ] `node --test` eingerichtet, Test: `public/js/version.js` = `version` in `package.json`
-- [ ] `server/config.js` + `panel.config.example.json` – Datei + Umgebungsvariablen, validiert
-- [ ] `server/index.js` – statischer HTTP-Server für `public/`, gebunden an die LAN-IP, Path-Traversal abgelehnt (AGENTS.md §8)
-- [ ] `server/properties.js` – erhält Kommentare, Leerzeilen, Reihenfolge; Java-Escaping; atomar schreiben, vorher `server.properties.bak`
+- [x] `pyproject.toml` (Version in PEP-440-Form `0.1.0a4`, Lizenz, `requires-python = ">=3.11"`) – vorgezogen,
+      ersetzt die frühere `package.json`
+- [ ] venv (`python3 -m venv .venv && .venv/bin/pip install -e .`), `aiohttp` als einzige Abhängigkeit in `pyproject.toml`
+- [x] `.gitignore`: `.venv/`, `__pycache__/` – nur lokal, solange `.gitignore` selbst nicht im Repo ist (siehe Offene Punkte)
+- [ ] `tests/test_version.py`: `public/js/version.js` = `version` aus `pyproject.toml` (nach Umrechnung PEP 440 ↔ SemVer),
+      Aufruf `python -m unittest`
+- [ ] `server/` als Paket, Start mit `python -m server` (`__main__.py`)
+- [ ] `server/config.py` + `panel.config.example.json`: Datei + Umgebungsvariablen, validiert
+  - LAN-IP selbst ermitteln, wenn `panelHost` leer ist (Standard-Route, ohne Pakete zu senden).
+  - Ohne private Adresse bricht der Start ab, kein Ausweichen auf `0.0.0.0`.
+  - Log beim Start: `PiSton läuft auf http://<ip>:<port>`.
+- [ ] `server/app.py`: aiohttp-App, liefert `public/` aus (AGENTS.md §5 „Auslieferung des Frontends“)
+  - Reihenfolge der Routen: `/api/…`, `/ws`, `/` → `index.html`, zuletzt `add_static(…, follow_symlinks=False)`.
+  - `.js` als `text/javascript`; `Cache-Control` je Ordner.
+  - Path-Traversal abgelehnt (`Path.resolve()` + `is_relative_to`, AGENTS.md §8).
+- [ ] `server/properties.py`: erhält Kommentare, Leerzeilen und Reihenfolge; Java-Escaping;
+      atomar schreiben (`os.replace`), vorher `server.properties.bak`
 - [ ] Tests: properties-Round-Trip mit Kommentaren
 
 ## Phase 7 – Konsole live
 
-- [ ] `server/rcon.js` – eigener RCON-Client mit Reconnect + Backoff
-- [ ] `server/logwatch.js` – `latest.log` mitlesen, Log-Rotation, Puffer ~500 Zeilen
-- [ ] WebSocket `/ws` mit `Origin`-Prüfung
+- [ ] `server/rcon.py`: eigener RCON-Client (`asyncio`-Streams, `struct`) mit Reconnect + Backoff
+- [ ] `server/logwatch.py`: `latest.log` mitlesen, Log-Rotation, Puffer ~500 Zeilen
+- [ ] WebSocket `/ws` und alle zustandsändernden Anfragen mit `Origin`-Prüfung.
+      Der Host aus `Origin` muss gleich dem `Host`-Header sein, sonst `403` (AGENTS.md §8).
 - [ ] RCON-Status („verbunden / getrennt“) ans Frontend melden und anzeigen (AGENTS.md §6.1). Im Typ `Status` gibt es dafür noch kein Feld.
 - [ ] Konsole-Seite von Beispieldaten auf echte Daten umstellen
 - [ ] „Log herunterladen“: liefert bisher nur den Puffer der Ansicht. Die ganze `latest.log` kommt über `GET /api/logs/latest` (Entwurf in AGENTS.md §9).
@@ -247,10 +261,12 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 8 – Home live
 
-- [ ] `server/service.js` – nur die drei erlaubten `systemctl`-Aufrufe
-- [ ] `server/metrics.js` – Spieler, TPS, RAM, CPU (Polling ≥ 5 s, nur mit Clients)
+- [ ] `server/service.py`: nur die drei erlaubten `systemctl`-Aufrufe, per `asyncio.create_subprocess_exec` (nie `shell=True`)
+- [ ] `server/metrics.py`: Spieler, TPS, RAM, CPU (Polling ≥ 5 s, nur mit Clients)
 - [ ] `GET /api/status` mit allen Feldern des Typs `Status` in `js/api.js` (inkl. `name`, `address`, `java`, `eulaAccepted`,
       `lastBackupAt`; `op` je Spieler aus `ops.json`), `POST /api/server/start|stop|restart`
+  - JSON-Felder in camelCase, die Umwandlung von `snake_case` passiert an einer Stelle (AGENTS.md §10).
+  - `address` = LAN-IP + `server-port`, also die Adresse für Mitspieler, nicht die Panel-URL.
 - [ ] Home-Seite und Sidebar auf echte Daten umstellen
 
 ## Phase 9 – Einstellungen live
@@ -266,11 +282,17 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 10 – Versionswechsel live
 
-- [ ] `server/backup.js` – Welt-Backups (tar.gz), Pflicht vor jedem Wechsel
-- [ ] `server/java.js` – installierte Java-Versionen
+- [ ] `server/backup.py`: Welt-Backups (`tarfile`, tar.gz), Pflicht vor jedem Wechsel
+  - Packen per `asyncio.to_thread()`, damit Log-Stream und WebSockets nicht stocken.
+  - Beim Wiederherstellen nur `filter="data"` (AGENTS.md §8).
+- [ ] `server/java.py`: installierte Java-Versionen
 - [ ] Versionsvergleich für altes (`1.x.y`) und neues Schema (`26.x`) + Tests.
-      Das Frontend hat ihn schon (`public/js/versions.js`: `compareVersions`, `requiredJava`), also übernehmen oder gemeinsam nutzen.
-- [ ] Provider Vanilla, danach Paper, Fabric (Tests mit gemockten Antworten)
+      Das Frontend hat ihn schon (`public/js/versions.js`: `compareVersions`, `requiredJava`).
+      In Python mit denselben Regeln nachbauen, die Testfälle gelten für beide.
+- [ ] Provider Vanilla, danach Paper, Fabric
+  - Schnittstelle `Provider` (`typing.Protocol`) mit `list_versions()` und `resolve()`.
+  - Ausgehende Anfragen über `aiohttp.ClientSession`.
+  - Tests mit gemockten Antworten.
   - Downloads nur von den Hosts aus AGENTS.md §6.5, Prüfsumme muss passen.
   - Paper verlangt einen eigenen User-Agent mit Kontakt.
 - [ ] `GET /api/versions` mit `&snapshots=true` (Entwurf in AGENTS.md §9)
@@ -279,8 +301,9 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 ## Phase 11 – Release
 
 - [ ] Beispieldaten (`js/mock/`) aus dem Panel entfernen – die Demo-Kopie aus Phase 6 bleibt erhalten
-- [ ] `systemd/piston.service` + `sudoers-piston` (Beispiel)
-- [ ] README: Installation
+- [ ] `systemd/piston.service` (`ExecStart=/opt/piston/.venv/bin/python -m server`, `WorkingDirectory=/opt/piston`)
+      + `sudoers-piston` (Beispiel)
+- [ ] README: Installation nach `/opt/piston` mit venv (nie `--break-system-packages`)
 - [ ] Screenshots
 
 ## Später / Ideen
@@ -294,6 +317,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 ## Offene Punkte & Aufräumarbeiten
 
 - [ ] **Gitignored, fehlt bei frischem Klon:** `AGENTS.md`, `design/` – und `.gitignore` ignoriert sich selbst. Entscheiden, ob sie ins Repo gehören.
+      Dringender, seit `.gitignore` auch `*.jar` und `.venv/` ausschließt: Ohne die Datei im Repo greifen diese Regeln
+      bei einem frischen Klon nicht.
 - [ ] `AGENTS.md` §4 beschreibt die Soll-Struktur, nicht den Ist-Zustand (siehe [Ordnerstruktur](#ordnerstruktur))
 - [ ] Platzhalterfarbe `#757575` hat auf `#18191B` nur ~3,8:1 Kontrast (Ziel ≥ 4,5:1)
 - [ ] Fonts als WOFF2 statt TTF (~60–70 % kleiner)
@@ -318,7 +343,18 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   2. Veränderte Versionen müssen als verändert gekennzeichnet sein.
   3. Keine Markenrechte am Namen „PiSton“ / Logo.
 - Copyright-Inhaber: **„Mischa S.“** (so in `ADDITIONAL_TERMS` und allen Kopfkommentaren).
-- **Jede neue Quelldatei** (JS, CSS, HTML) beginnt mit dem AGPL-Kopfkommentar. Vorlage: Anfang von `public/css/tokens.css`.
+- **Jede neue Quelldatei** (JS, CSS, HTML, Python) beginnt mit dem AGPL-Kopfkommentar. Vorlage: Anfang von `public/css/tokens.css`;
+  in Python als `#`-Zeilen vor dem Docstring, dazu `# SPDX-License-Identifier: AGPL-3.0-or-later`.
+
+### Backend
+- **Python 3.11+ mit `asyncio`** (Entscheidung vom 29.10.2026, vorher war Node.js geplant). Auf dem Pi braucht
+  PiSton damit nur Python (bei Raspberry Pi OS vorinstalliert) und Java – kein Node.js, kein npm.
+- Einzige Laufzeit-Abhängigkeit: **`aiohttp`** (HTTP-Server, WebSocket, statische Dateien, ausgehende Anfragen).
+  Alles andere aus der Standardbibliothek; RCON selbst gebaut. Kein FastAPI/Flask/Django.
+- Installation in eine venv (`/opt/piston/.venv`), weil Raspberry Pi OS `pip install` ins System blockiert (PEP 668).
+- Tests mit `unittest` (`python -m unittest`), Dateien `tests/test_*.py`.
+- Nur HTTP, kein HTTPS – bewusst für den Heimgebrauch im LAN. Erreichbar per IP oder `raspberrypi.local`.
+- Details und Regeln: `AGENTS.md` §2, §3, §5, §8, §10.
 - `LICENCE` enthält ausschließlich den unveränderten AGPL-Text (damit GitHub die Lizenz erkennt).
 
 ### Ordnerstruktur
@@ -382,7 +418,8 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   dem Inhalt** auf schmalen Bildschirmen, wo die Sidebar eingeklappt ist. Je Breite ist genau eine davon sichtbar.
 
 ### Versionierung
-- Semantic Versioning, aktuell **`0.1.0-alpha.4`**. Quelle: `package.json`; Kopie für den Browser in `public/js/version.js`
+- Semantic Versioning, aktuell **`0.1.0-alpha.4`**. Quelle: `pyproject.toml` (PEP-440-Form `0.1.0a4`);
+  Kopie für den Browser in `public/js/version.js` (SemVer-Form)
   (beide gemeinsam ändern). Anzeige bei der Namensnennung, also im Sidebar-Fuß bzw. auf schmalen Bildschirmen im Footer.
   Änderungen in `CHANGELOG.md`.
 - Fahrplan: `0.1.0-alpha.N` (`N` +1 je getaggtem Zwischenstand, z. B. abgeschlossene Phase oder Demo-Upload)
