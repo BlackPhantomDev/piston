@@ -20,7 +20,7 @@
  */
 
 // Sample data for the settings page: server.properties values (GET /api/properties),
-// panel settings and the providers' version lists. Only js/api.js imports this file.
+// panel settings and the providers' version lists. Only js/api/demo.js imports this file.
 
 /** A fresh vanilla server.properties – used by "Auf Standardwerte zurücksetzen". */
 const DEFAULTS = {

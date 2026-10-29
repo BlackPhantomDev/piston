@@ -20,7 +20,7 @@
  */
 
 // Sample log lines in the parsed format { time, level, text } (AGENTS.md §6.1),
-// used until the backend streams latest.log. Only js/api.js imports this file.
+// for the demo (js/api/demo.js, the only file that imports this one).
 
 import { mockChangeList, mockLists } from './lists.js';
 import { mockOnlineNames, mockRemovePlayer } from './status.js';

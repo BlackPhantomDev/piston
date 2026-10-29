@@ -23,7 +23,7 @@
 // Open the panel with sim=lost – before the # (index.html?sim=lost#/home) or behind
 // the route (#/home?sim=lost): the connection breaks after a few seconds, three
 // reconnect attempts fail, the fourth gets through.
-// Without the parameter the connection never breaks. Only js/api.js imports this file.
+// Without the parameter the connection never breaks. Only js/api/demo.js imports this file.
 
 const SIM_LOST = [location.search, location.hash.split('?')[1] ?? ''].some(
   (query) => new URLSearchParams(query).get('sim') === 'lost',

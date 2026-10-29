@@ -19,8 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Sample data in the format of GET /api/status, used until the backend exists.
-// Pages never import this file – only js/api.js does. Removed before release.
+// Sample data in the format of GET /api/status for the demo.
+// Pages never import this file – only js/api/demo.js does. Stays for the demo.
 
 import { mockOnList } from './lists.js';
 
