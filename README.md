@@ -144,6 +144,15 @@ Then open <http://localhost:8080> for the panel and <http://localhost:8080/compo
 for an overview of all components and their states. To see what happens when the panel cannot be
 reached, open <http://localhost:8080/?sim=lost> – the sample connection breaks after a few seconds.
 
+### Demo
+
+`python3 scripts/build_dist.py` builds a demo into `dist/`: the panel on sample data, no backend and no
+Minecraft server needed. Upload the contents of `dist/` to any static web host. The demo always uses the
+sample data in `public/js/mock/` – also once the real backend exists – so every change to the panel can be
+shown without a second branch. Add `?sim=lost` to the address to show a lost connection.
+
+### Backend
+
 The backend will be a Python package in `server/`, started with `python -m server`; tests run with
 `python -m unittest`.
 
@@ -151,6 +160,7 @@ The backend will be a Python package in `server/`, started with `python -m serve
 
 ```
 pyproject.toml         version and Python dependencies
+scripts/build_dist.py  builds the demo into dist/
 public/
 ├─ index.html          app shell: sidebar, navigation, content
 ├─ components.html     component overview
@@ -159,8 +169,9 @@ public/
 ├─ js/
 │  ├─ main.js          entry point
 │  ├─ router.js        hash routing (#/home, #/console, #/settings)
-│  ├─ api.js           the pages' only access to server data
-│  ├─ mock/            sample data until the backend exists
+│  ├─ api.js           the pages' only access to server data – picks demo or live
+│  ├─ api/demo.js      demo: everything on sample data
+│  ├─ mock/            the sample data
 │  ├─ components/      Web Components (<action-menu>, <log-view>, <status-badge>, …)
 │  ├─ i18n/            UI strings
 │  └─ pages/           one module per page

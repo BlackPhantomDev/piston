@@ -20,10 +20,10 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 > sollen sich dabei kaum ändern.
 
 > [!IMPORTANT]
-> **Beispieldaten als Demo sichern, bevor das Backend kommt.** Die Mock-Daten (Logs, Systemwerte wie Spieler,
-> TPS, RAM, CPU) und die Mock-Variante von `api.js` bleiben als Kopie erhalten, damit das Panel ohne
-> Minecraft-Server als Demo laufen kann. Die Sicherung passiert **vor** dem ersten Umstellen auf echte Daten
-> (Anfang Phase 6) und wird in Phase 11 **nicht** gelöscht.
+> **Die Demo bleibt im Repo.** Beispieldaten (`js/mock/`) und die Demo-Umsetzung (`js/api/demo.js`) werden nie
+> gelöscht. `js/api.js` wählt mit einer Zeile zwischen Demo und Live-Backend (`js/api/live.js`, ab Phase 7).
+> `python3 scripts/build_dist.py` baut immer die Demo nach `dist/` – mit `?sim=lost` für eine abgebrochene
+> Verbindung. So gibt es nach jeder Änderung eine aktuelle Demo, ohne zweiten Branch.
 
 > [!WARNING]
 > **Rechtliches beachten:** `eula=true` wird nur nach Bestätigung durch den Nutzer gesetzt.
@@ -246,8 +246,11 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 6 – Backend-Grundgerüst
 
-- [ ] **Zuerst: Demo-Sicherung** – Kopie von `js/mock/` (Logs, Systemwerte, alles bis dahin Dazugekommene)
-      und der Mock-Variante von `js/api.js`, z. B. nach `demo/`. Erst danach etwas auf echte Daten umstellen.
+- [x] **Demo dauerhaft im Repo** statt einer Kopie (vorgezogen):
+  - `js/api.js` ist nur noch die Schnittstelle (Typen) plus `export * from './api/demo.js'`.
+  - `js/api/demo.js` enthält die Umsetzung auf den Beispieldaten in `js/mock/`, inklusive `?sim=lost`.
+  - `scripts/build_dist.py` (Python, nur Standardbibliothek) baut die Demo nach `dist/` und stellt `api.js` dort
+    immer auf die Demo – egal, worauf das Repo gerade zeigt.
 - [x] `pyproject.toml` (Version in PEP-440-Form `0.1.0a5`, Lizenz, `requires-python = ">=3.11"`) – vorgezogen,
       ersetzt die frühere `package.json`
 - [ ] venv (`python3 -m venv .venv && .venv/bin/pip install -e .`), `aiohttp` als einzige Abhängigkeit in `pyproject.toml`
@@ -274,8 +277,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [ ] WebSocket `/ws` und alle zustandsändernden Anfragen mit `Origin`-Prüfung.
       Der Host aus `Origin` muss gleich dem `Host`-Header sein, sonst `403` (AGENTS.md §8).
 - [ ] RCON-Status („verbunden / getrennt“) ans Frontend melden und anzeigen (AGENTS.md §6.1). Im Typ `Status` gibt es dafür noch kein Feld.
-- [ ] Verbindungszustand (`onConnection`, `reconnectNow` in `api.js`) an den echten WebSocket hängen.
-      Der Ausfall-Mock (`?sim=lost`) bleibt in der Demo-Kopie.
+- [ ] `js/api/live.js` mit denselben Funktionen wie `api/demo.js` (fetch + WebSocket), dann in `js/api.js` umstellen.
+      Verbindungszustand (`onConnection`, `reconnectNow`) am echten WebSocket; `?sim=lost` gibt es nur in der Demo.
 - [ ] Konsole-Seite von Beispieldaten auf echte Daten umstellen
 - [ ] „Log herunterladen“: liefert bisher nur den Puffer der Ansicht. Die ganze `latest.log` kommt über `GET /api/logs/latest` (Entwurf in AGENTS.md §9).
 - [ ] Tests: RCON-Paketcodierung, Log-Zeilen-Parser
@@ -321,7 +324,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 11 – Release
 
-- [ ] Beispieldaten (`js/mock/`) aus dem Panel entfernen – die Demo-Kopie aus Phase 6 bleibt erhalten
+- [ ] Prüfen, dass `js/api.js` im Repo auf `api/live.js` zeigt. Die Beispieldaten bleiben für die Demo – das
+      Live-Panel lädt sie nicht.
 - [ ] `systemd/piston.service` (`ExecStart=/opt/piston/.venv/bin/python -m server`, `WorkingDirectory=/opt/piston`)
       + `sudoers-piston` (Beispiel)
 - [ ] README: Installation nach `/opt/piston` mit venv (nie `--break-system-packages`)
@@ -344,7 +348,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] Platzhalterfarbe `#757575` hatte auf `#18191B` nur ~3,8:1 Kontrast – jetzt `#8A8884` mit 5:1
 - [ ] Fonts als WOFF2 statt TTF (~60–70 % kleiner)
 - [ ] Ungenutzte Font-Dateien: die `static/`-Ordner von Inter, JetBrains Mono und Pixelify Sans sowie 7 Schnitte von
-      Chakra Petch (geladen werden nur Medium, SemiBold und Bold). Das `dist/` für den FTP-Test lässt sie schon weg.
+      Chakra Petch (geladen werden nur Medium, SemiBold und Bold). `scripts/build_dist.py` lässt sie im `dist/` schon weg.
 - [ ] „Quellcode“ in der Namensnennung steht fest im HTML (`index.html`, `components.html`). Für Englisch per `data-i18n`
       übersetzbar machen und den deutschen Text als Rückfall im HTML lassen, damit er auch ohne JS sichtbar ist.
 - [ ] Komponenten bisher nur visuell geprüft, keine automatisierten Tests

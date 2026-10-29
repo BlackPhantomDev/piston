@@ -7,6 +7,16 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+### Added
+
+- `scripts/build_dist.py` builds the demo into `dist/` – the panel on sample data, ready for any static
+  web host, `?sim=lost` included. Only Python's standard library is needed.
+
+### Changed
+
+- The demo stays in the repo for good: `js/api.js` is now the contract and picks the implementation,
+  the sample-data version lives in `js/api/demo.js`. The live backend will come as `js/api/live.js`.
+
 ## [0.1.0-alpha.5] – 2026-10-29
 
 Polish: connection and loading states, accessibility – and the backend will be Python.
