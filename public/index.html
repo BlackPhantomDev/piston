@@ -88,7 +88,15 @@
           </div>
         </div>
         <div class="card card--outline card--compact address-box">
-          <p class="card__label" data-i18n="sidebar.address"></p>
+          <p class="card__label">
+            <span data-i18n="sidebar.address"></span
+            ><span
+              class="card__label-note"
+              id="address-stale"
+              hidden
+              data-i18n="sidebar.addressStale"
+            ></span>
+          </p>
           <button
             class="address-box__copy"
             type="button"

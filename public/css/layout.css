@@ -535,3 +535,405 @@
   }
 }
 
+/* =========================================================================
+   Connection to the panel lost / restored – mockups 06 (js/connection-view.js)
+   ========================================================================= */
+
+/* "zuletzt bekannt" next to the address label while the panel is unreachable */
+.card__label-note::before {
+  content: " · ";
+}
+
+/* ---------- Banner: A (lost, first seconds) and D (restored) ---------- */
+
+.connection-banner {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  margin: var(--space-3) var(--space-6) 0;
+  padding: 10px var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+}
+
+.connection-banner svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.connection-banner__text {
+  flex: 1;
+}
+
+.connection-banner__lost:first-child {
+  color: var(--redstone-hover);
+}
+
+.connection-banner__busy {
+  color: var(--color-text-muted);
+}
+
+.connection-banner__marker {
+  width: var(--badge-dot);
+  height: var(--badge-dot);
+  border-radius: var(--radius-marker);
+  background-color: var(--color-online);
+}
+
+.connection-banner[data-state="lost"] .connection-banner__marker,
+.connection-banner[data-state="restored"] .connection-banner__lost {
+  display: none;
+}
+
+.connection-banner[data-state="restored"] {
+  border-color: var(--grass-edge);
+  background-color: var(--color-online-bg);
+  color: var(--color-online-text);
+}
+
+/* The page while the connection is gone: still visible, out of reach (inert) */
+.page--waiting {
+  opacity: 0.45;
+}
+
+/* Turning arc for "busy"; still when motion is reduced */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
+/* ---------- Screen: B / C ("Panel nicht erreichbar") ---------- */
+
+.unreachable__inner {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.unreachable__inner > .card,
+.unreachable__inner > .unreachable__note {
+  justify-self: stretch;
+}
+
+.unreachable__icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: var(--border-width) solid var(--redstone);
+  border-radius: var(--radius-card);
+  background-color: var(--color-offline-bg);
+  color: var(--redstone-hover);
+}
+
+.unreachable__icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Own shape for "Verbindung getrennt" – not the square of the server's "Offline" */
+.connection-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--badge-h);
+  padding: 0 12px;
+  border-radius: var(--radius-control);
+  background-color: var(--color-offline-bg);
+  color: var(--color-offline-text);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+}
+
+.connection-pill svg {
+  width: 14px;
+  height: 14px;
+}
+
+.unreachable__lead {
+  color: var(--color-text-muted);
+}
+
+.unreachable__origin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+}
+
+.unreachable__origin .text-mono {
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+.unreachable__checks {
+  margin-top: var(--space-3);
+}
+
+.unreachable__note {
+  padding: var(--space-3);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+/* Retry card: countdown, attempt, progress, last contact, button */
+.retry {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  padding: 20px;
+}
+
+.retry__head,
+.retry__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+}
+
+.retry__number {
+  font-family: var(--font-mono);
+  font-weight: var(--fw-semibold);
+}
+
+.retry__attempt {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+}
+
+/* Neutral, not green: green means "online" in the panel */
+.retry__bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background-color: var(--deepslate-600);
+}
+
+.retry__fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background-color: var(--deepslate-300);
+  transition: width 1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retry__fill {
+    transition: none;
+  }
+}
+
+.retry__last {
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+}
+
+.retry__action {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+
+.retry__icon,
+.retry__busy {
+  display: flex;
+}
+
+.retry__busy,
+.retry .btn[data-busy] .retry__icon {
+  display: none;
+}
+
+.retry .btn[data-busy] .retry__busy {
+  display: flex;
+}
+
+/* Attempt running: looks disabled, stays focusable (aria-disabled) */
+.retry .btn[aria-disabled="true"] {
+  border-bottom-color: var(--deepslate-600);
+  background-color: var(--deepslate-500);
+  color: var(--color-text-muted);
+  cursor: progress;
+}
+
+.retry__failed {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-label);
+}
+
+.retry__failed svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--redstone-hover);
+}
+
+@media (max-width: 599.98px) {
+  .retry__action,
+  .retry__action .btn {
+    width: 100%;
+  }
+
+  .retry__action {
+    justify-items: stretch;
+  }
+}
+
+/* Numbered checks: number box on the left, text and commands on the right */
+.check-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: check;
+}
+
+.check-steps > li {
+  position: relative;
+  padding: var(--space-3) 20px var(--space-3) 58px; /* room for the number box */
+  counter-increment: check;
+}
+
+.check-steps > li + li {
+  border-top: var(--border-width) solid var(--color-divider);
+}
+
+.check-steps > li > * + * {
+  margin-top: var(--space-1);
+}
+
+.check-steps > li::before {
+  content: counter(check) / "";
+  position: absolute;
+  top: var(--space-3);
+  left: 20px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-small);
+  background-color: var(--deepslate-600);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+}
+
+.check-steps__title {
+  font-weight: var(--fw-semibold);
+}
+
+.check-steps__text {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.check-steps__link {
+  margin-block: var(--space-2);
+  color: var(--grass);
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.check-steps__link a {
+  color: inherit;
+}
+
+/* Command with copy button, e.g. "$ systemctl status piston" */
+.command {
+  display: flex;
+  max-width: 420px;
+  margin-block: var(--space-1) var(--space-2);
+  border: var(--border);
+  border-radius: var(--radius-control);
+  background-color: var(--color-console-bg);
+}
+
+.command code {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.command__prompt {
+  color: var(--color-text-muted);
+}
+
+.command__copy {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--control-h-m);
+  border: 0;
+  border-left: var(--border);
+  border-radius: 0 var(--radius-control) var(--radius-control) 0;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.command__copy:hover {
+  background-color: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.command__copy svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Copy buttons: tick instead of the copy icon for a moment */
+.icon-done,
+[data-state="copied"] > .icon-copy {
+  display: none;
+}
+
+[data-state="copied"] > .icon-done {
+  display: block;
+}
+
+.command__copy[data-state="copied"] {
+  color: var(--grass-hover);
+}
+
+/* Narrow screens: banner right under the top bar, edge to edge */
+@media (max-width: 899.98px) {
+  .connection-banner {
+    top: var(--topbar-h);
+    margin: 0;
+    border-width: 0 0 var(--border-width);
+    border-radius: 0;
+  }
+}

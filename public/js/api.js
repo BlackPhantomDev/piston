@@ -22,6 +22,7 @@
 // The pages' only way to server data. Serves sample data from js/mock/
 // for now; later fetch + WebSocket (AGENTS.md §9) – pages stay unchanged.
 
+import { mockConnect, mockWatchConnection } from './mock/connection.js';
 import { mockChangeList, mockLists } from './mock/lists.js';
 import { mockCommand, mockLogBacklog, mockLogLine } from './mock/log.js';
 import { mockDefaultProperties, mockGetSettings, mockSaveSettings, mockVersions } from './mock/settings.js';
@@ -40,6 +41,7 @@ import { mockCreateBackup, mockResetWorld, mockServerAction, mockStatus, mockSwi
  * @typedef {object} Status  shape of GET /api/status
  * @property {string} name  server name for the sidebar (source still open, AGENTS.md §9)
  * @property {string} address  "host:port" players connect to
+ * @property {string} host  hostname of the machine running PiSton – reachable as http://<host>.local
  * @property {'online' | 'offline' | 'starting' | 'stopping'} state
  * @property {string} provider  'vanilla' | 'paper' | 'fabric'
  * @property {string} version
@@ -88,16 +90,112 @@ const statusListeners = new Set();
 /** @type {Set<(lines: LogLine[]) => void>} */
 const logListeners = new Set();
 
+/** Log listeners that subscribed while the connection was lost and still wait for the buffer. */
+const logListenersWithoutBacklog = new Set();
+
+// ---------- Connection to the panel (later: the WebSocket) ----------
+
+/**
+ * @typedef {object} Connection
+ * @property {'online' | 'lost'} state
+ * @property {number} attempt  number of the next or running reconnect attempt (0 while online)
+ * @property {boolean} trying  an attempt is running right now
+ * @property {number | null} nextAttemptAt  time (ms) of the next automatic attempt
+ * @property {number} retryDelayMs  wait before that attempt, for the progress bar
+ * @property {boolean} manualAttemptFailed  "Jetzt erneut versuchen" was pressed and failed
+ * @property {number | null} lastConnectedAt  time (ms) the connection was last known to work
+ */
+
+// The wait grows with every failed attempt, then stays at 30 s
+const RETRY_DELAYS_MS = [5000, 10000, 20000, 30000];
+
+/** @type {Connection} */
+let connection = {
+  state: 'online',
+  attempt: 0,
+  trying: false,
+  nextAttemptAt: null,
+  retryDelayMs: 0,
+  manualAttemptFailed: false,
+  lastConnectedAt: Date.now(),
+};
+
+/** @type {Set<(connection: Connection) => void>} */
+const connectionListeners = new Set();
+let retryTimer = 0;
+
+/**
+ * Calls back right away with the connection state and again on every change.
+ * @param {(connection: Connection) => void} callback
+ * @returns {() => void} unsubscribe
+ */
+export function onConnection(callback) {
+  connectionListeners.add(callback);
+  callback({ ...connection });
+  return () => connectionListeners.delete(callback);
+}
+
+/** "Jetzt erneut versuchen": try at once instead of waiting for the countdown. */
+export function reconnectNow() {
+  if (connection.state === 'lost' && !connection.trying) attemptReconnect(true);
+}
+
+/** @param {Partial<Connection>} changes */
+function setConnection(changes) {
+  connection = { ...connection, ...changes };
+  for (const listener of connectionListeners) listener({ ...connection });
+}
+
+function connectionLost() {
+  if (connection.state === 'lost') return;
+  scheduleReconnect({ state: 'lost', attempt: 1, trying: false, manualAttemptFailed: false });
+}
+
+/**
+ * Sets the next automatic attempt – together with the other changes in one update,
+ * so listeners never see a state without its countdown.
+ * @param {Partial<Connection>} changes
+ */
+function scheduleReconnect(changes) {
+  clearTimeout(retryTimer);
+  const attempt = changes.attempt ?? connection.attempt;
+  const delay = RETRY_DELAYS_MS[Math.min(attempt, RETRY_DELAYS_MS.length) - 1];
+  setConnection({ ...changes, nextAttemptAt: Date.now() + delay, retryDelayMs: delay });
+  retryTimer = setTimeout(() => attemptReconnect(false), delay);
+}
+
+/** @param {boolean} manual */
+async function attemptReconnect(manual) {
+  clearTimeout(retryTimer);
+  setConnection({ trying: true, nextAttemptAt: null, manualAttemptFailed: false });
+  if (await mockConnect()) {
+    setConnection({ state: 'online', attempt: 0, trying: false, lastConnectedAt: Date.now() });
+    // What the backend sends to a client that (re)connects: status and log buffer
+    broadcastStatus();
+    for (const listener of logListenersWithoutBacklog) listener(mockLogBacklog());
+    logListenersWithoutBacklog.clear();
+  } else {
+    scheduleReconnect({ trying: false, attempt: connection.attempt + 1, manualAttemptFailed: manual });
+  }
+}
+
+mockWatchConnection(connectionLost);
+
+// ---------- Live data ----------
+
 /**
  * Calls back right away with the current status and again on every update.
+ * While the connection is lost, nothing arrives – the next status comes with the reconnect.
  * Return the result from a page's render() so updates stop on navigation.
  * @param {(status: Status) => void} callback
  * @returns {() => void} unsubscribe
  */
 export function onStatus(callback) {
   statusListeners.add(callback);
-  callback(mockStatus());
-  const timer = setInterval(() => callback(mockStatus()), STATUS_INTERVAL_MS);
+  if (connection.state === 'online') callback(mockStatus());
+  const timer = setInterval(() => {
+    if (connection.state === 'online') callback(mockStatus());
+  }, STATUS_INTERVAL_MS);
   return () => {
     clearInterval(timer);
     statusListeners.delete(callback);
@@ -106,6 +204,7 @@ export function onStatus(callback) {
 
 /** Pushes the current status to every subscriber at once (e.g. after start/stop). */
 function broadcastStatus() {
+  if (connection.state !== 'online') return;
   const status = mockStatus();
   for (const listener of statusListeners) listener(status);
 }
@@ -128,11 +227,16 @@ export async function serverAction(action) {
  */
 export function onLog(callback) {
   logListeners.add(callback);
-  callback(mockLogBacklog());
-  const timer = setInterval(() => callback([mockLogLine()]), MOCK_LOG_INTERVAL_MS);
+  // While the connection is lost, the buffer follows with the reconnect
+  if (connection.state === 'online') callback(mockLogBacklog());
+  else logListenersWithoutBacklog.add(callback);
+  const timer = setInterval(() => {
+    if (connection.state === 'online') callback([mockLogLine()]);
+  }, MOCK_LOG_INTERVAL_MS);
   return () => {
     clearInterval(timer);
     logListeners.delete(callback);
+    logListenersWithoutBacklog.delete(callback);
   };
 }
 

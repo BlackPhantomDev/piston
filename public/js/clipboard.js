@@ -19,6 +19,41 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { t } from './i18n/index.js';
+
+const RESULT_MS = 2000; // how long the result stays in the tooltip
+
+/**
+ * Wires a copy button that holds a .tooltip (see components.css): the tooltip shows
+ * the result for a moment, a live region announces it. If the browser refuses,
+ * onFailed() can select the text, so it can be copied by hand.
+ * @param {HTMLButtonElement} button
+ * @param {object} options
+ * @param {() => string} options.text  what to copy, read at click time
+ * @param {HTMLElement} options.status  live region (role="status")
+ * @param {() => void} [options.onFailed]
+ */
+export function setupCopyButton(button, { text, status, onFailed }) {
+  const tip = /** @type {HTMLElement | null} */ (button.querySelector('.tooltip'));
+  const idle = tip?.textContent ?? '';
+  let timer = 0;
+
+  button.addEventListener('click', async () => {
+    const copied = await copyText(text());
+    if (!copied) onFailed?.();
+    // data-state keeps the tooltip open with the result
+    button.dataset.state = copied ? 'copied' : 'failed';
+    if (tip) tip.textContent = t(copied ? 'copy.copied' : 'copy.failedShort');
+    status.textContent = t(copied ? 'copy.copied' : 'copy.failed');
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      delete button.dataset.state;
+      if (tip) tip.textContent = idle;
+      status.textContent = '';
+    }, RESULT_MS);
+  });
+}
+
 /**
  * Copies text to the clipboard. The Clipboard API only exists in secure contexts
  * (HTTPS, localhost) – the panel usually runs on plain HTTP in the LAN, so the

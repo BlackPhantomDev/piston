@@ -62,9 +62,16 @@ export function startRouter({ routes, fallback, outlet, onRoute }) {
   let leaving = false; // a guard said yes – the next hashchange must not ask again
   let asking = false;
 
+  /** Route name from a hash; a query behind it (#/home?sim=lost) is not part of the name. */
   function routeOf(/** @type {string} */ hash) {
-    const name = hash.replace(/^#\//, '');
+    const name = hash.replace(/^#\//, '').split('?')[0];
     return Object.hasOwn(routes, name) ? name : fallback;
+  }
+
+  /** The hash to keep in the address bar: as typed for a known route, else the bare route. */
+  function canonical(/** @type {string} */ name) {
+    const hash = location.hash;
+    return hash === `#/${name}` || hash.startsWith(`#/${name}?`) ? hash : `#/${name}`;
   }
 
   /** Asks the page's guard; a second navigation while it asks is refused. */
@@ -83,7 +90,7 @@ export function startRouter({ routes, fallback, outlet, onRoute }) {
     const name = routeOf(location.hash);
     // A new entry has no number yet – it comes right after the one we left
     index = history.state?.index ?? index + 1;
-    history.replaceState({ ...history.state, index }, '', `#/${name}`);
+    history.replaceState({ ...history.state, index }, '', canonical(name));
     const page = routes[name];
 
     cleanup?.();
@@ -114,7 +121,7 @@ export function startRouter({ routes, fallback, outlet, onRoute }) {
   window.addEventListener('hashchange', async () => {
     if (routeOf(location.hash) === current) {
       // Unknown hash: the fallback is on screen already, only the URL needs fixing
-      if (location.hash !== `#/${current}`) history.replaceState({ ...history.state, index }, '', `#/${current}`);
+      if (location.hash !== canonical(current)) history.replaceState({ ...history.state, index }, '', canonical(current));
       return;
     }
     if (!leaving && !(await mayLeave())) {

@@ -38,6 +38,7 @@ const ago = (minutes) => new Date(Date.now() - minutes * MINUTE).toISOString();
 
 const SERVER_NAME = 'Survival-Welt';
 const SERVER_ADDRESS = '192.168.178.42:25565';
+const HOST = 'mc-server';
 
 // Who is OP comes from the sample ops list (lists.js)
 const players = [
@@ -58,6 +59,7 @@ export function mockStatus() {
   return {
     name: SERVER_NAME,
     address: SERVER_ADDRESS,
+    host: HOST,
     state,
     provider: installed.provider,
     version: installed.version,

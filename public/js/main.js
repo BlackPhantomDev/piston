@@ -21,7 +21,8 @@
 
 import './components/index.js';
 import { onStatus } from './api.js';
-import { copyText } from './clipboard.js';
+import { setupCopyButton } from './clipboard.js';
+import { initConnectionView } from './connection-view.js';
 import { t, translate } from './i18n/index.js';
 import { initNav } from './nav.js';
 import { startRouter } from './router.js';
@@ -29,8 +30,6 @@ import * as home from './pages/home.js';
 import * as consolePage from './pages/console.js'; // not `console` – would shadow the global
 import * as settings from './pages/settings.js';
 import { VERSION } from './version.js';
-
-const COPIED_MS = 2000; // how long the tick shows after copying the address
 
 // Version next to the attribution in the footer (index.html and components.html)
 for (const el of document.querySelectorAll('[data-version]')) el.textContent = VERSION;
@@ -50,8 +49,6 @@ if (app) {
   const serverName = /** @type {HTMLElement} */ (document.getElementById('server-name'));
   const serverAddress = /** @type {HTMLElement} */ (document.getElementById('server-address'));
   const copyButton = /** @type {HTMLButtonElement} */ (document.getElementById('copy-address'));
-  const copyStatus = /** @type {HTMLElement} */ (document.getElementById('copy-address-status'));
-  const copyTip = /** @type {HTMLElement} */ (document.getElementById('copy-address-tip'));
   onStatus((status) => {
     serverName.textContent = status.name;
     serverAddress.textContent = status.address;
@@ -59,27 +56,21 @@ if (app) {
   });
 
   // Copy "IP:Port" – if the browser refuses, the address is selected for copying by hand
-  let copiedTimer = 0;
-  copyButton.addEventListener('click', async () => {
-    const copied = await copyText(serverAddress.textContent ?? '');
-    if (!copied) getSelection()?.selectAllChildren(serverAddress);
-    // data-state keeps the tooltip open with the result (see .tooltip in components.css)
-    copyButton.dataset.state = copied ? 'copied' : 'failed';
-    copyTip.textContent = t(copied ? 'sidebar.copied' : 'sidebar.copyFailedShort');
-    copyStatus.textContent = t(copied ? 'sidebar.copied' : 'sidebar.copyFailed');
-    clearTimeout(copiedTimer);
-    copiedTimer = setTimeout(() => {
-      delete copyButton.dataset.state;
-      copyTip.textContent = t('sidebar.copyAddress');
-      copyStatus.textContent = '';
-    }, COPIED_MS);
+  setupCopyButton(copyButton, {
+    text: () => serverAddress.textContent ?? '',
+    status: /** @type {HTMLElement} */ (document.getElementById('copy-address-status')),
+    onFailed: () => getSelection()?.selectAllChildren(serverAddress),
   });
 
-  // Skip link: focus the page content without touching the hash – it holds the route
+  // Lost connection to the panel: banner, then the "Panel nicht erreichbar" screen (mockups 06)
+  initConnectionView(/** @type {HTMLElement} */ (document.getElementById('main')));
+
+  // Skip link: focus the page content without touching the hash – it holds the route.
+  // While the panel is unreachable, its screen is the visible <main>.
   document.querySelector('.skip-link')?.addEventListener('click', (event) => {
     event.preventDefault();
-    const target = /** @type {HTMLElement} */ (document.querySelector('#main h1') ?? document.getElementById('main'));
-    target.focus();
+    const main = /** @type {HTMLElement} */ (document.querySelector('main:not([hidden])'));
+    /** @type {HTMLElement} */ (main.querySelector('h1') ?? main).focus();
   });
 
   startRouter({
