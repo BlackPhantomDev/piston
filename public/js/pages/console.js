@@ -69,14 +69,15 @@ const VIEW = `
   <section class="console-panel">
     <log-view class="console-panel__output log--lg" live follow tabindex="0"
               data-i18n-label="console.output" data-field="log"></log-view>
+    <p class="console-panel__empty" data-i18n="console.loading" data-field="empty"></p>
     <button class="btn btn--secondary btn--s console-panel__jump" type="button" hidden data-field="jumpBtn">
       <span data-i18n="console.jump"></span><span aria-hidden="true">↓</span>
     </button>
     <form class="console-input" data-field="form">
       <span class="console-input__prompt" aria-hidden="true">&gt;</span>
-      <input name="command" maxlength="256" autocomplete="off" autocapitalize="off" spellcheck="false"
-             data-field="input" data-i18n-label="console.input.label">
-      <button class="btn btn--primary btn--s" type="submit" data-field="sendBtn" data-i18n="console.send"></button>
+      <input name="command" maxlength="256" autocomplete="off" autocapitalize="off" spellcheck="false" disabled
+             data-field="input" data-i18n-label="console.input.label" data-i18n-placeholder="console.input.loading">
+      <button class="btn btn--primary btn--s" type="submit" disabled data-field="sendBtn" data-i18n="console.send"></button>
     </form>
   </section>
 
@@ -108,9 +109,22 @@ export function render(root) {
 
   // ---------- Output: follow new lines, offer a jump back when scrolled up ----------
 
+  let received = false; // the buffer has arrived – before that the output says "Lädt …"
+
   function addLines(lines) {
+    received = true;
     f.log.add(lines);
     f.jumpBtn.hidden = f.log.atEnd;
+    updateEmpty();
+  }
+
+  // An empty output says why: still loading, nothing written yet, or nothing matches
+  function updateEmpty() {
+    const empty = f.log.visibleCount === 0;
+    f.empty.hidden = !empty;
+    if (!empty) return;
+    if (!received) f.empty.textContent = t('console.loading');
+    else f.empty.textContent = t(f.log.lineCount === 0 ? 'console.empty' : 'console.noMatch');
   }
 
   function jumpToEnd() {
@@ -132,11 +146,13 @@ export function render(root) {
     if (level === 'all') f.log.removeAttribute('filter');
     else f.log.setAttribute('filter', level);
     jumpToEnd();
+    updateEmpty();
   });
 
   f.search.addEventListener('input', () => {
     f.log.query = f.search.value;
     jumpToEnd();
+    updateEmpty();
   });
 
   f.downloadBtn.addEventListener('click', () => downloadText(f.log.toText()));
@@ -144,6 +160,7 @@ export function render(root) {
   f.clearBtn.addEventListener('click', () => {
     f.log.clear();
     f.jumpBtn.hidden = true;
+    updateEmpty();
   });
 
   // ---------- Command line: send, history with ↑/↓ ----------
@@ -214,6 +231,7 @@ function commandChip(command) {
   const button = document.createElement('button');
   button.className = 'chip';
   button.type = 'button';
+  button.disabled = true; // until the first status says the server is online
   button.dataset.command = command;
   button.textContent = command.trim();
   li.append(button);

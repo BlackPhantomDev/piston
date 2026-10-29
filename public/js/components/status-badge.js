@@ -21,7 +21,7 @@
 
 import { t } from '../i18n/index.js';
 
-const STATES = ['online', 'offline', 'starting', 'stopping'];
+const STATES = ['loading', 'online', 'offline', 'starting', 'stopping'];
 
 /**
  * Server status: text + shape marker, never colour alone.
@@ -44,7 +44,8 @@ export class StatusBadge extends HTMLElement {
   #render() {
     if (!this.isConnected) return;
     const requested = this.getAttribute('status') ?? '';
-    const state = STATES.includes(requested) ? requested : 'offline';
+    // Nothing known yet (no status arrived): "Lädt …", never a guessed "Offline"
+    const state = STATES.includes(requested) ? requested : 'loading';
     this.dataset.state = state;
 
     const marker = document.createElement('span');

@@ -56,7 +56,7 @@ const VIEW = `
       <button class="choice-chip" type="button" data-target="settings-danger" data-i18n="settings.sections.danger"></button>
     </nav>
 
-    <form class="page__narrow" id="settings-form" novalidate data-field="form">
+    <form class="page__narrow" id="settings-form" novalidate inert aria-busy="true" data-field="form">
       <section class="card page-anchor" id="settings-general" aria-labelledby="settings-general-title">
         <header class="card__header">
           <h2 id="settings-general-title" tabindex="-1" data-i18n="settings.sections.general"></h2>
@@ -206,8 +206,8 @@ const VIEW = `
           <button class="btn btn--primary" type="submit" data-field="addBtn"></button>
         </form>
       </div>
-      <ul class="card__list" data-field="entries"></ul>
-      <p class="card__empty" hidden data-field="entriesEmpty"></p>
+      <ul class="card__list" hidden data-field="entries"></ul>
+      <p class="card__empty" data-i18n="common.loading" data-field="entriesEmpty"></p>
       <p class="visually-hidden" role="status" data-field="listStatus"></p>
     </section>
 
@@ -248,7 +248,7 @@ const VIEW = `
           <mc-field>
             <label data-i18n="settings.mcVersion"></label>
             <div class="select">
-              <select class="input input--mono" data-field="versionSelect"></select>
+              <select class="input input--mono" data-field="versionSelect"><option value="" data-i18n="settings.versionsLoading"></option></select>
             </div>
           </mc-field>
           <label class="checkbox">
@@ -613,6 +613,7 @@ export function render(root) {
     f.versionSelect.replaceChildren(
       ...list.map((v) => option(v.id, v.id === latest ? t('settings.latest', { version: v.id }) : v.id)),
     );
+    if (list.length === 0) f.versionSelect.append(option('', t('settings.noVersions')));
     const ids = list.map((v) => v.id);
     const preferred = [previous, provider === status?.provider ? status.version : null, latest];
     f.versionSelect.value = preferred.find((id) => id && ids.includes(id)) ?? ids[0] ?? '';
@@ -793,10 +794,14 @@ export function render(root) {
     updateListControls();
   });
 
+  // Until the values are there, the form is out of reach – typing would be overwritten
+  f.saveStatus.textContent = t('settings.loading');
   api.getSettings().then((settings) => {
     if (!alive) return;
     saved = settings;
     fillForm(settings);
+    form.inert = false;
+    form.removeAttribute('aria-busy');
     setSaveStatus('saved');
     updateSaveBar();
     updateListControls();

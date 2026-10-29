@@ -658,6 +658,17 @@ status-badge[data-state="stopping"] .status-badge__marker {
   background-color: transparent;
 }
 
+/* Nothing known yet: dotted outline, muted text – never a guessed "Offline" */
+status-badge[data-state="loading"] {
+  color: var(--color-text-muted);
+}
+
+status-badge[data-state="loading"] .status-badge__marker {
+  border: 2px dotted var(--color-text-muted);
+  border-radius: 1px;
+  background-color: transparent;
+}
+
 /* =========================================================================
    Language switch – native radios as a segmented control
    <lang-switch> renders: <fieldset class="lang-switch"><legend>…</legend>
@@ -1150,6 +1161,18 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
 }
 
 /* Shown while scrolled up and new lines arrived */
+/* "Lädt …", "Noch keine Ausgabe." or "Keine Zeile passt …" where the lines would be */
+.console-panel__empty {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  right: var(--space-3);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  pointer-events: none;
+}
+
 .console-panel__jump {
   position: absolute;
   right: var(--space-3);

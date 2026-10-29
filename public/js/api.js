@@ -83,6 +83,7 @@ import { mockCreateBackup, mockResetWorld, mockServerAction, mockStatus, mockSwi
 const STATUS_INTERVAL_MS = 5000; // AGENTS.md §6.4: polling ≥ 5 s
 const MOCK_LOG_INTERVAL_MS = 4000; // sample data only – the real log is pushed via WebSocket
 const MOCK_LOG_DELAY_MS = 150; // sample data only – delay of command lines in the log
+const MOCK_LATENCY_MS = 300; // sample data only – first data arrives like over the network
 
 /** @type {Set<(status: Status) => void>} */
 const statusListeners = new Set();
@@ -184,19 +185,23 @@ mockWatchConnection(connectionLost);
 // ---------- Live data ----------
 
 /**
- * Calls back right away with the current status and again on every update.
- * While the connection is lost, nothing arrives – the next status comes with the reconnect.
+ * Calls back with the status as soon as it arrives (not synchronously – pages show
+ * "Lädt …" until then) and again on every update. While the connection is lost,
+ * nothing arrives – the next status comes with the reconnect.
  * Return the result from a page's render() so updates stop on navigation.
  * @param {(status: Status) => void} callback
  * @returns {() => void} unsubscribe
  */
 export function onStatus(callback) {
   statusListeners.add(callback);
-  if (connection.state === 'online') callback(mockStatus());
+  const first = setTimeout(() => {
+    if (connection.state === 'online') callback(mockStatus());
+  }, MOCK_LATENCY_MS);
   const timer = setInterval(() => {
     if (connection.state === 'online') callback(mockStatus());
   }, STATUS_INTERVAL_MS);
   return () => {
+    clearTimeout(first);
     clearInterval(timer);
     statusListeners.delete(callback);
   };
@@ -220,7 +225,7 @@ export async function serverAction(action) {
 }
 
 /**
- * Calls back right away with the buffered lines, then with each new line.
+ * Calls back with the buffered lines as soon as they arrive, then with each new line.
  * Lines are always oldest first – pass them straight to <log-view>.add().
  * @param {(lines: LogLine[]) => void} callback
  * @returns {() => void} unsubscribe
@@ -228,12 +233,15 @@ export async function serverAction(action) {
 export function onLog(callback) {
   logListeners.add(callback);
   // While the connection is lost, the buffer follows with the reconnect
-  if (connection.state === 'online') callback(mockLogBacklog());
-  else logListenersWithoutBacklog.add(callback);
+  const first = setTimeout(() => {
+    if (connection.state === 'online') callback(mockLogBacklog());
+    else logListenersWithoutBacklog.add(callback);
+  }, MOCK_LATENCY_MS);
   const timer = setInterval(() => {
     if (connection.state === 'online') callback([mockLogLine()]);
   }, MOCK_LOG_INTERVAL_MS);
   return () => {
+    clearTimeout(first);
     clearInterval(timer);
     logListeners.delete(callback);
     logListenersWithoutBacklog.delete(callback);
@@ -335,6 +343,7 @@ export async function resetWorld() {
  * @returns {Promise<Lists>}
  */
 export async function getLists() {
+  await new Promise((resolve) => setTimeout(resolve, MOCK_LATENCY_MS));
   return mockLists();
 }
 

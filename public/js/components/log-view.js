@@ -71,6 +71,19 @@ export class LogView extends HTMLElement {
     for (const li of this.#list.children) this.#applyQuery(/** @type {HTMLElement} */ (li));
   }
 
+  /** Number of kept lines, filtered ones included. */
+  get lineCount() {
+    return this.#list.childElementCount;
+  }
+
+  /** Lines left after the level filter and the search – 0 means the view looks empty. */
+  get visibleCount() {
+    const level = this.getAttribute('filter');
+    return [...this.#list.children].filter(
+      (li) => !(/** @type {HTMLElement} */ (li).hidden) && (!level || li.classList.contains(`log__line--${level}`)),
+    ).length;
+  }
+
   /** True when the newest line is in view (always true if the element does not scroll). */
   get atEnd() {
     return this.scrollHeight - this.scrollTop - this.clientHeight < 2;

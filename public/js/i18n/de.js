@@ -151,7 +151,11 @@ export default {
       label: 'Befehl',
       placeholder: 'Befehl eingeben, z. B. say Hallo',
       offline: 'Server ist offline – keine Befehle möglich',
+      loading: 'Verbinde …',
     },
+    loading: 'Lädt Konsolenausgabe …',
+    empty: 'Noch keine Ausgabe.',
+    noMatch: 'Keine Zeile passt zu Filter oder Suche.',
     send: 'Senden',
     common: {
       title: 'Häufige Befehle',
@@ -279,6 +283,9 @@ export default {
       text: 'Alle Felder dieser Seite bekommen die Werte einer frischen server.properties. Gespeichert wird erst, wenn du speicherst.',
       confirm: 'Zurücksetzen',
     },
+    loading: 'Lädt Einstellungen …',
+    versionsLoading: 'Lädt Versionen …',
+    noVersions: 'Keine Versionen verfügbar',
     saved: 'Alle Änderungen gespeichert',
     savedRestart: 'Gespeichert – wird nach dem nächsten Neustart aktiv',
     unsaved: 'Ungespeicherte Änderungen',
@@ -355,6 +362,7 @@ export default {
     date: '{date} {time}',
   },
   common: {
+    loading: 'Lädt …',
     cancel: 'Abbrechen',
     none: 'keins',
   },
@@ -370,6 +378,7 @@ export default {
     end: 'The End',
   },
   status: {
+    loading: 'Lädt …',
     online: 'Online',
     offline: 'Offline',
     starting: 'Startet …',
