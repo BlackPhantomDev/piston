@@ -11,6 +11,11 @@ Versions below 1.0.0 are in development – anything may still change.
 
 - `scripts/build_dist.py` builds the demo into `dist/` – the panel on sample data, ready for any static
   web host, `?sim=lost` included. Only Python's standard library is needed.
+- Error messages: when the backend answers `{ error: { code, message } }`, the panel shows the message
+  where the action happened – in the save bar, below the version steps, under the player lists, in the
+  message dialog or as a console line. Actions without a place of their own (start/stop, backup, player
+  menu) show a notice at the bottom right that stays until it is closed. Settings, player lists and
+  versions that do not load get "Erneut versuchen". Try it in the demo with `?sim=error`.
 
 ### Changed
 

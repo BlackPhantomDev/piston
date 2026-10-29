@@ -12,7 +12,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 > [!TIP]
 > **Als Nächstes**
-> Feinschliff (Phase 5): EULA im UI bestätigen, Fehlermeldungen im Format `{ error }` anzeigen, Komponenten-Übersicht ergänzen
+> Feinschliff (Phase 5): EULA im UI bestätigen, Komponenten-Übersicht ergänzen
 
 > [!NOTE]
 > **Reihenfolge: erst das Frontend, dann das Backend.** Alle Seiten entstehen zuerst vollständig mit
@@ -23,7 +23,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 > **Die Demo bleibt im Repo.** Beispieldaten (`js/mock/`) und die Demo-Umsetzung (`js/api/demo.js`) werden nie
 > gelöscht. `js/api.js` wählt mit einer Zeile zwischen Demo und Live-Backend (`js/api/live.js`, ab Phase 7).
 > `python3 scripts/build_dist.py` baut immer die Demo nach `dist/` – mit `?sim=lost` für eine abgebrochene
-> Verbindung. So gibt es nach jeder Änderung eine aktuelle Demo, ohne zweiten Branch.
+> Verbindung und `?sim=error` für Fehlermeldungen. So gibt es nach jeder Änderung eine aktuelle Demo, ohne zweiten Branch.
 
 > [!WARNING]
 > **Rechtliches beachten:** `eula=true` wird nur nach Bestätigung durch den Nutzer gesetzt.
@@ -223,7 +223,19 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
     Einstellungen bleiben gesperrt (`inert`, `aria-busy`), bis die Werte da sind. Die Beispieldaten kommen dafür mit 300 ms Verzögerung.
   - **Server offline**: RAM und CPU zeigen „–“ statt 0.
   - **Leer**: Konsole „Noch keine Ausgabe.“ bzw. „Keine Zeile passt zu Filter oder Suche.“; „Keine Versionen verfügbar“.
-- [ ] Fehlermeldungen im Format `{ error: { code, message } }` anzeigen
+- [x] Fehlermeldungen im Format `{ error: { code, message } }` anzeigen:
+  - Vertrag: Jede Funktion in `js/api.js` lehnt bei einem Fehler mit `ApiError` (`code`, `message`) ab (`js/api/error.js`).
+    Angezeigt wird `message` vom Backend; für eine zweite Sprache später über `code` nachschlagen (`errorText()` in `js/errors.js`).
+  - Wo es steht – immer mit Icon und Text, nie nur Farbe:
+    - Einstellungen: Speicherleiste („Nicht gespeichert: …“), unter den Schritten des Versionswechsels
+      (der Schritt, an dem es scheiterte, bekommt ✕), Gefahrenzone, unter dem Formular der Spielerlisten.
+    - Konsole: eigene `ERROR`-Zeile direkt unter dem Befehl. Home: „Nachricht an alle“ bleibt offen, der Text bleibt stehen.
+    - Alles ohne eigenen Platz (Starten/Stoppen, Backup, Schnellaktionen, Spielermenü): Meldung unten rechts.
+      Sie bleibt, bis man sie schließt oder die Seite wechselt; höchstens drei, gleiche nur einmal.
+    - Nicht geladen (Einstellungen, Spielerlisten, Versionen): Kasten mit Grund und „Erneut versuchen“ an der Stelle des Inhalts.
+  - Zum Vorführen: `?sim=error` (`js/mock/errors.js`) – jede Änderung schlägt fehl, jedes Laden beim ersten Mal.
+    Kombinierbar: `?sim=lost,error`.
+  - Geprüft mit axe in allen Fehlerzuständen, auch auf dem Handy.
 - [x] Schmale Bildschirme: alle Seiten von 320 bis 1280 px geprüft, keine ist breiter als der Bildschirm.
   - Ursache war ein Seitenraster mit `auto`-Spalte: Gekürzte Zeilen (lange Spielernamen) zählten mit ihrer vollen Breite.
     Jetzt `minmax(0, 1fr)` für `.page` und `.page__narrow`.
@@ -248,7 +260,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 - [x] **Demo dauerhaft im Repo** statt einer Kopie (vorgezogen):
   - `js/api.js` ist nur noch die Schnittstelle (Typen) plus `export * from './api/demo.js'`.
-  - `js/api/demo.js` enthält die Umsetzung auf den Beispieldaten in `js/mock/`, inklusive `?sim=lost`.
+  - `js/api/demo.js` enthält die Umsetzung auf den Beispieldaten in `js/mock/`, inklusive `?sim=lost` und `?sim=error`.
   - `scripts/build_dist.py` (Python, nur Standardbibliothek) baut die Demo nach `dist/` und stellt `api.js` dort
     immer auf die Demo – egal, worauf das Repo gerade zeigt.
 - [x] `pyproject.toml` (Version in PEP-440-Form `0.1.0a5`, Lizenz, `requires-python = ">=3.11"`) – vorgezogen,
@@ -279,6 +291,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [ ] RCON-Status („verbunden / getrennt“) ans Frontend melden und anzeigen (AGENTS.md §6.1). Im Typ `Status` gibt es dafür noch kein Feld.
 - [ ] `js/api/live.js` mit denselben Funktionen wie `api/demo.js` (fetch + WebSocket), dann in `js/api.js` umstellen.
       Verbindungszustand (`onConnection`, `reconnectNow`) am echten WebSocket; `?sim=lost` gibt es nur in der Demo.
+      Fehlerantworten `{ error: { code, message } }` als `ApiError` weiterreichen, wie in der Demo.
 - [ ] Konsole-Seite von Beispieldaten auf echte Daten umstellen
 - [ ] „Log herunterladen“: liefert bisher nur den Puffer der Ansicht. Die ganze `latest.log` kommt über `GET /api/logs/latest` (Entwurf in AGENTS.md §9).
 - [ ] Tests: RCON-Paketcodierung, Log-Zeilen-Parser

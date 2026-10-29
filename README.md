@@ -143,13 +143,16 @@ python3 -m http.server 8080 --directory public
 Then open <http://localhost:8080> for the panel and <http://localhost:8080/components.html>
 for an overview of all components and their states. To see what happens when the panel cannot be
 reached, open <http://localhost:8080/?sim=lost> – the sample connection breaks after a few seconds.
+<http://localhost:8080/?sim=error> shows the error messages: every change fails, and every list or
+setting fails to load the first time.
 
 ### Demo
 
 `python3 scripts/build_dist.py` builds a demo into `dist/`: the panel on sample data, no backend and no
 Minecraft server needed. Upload the contents of `dist/` to any static web host. The demo always uses the
 sample data in `public/js/mock/` – also once the real backend exists – so every change to the panel can be
-shown without a second branch. Add `?sim=lost` to the address to show a lost connection.
+shown without a second branch. Add `?sim=lost` to the address to show a lost connection, `?sim=error` to
+show error messages, or both: `?sim=lost,error`.
 
 ### Backend
 
