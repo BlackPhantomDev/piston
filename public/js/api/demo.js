@@ -22,9 +22,11 @@
 // Demo implementation of api.js: everything runs in the browser on the sample data
 // in js/mock/ – no backend, no Minecraft server. Same functions, same data shapes
 // as the live version will have, so pages cannot tell the difference.
+// ?sim=error makes the "backend" answer with errors (mock/errors.js).
 // Stays in the repo for good: scripts/build_dist.py builds the demo from it.
 
 import { mockConnect, mockWatchConnection } from '../mock/connection.js';
+import { mockFail } from '../mock/errors.js';
 import { mockChangeList, mockLists } from '../mock/lists.js';
 import { mockCommand, mockLogBacklog, mockLogLine } from '../mock/log.js';
 import { mockDefaultProperties, mockGetSettings, mockSaveSettings, mockVersions } from '../mock/settings.js';
@@ -167,6 +169,7 @@ function broadcastStatus() {
  * @returns {Promise<void>}
  */
 export async function serverAction(action) {
+  await mockFail('serverAction');
   mockServerAction(action, broadcastStatus);
 }
 
@@ -202,6 +205,7 @@ export function onLog(callback) {
  * @returns {Promise<string[]>} response lines, may be empty (e.g. for say)
  */
 export async function sendCommand(command) {
+  await mockFail('command');
   const { response, log, statusChanged } = mockCommand(command);
   // kick, ban, op, … change the player list – the backend's next status shows it
   if (statusChanged) broadcastStatus();
@@ -220,6 +224,7 @@ export async function sendCommand(command) {
  * @returns {Promise<void>}
  */
 export async function createBackup() {
+  await mockFail('backup');
   await mockCreateBackup();
   broadcastStatus();
 }
@@ -230,6 +235,7 @@ export async function createBackup() {
  * @returns {Promise<Settings>}
  */
 export async function getSettings() {
+  await mockFail('settings');
   return mockGetSettings();
 }
 
@@ -239,6 +245,7 @@ export async function getSettings() {
  * @returns {Promise<Settings['properties']>}
  */
 export async function getDefaultProperties() {
+  await mockFail('defaults');
   return mockDefaultProperties();
 }
 
@@ -250,6 +257,7 @@ export async function getDefaultProperties() {
  * @returns {Promise<void>}
  */
 export async function saveSettings(settings, { restart = false } = {}) {
+  await mockFail('saveSettings');
   await mockSaveSettings(settings);
   if (restart) await serverAction('restart');
 }
@@ -261,6 +269,7 @@ export async function saveSettings(settings, { restart = false } = {}) {
  * @returns {Promise<McVersion[]>}
  */
 export async function getVersions(provider, { snapshots = false } = {}) {
+  await mockFail('versions');
   return mockVersions(provider, snapshots);
 }
 
@@ -268,7 +277,8 @@ export async function getVersions(provider, { snapshots = false } = {}) {
  * Runs the version switch (later POST /api/versions/switch, progress via WebSocket).
  * @param {{ provider: string, version: string, confirmDowngrade?: boolean }} target
  * @param {(step: 'stop' | 'backup' | 'download' | 'swap' | 'start') => void} onStep  called as each step starts
- * @returns {Promise<void>} resolves when the server is up again
+ * @returns {Promise<void>} resolves when the server is up again – also after a failed
+ *   switch (rejects then), which brings the old version back up first
  */
 export async function switchVersion(target, onStep) {
   await mockSwitchVersion(target, onStep, broadcastStatus);
@@ -281,6 +291,7 @@ export async function switchVersion(target, onStep) {
  * @returns {Promise<void>}
  */
 export async function resetWorld() {
+  await mockFail('resetWorld');
   await mockResetWorld(broadcastStatus);
 }
 
@@ -289,6 +300,7 @@ export async function resetWorld() {
  * @returns {Promise<Lists>}
  */
 export async function getLists() {
+  await mockFail('lists');
   await new Promise((resolve) => setTimeout(resolve, MOCK_LATENCY_MS));
   return mockLists();
 }
@@ -311,6 +323,7 @@ const LIST_COMMANDS = {
  * @returns {Promise<void>}
  */
 export async function changeList(list, action, name, { reason = '' } = {}) {
+  await mockFail(action === 'add' ? 'listAdd' : 'listRemove');
   if (mockStatus().state === 'online') {
     await sendCommand(LIST_COMMANDS[list][action](name, reason));
   } else {

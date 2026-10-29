@@ -20,14 +20,13 @@
  */
 
 // Simulated connection to the panel, for the demo and the tests.
-// Open the panel with sim=lost – before the # (index.html?sim=lost#/home) or behind
-// the route (#/home?sim=lost): the connection breaks after a few seconds, three
-// reconnect attempts fail, the fourth gets through.
+// Open the panel with ?sim=lost (see sim.js): the connection breaks after a few
+// seconds, three reconnect attempts fail, the fourth gets through.
 // Without the parameter the connection never breaks. Only js/api/demo.js imports this file.
 
-const SIM_LOST = [location.search, location.hash.split('?')[1] ?? ''].some(
-  (query) => new URLSearchParams(query).get('sim') === 'lost',
-);
+import { simulates } from './sim.js';
+
+const SIM_LOST = simulates('lost');
 const LOST_AFTER_MS = 3000;
 const FAILED_ATTEMPTS = 3;
 const ATTEMPT_MS = 800; // how long one attempt takes

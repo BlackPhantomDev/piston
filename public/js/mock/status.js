@@ -22,6 +22,7 @@
 // Sample data in the format of GET /api/status for the demo.
 // Pages never import this file – only js/api/demo.js does. Stays for the demo.
 
+import { mockError } from './errors.js';
 import { mockOnList } from './lists.js';
 
 const MINUTE = 60_000;
@@ -150,6 +151,15 @@ export async function mockSwitchVersion(target, onStep, onChange) {
   lastBackup = Date.now();
   onStep('download');
   await wait(1500);
+  // ?sim=error: the download is broken. The old jar was never touched,
+  // so the server simply starts again (AGENTS.md §6.5)
+  const error = mockError('switchVersion');
+  if (error) {
+    setState('starting', onChange);
+    await wait(TRANSITION_MS);
+    setState('online', onChange);
+    throw error;
+  }
   onStep('swap');
   await wait(600);
   installed = { provider: target.provider, version: target.version };

@@ -23,7 +23,8 @@
     python3 scripts/build_dist.py [--out DIR]
 
 Upload the contents of dist/ to any static web host. Adding ?sim=lost to the
-address shows what happens when the connection to the device breaks.
+address shows what happens when the connection to the device breaks, ?sim=error
+what happens when the backend answers with errors.
 
 The demo always runs on js/api/demo.js and the sample data in js/mock/,
 whatever js/api.js points to in the repo – so every change to the panel
