@@ -7,12 +7,38 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+## [0.1.0-alpha.5] – 2026-10-29
+
+Polish: connection and loading states, accessibility – and the backend will be Python.
+
+### Added
+
+- When the panel loses its connection to the device: a short banner first, after 10 seconds a screen
+  ("Das Gerät antwortet nicht") with countdown, retry button and things to check, then
+  "Verbindung wiederhergestellt". The page underneath stays as it was, unsaved settings included.
+  Try it with `index.html?sim=lost` or `#/home?sim=lost`.
+- Loading states: "Lädt …" until the first data arrives – status badge, values, lists, console and settings.
+- Empty console: "Noch keine Ausgabe." or "Keine Zeile passt zu Filter oder Suche."
+- "Zum Inhalt springen" (skip to content) link as the first tab stop.
+- Windows high contrast mode: selected chips, language, provider, current page and toggles stay visible.
+
+### Fixed
+
+- Home shows "–" for RAM and CPU while the server is offline instead of 0.
+- Before the first status, the badge no longer guesses "Offline".
+- Accessibility: no axe-core violations left (WCAG 2.2 AA) on any page or state.
+  - Console lines are announced as a list again: `role="log"` moved from the list to `<log-view>`.
+  - The language switch has a name for screen readers.
+  - Placeholder text has enough contrast (5:1).
+  - Finished steps of a version switch show a tick, not only green.
+  - Inputs show their focus in high contrast mode too.
+
 ### Changed
 
 - The backend will be written in **Python 3.11+** (`asyncio` with `aiohttp`) instead of Node.js.
   On the Pi, PiSton then needs only Python and Java.
-- `pyproject.toml` replaces `package.json` as the source of the version, in PEP 440 form (`0.1.0a4`);
-  `public/js/version.js` keeps the SemVer form (`0.1.0-alpha.4`).
+- `pyproject.toml` replaces `package.json` as the source of the version, in PEP 440 form (`0.1.0a5`);
+  `public/js/version.js` keeps the SemVer form (`0.1.0-alpha.5`).
 - README: Python requirements and virtual environment, how to reach the panel
   (IP or `raspberrypi.local`, fixed IP via DHCP reservation), plain HTTP by design.
 
@@ -92,7 +118,8 @@ First tagged state: the frontend runs on sample data, there is no backend yet.
 - Language switch prepared (German active, English planned).
 - Required "Powered by PiSton" attribution on every page (AGPL-3.0 §7).
 
-[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.4...HEAD
+[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.5...HEAD
+[0.1.0-alpha.5]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.4...v0.1.0-alpha.5
 [0.1.0-alpha.4]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.3...v0.1.0-alpha.4
 [0.1.0-alpha.3]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.2...v0.1.0-alpha.3
 [0.1.0-alpha.2]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.1...v0.1.0-alpha.2

@@ -1,6 +1,6 @@
 # 🗺️ PiSton – Roadmap
 
-**Stand:** 28.10.2026 · **Version:** `0.1.0-alpha.4` · **Aktuelle Phase:** 5 – Feinschliff
+**Stand:** 29.10.2026 · **Version:** `0.1.0-alpha.5` · **Aktuelle Phase:** 5 – Feinschliff
 
 ```
 Frontend  ▰▰▰▰▰▱  5 von 6 Phasen
@@ -248,7 +248,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 - [ ] **Zuerst: Demo-Sicherung** – Kopie von `js/mock/` (Logs, Systemwerte, alles bis dahin Dazugekommene)
       und der Mock-Variante von `js/api.js`, z. B. nach `demo/`. Erst danach etwas auf echte Daten umstellen.
-- [x] `pyproject.toml` (Version in PEP-440-Form `0.1.0a4`, Lizenz, `requires-python = ">=3.11"`) – vorgezogen,
+- [x] `pyproject.toml` (Version in PEP-440-Form `0.1.0a5`, Lizenz, `requires-python = ">=3.11"`) – vorgezogen,
       ersetzt die frühere `package.json`
 - [ ] venv (`python3 -m venv .venv && .venv/bin/pip install -e .`), `aiohttp` als einzige Abhängigkeit in `pyproject.toml`
 - [x] `.gitignore`: `.venv/`, `__pycache__/` – nur lokal, solange `.gitignore` selbst nicht im Repo ist (siehe Offene Punkte)
@@ -446,7 +446,7 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   dem Inhalt** auf schmalen Bildschirmen, wo die Sidebar eingeklappt ist. Je Breite ist genau eine davon sichtbar.
 
 ### Versionierung
-- Semantic Versioning, aktuell **`0.1.0-alpha.4`**. Quelle: `pyproject.toml` (PEP-440-Form `0.1.0a4`);
+- Semantic Versioning, aktuell **`0.1.0-alpha.5`**. Quelle: `pyproject.toml` (PEP-440-Form `0.1.0a5`);
   Kopie für den Browser in `public/js/version.js` (SemVer-Form)
   (beide gemeinsam ändern). Anzeige bei der Namensnennung, also im Sidebar-Fuß bzw. auf schmalen Bildschirmen im Footer.
   Änderungen in `CHANGELOG.md`.
