@@ -182,8 +182,8 @@ public/
 └─ assets/             logo and fonts
 ```
 
-The UI is currently in German. All strings live in `public/js/i18n/`, and the language switch
-in the sidebar is ready – English only needs a translation file.
+The UI speaks German and English – switch with DE | EN in the sidebar (on phones in the top bar).
+All strings live in `public/js/i18n/`, so another language is one more file.
 
 ## License
 

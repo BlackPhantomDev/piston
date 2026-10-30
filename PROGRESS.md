@@ -236,7 +236,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - **Leer**: Konsole „Noch keine Ausgabe.“ bzw. „Keine Zeile passt zu Filter oder Suche.“; „Keine Versionen verfügbar“.
 - [x] Fehlermeldungen im Format `{ error: { code, message } }` anzeigen:
   - Vertrag: Jede Funktion in `js/api.js` lehnt bei einem Fehler mit `ApiError` (`code`, `message`) ab (`js/api/error.js`).
-    Angezeigt wird `message` vom Backend; für eine zweite Sprache später über `code` nachschlagen (`errorText()` in `js/errors.js`).
+    Angezeigt wird `message` vom Backend (Deutsch); Englisch schlägt den Grund über `code` nach (`errorText()` in `js/errors.js`).
   - Wo es steht – immer mit Icon und Text, nie nur Farbe:
     - Einstellungen: Speicherleiste („Nicht gespeichert: …“), unter den Schritten des Versionswechsels
       (der Schritt, an dem es scheiterte, bekommt ✕), Gefahrenzone, unter dem Formular der Spielerlisten.
@@ -276,6 +276,13 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
     Dazu Listen mit Hinzufügen, Gefahrenzone, Info-Pill, Badge „Lädt …“ und der Skip-Link.
   - Menü, Dialog, Kopieren, „Erneut versuchen“ und die Meldung unten rechts funktionieren dort echt.
   - Geprüft mit axe bei 1440 und 375 px.
+- [x] Englische Oberfläche (`js/i18n/en.js`), umschaltbar mit DE | EN:
+  - Alle Schlüssel aus `de.js` mit denselben Platzhaltern, dazu „Quellcode“ in der Namensnennung (`legal.source`).
+  - Fehler vom Backend: Englisch schlägt den Grund über `error.code` in `errors.codes` nach.
+    Für einen Code ohne Eintrag erscheint die deutsche `message`.
+  - Uhrzeit und Datum in der regionalen Variante des Browsers: `en-GB` 24 h und Tag/Monat, `en-US` AM/PM und Monat/Tag.
+  - Geprüft auf allen Seiten, mit `?sim=error`, `?sim=eula` und `?sim=lost` und auf dem Handy: kein deutscher UI-Text, axe ohne Verstöße.
+    Deutsch bleiben nur Daten der Demo (MOTD, Chat, Bann-Grund) und die Komponenten-Übersicht.
 
 ## Phase 6 – Backend-Grundgerüst
 
@@ -410,7 +417,6 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ### Weitere Ideen
 
-- 🌐 Englische Oberfläche: `js/i18n/en.js` anlegen und in `LOCALES` eintragen – der Umschalter ist schon da
 - 🧩 Forge / NeoForge – bewusst nicht enthalten, nur als „geplant“ im UI
 - 🚫 IP-Banns (`banned-ips.json`) – die Spielerlisten zeigen bisher nur Banns nach Name
 
@@ -426,8 +432,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [ ] Fonts als WOFF2 statt TTF (~60–70 % kleiner)
 - [ ] Ungenutzte Font-Dateien: die `static/`-Ordner von Inter, JetBrains Mono und Pixelify Sans sowie 7 Schnitte von
       Chakra Petch (geladen werden nur Medium, SemiBold und Bold). `scripts/build_dist.py` lässt sie im `dist/` schon weg.
-- [ ] „Quellcode“ in der Namensnennung steht fest im HTML (`index.html`, `components.html`). Für Englisch per `data-i18n`
-      übersetzbar machen und den deutschen Text als Rückfall im HTML lassen, damit er auch ohne JS sichtbar ist.
+- [x] „Quellcode“ in der Namensnennung ist per `data-i18n="legal.source"` übersetzbar. Der deutsche Text bleibt im HTML
+      als Rückfall ohne JS. `components.html` bleibt deutsch, die Seite ist nur für die Entwicklung.
 - [ ] Komponenten bisher nur visuell geprüft, keine automatisierten Tests
 - [x] Display-Schrift Chakra Petch statt Pixelify Sans (Titel, Überschriften, Kennzahlen, Avatare); Pixelify nur noch im Logo (`--font-logo`)
 - [x] `README.md` mit Beschreibung, Lizenz, Disclaimer, Sicherheitshinweis
@@ -552,8 +558,11 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   Bis dahin zählt nur `N` hoch, auch zweistellig.
 
 ### Sprache (i18n)
-- UI-Texte zentral in `js/i18n/de.js`, Zugriff über `t('status.online')`.
+- UI-Texte zentral in `js/i18n/de.js` und `js/i18n/en.js` (gleiche Schlüssel), Zugriff über `t('status.online')`.
   Statisches HTML: `data-i18n` (Text), `data-i18n-label` (aria-label) oder `data-i18n-<attr>` (jedes andere Attribut),
-  befüllt von `translate()`.
+  befüllt von `translate()`. Neue Texte immer in beide Dateien.
 - Sprachen in `LOCALES` (`js/i18n/index.js`); Deutsch ist Standard und Rückfall für fehlende Schlüssel.
+- Fehler vom Backend kommen auf Deutsch (`message`). Andere Sprachen schlagen sie über `code` nach (`errors.codes` in `en.js`).
+  Jeder neue Fehlercode im Backend bekommt dort einen Eintrag.
+- Uhrzeit und Datum über `formatLocale`: die regionale Variante des Browsers, wenn sie zur Sprache passt.
 - Auswahl in `localStorage` (`piston.locale`), Wechsel lädt die Seite neu. Regeln: `AGENTS.md` §7 „Sprache (i18n)“.

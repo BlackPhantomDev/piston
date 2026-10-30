@@ -9,6 +9,8 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ### Added
 
+- English UI: switch with DE | EN. Backend errors arrive in German and are looked up by their code;
+  dates and times follow the browser's regional variant (en-GB, en-US, …).
 - Home: below the TPS value, the target and how it runs – "Ziel 20 · flüssig", "etwas verzögert" below 19,
   "stark verzögert" below 15. Without a value (offline, still loading) just "Ziel 20".
 
