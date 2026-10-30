@@ -21,7 +21,7 @@
 
 // Turns raw API values into display text. Units and wording come from i18n.
 
-import { locale, t } from './i18n/index.js';
+import { formatLocale, t } from './i18n/index.js';
 
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
@@ -52,8 +52,8 @@ export function formatSince(isoDate) {
   return formatDuration(Math.max(0, Date.now() - Date.parse(isoDate)));
 }
 
-const clock = new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' });
-const dayMonth = new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit' });
+const clock = new Intl.DateTimeFormat(formatLocale, { hour: '2-digit', minute: '2-digit' });
+const dayMonth = new Intl.DateTimeFormat(formatLocale, { day: '2-digit', month: '2-digit' });
 
 /**
  * Point in time relative to today: "heute 06:00", "gestern 22:15", "12.10. 06:00".

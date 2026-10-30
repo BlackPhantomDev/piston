@@ -61,6 +61,12 @@ const strings = active.strings;
 export const locale = active.code;
 
 /**
+ * Tag for dates and times: the browser's regional variant if it speaks the active
+ * language (en-GB → 24 h and day/month, en-US → AM/PM and month/day), else the language.
+ */
+export const formatLocale = (navigator.languages ?? []).find((tag) => tag.split('-')[0] === locale) ?? locale;
+
+/**
  * @param {object | null} table
  * @param {string} key
  */
