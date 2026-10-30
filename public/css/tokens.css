@@ -161,4 +161,6 @@
   /* ---------- Motion ---------- */
   --transition-fast: 120ms ease-out;
   --transition-slide: 200ms ease-out; /* sidebar on narrow screens */
+  --pulse-calm: 2.4s; /* status badge while online – twice, so it stays under 5 s (components.css) */
+  --pulse-fast: 1.2s; /* status badge while offline (4 times), starting or stopping */
 }

@@ -37,8 +37,11 @@ export class StatusBadge extends HTMLElement {
     this.#render();
   }
 
-  attributeChangedCallback() {
-    this.#render();
+  /** @param {string} name @param {string | null} oldValue @param {string | null} newValue */
+  attributeChangedCallback(name, oldValue, newValue) {
+    // Pages set the status on every update – the same value again must not
+    // re-render the badge, or its pulse would start over every few seconds
+    if (oldValue !== newValue) this.#render();
   }
 
   #render() {
@@ -47,6 +50,12 @@ export class StatusBadge extends HTMLElement {
     // Nothing known yet (no status arrived): "Lädt …", never a guessed "Offline"
     const state = STATES.includes(requested) ? requested : 'loading';
     this.dataset.state = state;
+
+    // Every new state pulses from the start. If only the timing changes, CSS keeps the
+    // old animation clock – after a long "Startet …" the pulse of "Online" would be over.
+    this.style.animationName = 'none';
+    void this.offsetWidth; // apply "none" before the CSS animation takes over again
+    this.style.animationName = '';
 
     const marker = document.createElement('span');
     marker.className = 'status-badge__marker';

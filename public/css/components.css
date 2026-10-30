@@ -658,6 +658,42 @@ status-badge[data-state="stopping"] .status-badge__marker {
   background-color: transparent;
 }
 
+/* The badge pulses: a ring around the box that grows and fades.
+   - Online (calm) and offline (faster): for just under 5 seconds after the state changed,
+     then it rests – WCAG 2.2.2 allows no more without a way to pause it.
+   - Starting and stopping: until done, like a spinner – it shows that something is happening.
+   Still when motion is reduced (and in forced colors, which drop box-shadow) – the text
+   and the marker still say the state. The badge restarts the pulse on every change. */
+status-badge[data-state="online"] {
+  --_pulse: color-mix(in srgb, var(--color-online) 55%, transparent);
+
+  animation: status-pulse var(--pulse-calm) ease-out 2; /* 2 × 2.4 s = 4.8 s */
+}
+
+status-badge[data-state="offline"] {
+  --_pulse: color-mix(in srgb, var(--color-offline) 55%, transparent);
+
+  animation: status-pulse var(--pulse-fast) ease-out 4; /* 4 × 1.2 s = 4.8 s */
+}
+
+status-badge[data-state="starting"],
+status-badge[data-state="stopping"] {
+  --_pulse: color-mix(in srgb, var(--color-text-muted) 55%, transparent);
+
+  animation: status-pulse var(--pulse-fast) ease-out infinite;
+}
+
+@keyframes status-pulse {
+  0% { box-shadow: 0 0 0 0 var(--_pulse); }
+  70%, 100% { box-shadow: 0 0 0 6px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  status-badge {
+    animation: none !important;
+  }
+}
+
 /* Nothing known yet: dotted outline, muted text – never a guessed "Offline" */
 status-badge[data-state="loading"] {
   color: var(--color-text-muted);
