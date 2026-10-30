@@ -28,17 +28,21 @@
 
 import { ApiError } from './api.js';
 import { errorIcon } from './components/error-icon.js';
-import { t } from './i18n/index.js';
+import { ownString, t } from './i18n/index.js';
 
 const MAX_NOTICES = 3;
 
 /**
- * What to tell the user: the backend's message (German for now – a second language
- * would look up error.code here, AGENTS.md §7), or a general text for anything else.
+ * What to tell the user: the backend's message, or a general text for anything else.
+ * The backend writes German (AGENTS.md §7) – other languages look the reason up by
+ * error.code in errors.codes and show the German message only for codes they lack.
  * @param {unknown} error
  */
 export function errorText(error) {
-  if (error instanceof ApiError && error.message) return error.message;
+  if (error instanceof ApiError) {
+    const message = ownString(`errors.codes.${error.code}`) ?? error.message;
+    if (message) return message;
+  }
   // Not an answer of the backend – a bug in the panel. Keep it visible for debugging.
   if (!(error instanceof ApiError)) console.error(error);
   return t('errors.unknown');

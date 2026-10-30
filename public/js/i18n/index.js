@@ -85,6 +85,16 @@ export function t(key, params) {
 }
 
 /**
+ * Like t(), but only from the active language – undefined instead of the German fallback.
+ * For texts that already have a German source, e.g. the backend's error messages.
+ * @param {string} key
+ * @returns {string | undefined}
+ */
+export function ownString(key) {
+  return lookup(strings, key);
+}
+
+/**
  * Stores the chosen language and reloads, so every page and component
  * renders with the new strings.
  * @param {string} code
