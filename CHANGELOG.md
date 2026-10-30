@@ -9,6 +9,9 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ### Added
 
+- Confirming the Minecraft EULA in the panel: while `eula.txt` does not say `eula=true`, Home and Settings show
+  a card with a link to the EULA, a checkbox that is never ticked in advance and an "Akzeptieren" button.
+  Starting the server stays locked until then. Try it in the demo with `?sim=eula`.
 - `scripts/build_dist.py` builds the demo into `dist/` – the panel on sample data, ready for any static
   web host, `?sim=lost` included. Only Python's standard library is needed.
 - Error messages: when the backend answers `{ error: { code, message } }`, the panel shows the message
@@ -19,6 +22,8 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ### Changed
 
+- A checkbox whose label wraps to two lines keeps its square box.
+- Demo: adding `?sim=…` behind the `#` of an open panel now reloads it, so the simulation starts right away.
 - The status badge pulses with a ring around it when the state changes: calmly for online, faster for
   offline – for just under 5 seconds, then it rests. While the server starts or stops, it pulses until done.
   It stays still when the system asks for reduced motion.

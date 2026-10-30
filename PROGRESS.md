@@ -1,9 +1,9 @@
 # 🗺️ PiSton – Roadmap
 
-**Stand:** 29.10.2026 · **Version:** `0.1.0-alpha.5` · **Aktuelle Phase:** 5 – Feinschliff
+**Stand:** 30.10.2026 · **Version:** `0.1.0-alpha.5` · **Aktuelle Phase:** 6 – Backend-Grundgerüst
 
 ```
-Frontend  ▰▰▰▰▰▱  5 von 6 Phasen
+Frontend  ▰▰▰▰▰▰  6 von 6 Phasen
 Backend   ▱▱▱▱▱▱  0 von 6 Phasen
 ```
 
@@ -12,7 +12,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 > [!TIP]
 > **Als Nächstes**
-> Feinschliff (Phase 5): EULA im UI bestätigen – der letzte offene Punkt der Phase
+> Das Frontend ist fertig. Weiter mit Phase 6: Python-Backend-Grundgerüst (venv, `config.py`, `app.py`, `properties.py`)
 
 > [!NOTE]
 > **Reihenfolge: erst das Frontend, dann das Backend.** Alle Seiten entstehen zuerst vollständig mit
@@ -23,7 +23,9 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 > **Die Demo bleibt im Repo.** Beispieldaten (`js/mock/`) und die Demo-Umsetzung (`js/api/demo.js`) werden nie
 > gelöscht. `js/api.js` wählt mit einer Zeile zwischen Demo und Live-Backend (`js/api/live.js`, ab Phase 7).
 > `python3 scripts/build_dist.py` baut immer die Demo nach `dist/` – mit `?sim=lost` für eine abgebrochene
-> Verbindung und `?sim=error` für Fehlermeldungen. So gibt es nach jeder Änderung eine aktuelle Demo, ohne zweiten Branch.
+> Verbindung, `?sim=error` für Fehlermeldungen und `?sim=eula` für eine noch nicht akzeptierte EULA.
+> Der Parameter darf vor oder hinter dem `#` stehen; hinter dem `#` einer offenen Seite lädt die Demo dafür neu.
+> So gibt es nach jeder Änderung eine aktuelle Demo, ohne zweiten Branch.
 
 > [!WARNING]
 > **Rechtliches beachten:** `eula=true` wird nur nach Bestätigung durch den Nutzer gesetzt.
@@ -43,9 +45,9 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 | 2 | [Home (UI)](#phase-2--home-ui) | Datenschicht mit Beispieldaten, Home-Seite | ✅ |
 | 3 | [Konsole (UI)](#phase-3--konsole-ui) | Log-Ansicht, Filter, Befehlseingabe | ✅ |
 | 4 | [Einstellungen (UI)](#phase-4--einstellungen-ui) | Properties-Formular, Spielerlisten, Versionswechsel | ✅ |
-| 5 | [Feinschliff](#phase-5--feinschliff) | Zustände, schmale Bildschirme, Barrierefreiheit | 🚧 |
+| 5 | [Feinschliff](#phase-5--feinschliff) | Zustände, schmale Bildschirme, Barrierefreiheit, EULA | ✅ |
 | | **Backend** | | |
-| 6 | [Backend-Grundgerüst](#phase-6--backend-grundgerüst) | Python-Server (aiohttp), Konfiguration, `server.properties`-Parser | ⬜ |
+| 6 | [Backend-Grundgerüst](#phase-6--backend-grundgerüst) | Python-Server (aiohttp), Konfiguration, `server.properties`-Parser | 🚧 |
 | 7 | [Konsole live](#phase-7--konsole-live) | RCON, Live-Log, WebSocket | ⬜ |
 | 8 | [Home live](#phase-8--home-live) | Status, Kennzahlen, Start/Stopp | ⬜ |
 | 9 | [Einstellungen live](#phase-9--einstellungen-live) | Properties lesen und speichern | ⬜ |
@@ -104,10 +106,13 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - Neu ist die helle Variante `piston-logo-light(-512)` für hellen Grund.
 - [x] README-Logo per `<picture>` + `prefers-color-scheme`: GitHub zeigt im hellen Modus `piston-logo-light.svg`,
       im dunklen `piston-logo.svg` (AGENTS.md §1)
-- [ ] **EULA bestätigen im UI** (Phase 5):
-  - Hinweis, wenn `eula.txt` nicht `true` ist: auf Home (der Server startet dann nicht) und in den Einstellungen.
-  - Dazu ein Link zur EULA, eine Checkbox (nie vorausgewählt) und ein Button.
-  - Bisher gibt es nur den Prüfpunkt beim Versionswechsel.
+- [x] **EULA bestätigen im UI** (Phase 5, `js/eula.js`):
+  - Karte „Minecraft-EULA akzeptieren“, solange `eula.txt` nicht `true` ist: auf Home unter dem Kopf und in den Einstellungen.
+  - Link zur EULA (neuer Tab, angesagt), Checkbox (nie vorausgewählt) und Button „Akzeptieren“.
+    Ohne Haken: Fehler an der Checkbox, Fokus dorthin. Erst dann `api.acceptEula()` (später `POST /api/eula`).
+  - Danach: „EULA akzeptiert. Der Server kann jetzt starten.“ – bekommt den Fokus und bleibt bis zum Seitenwechsel.
+  - Ohne EULA ist „Starten“ gesperrt; das Backend lehnt den Start auch selbst ab (`eula_not_accepted`).
+  - Zum Vorführen: `?sim=eula` (Server offline, EULA offen). Mit `?sim=eula,error` scheitert das Akzeptieren.
   - Bleibt nötig, auch wenn später der Installer fragt: bei Installation von Hand, Installer ohne Terminal,
     „nein“ im Installer oder einem neuen Server-Ordner mit `eula=false`.
 - [x] `.gitignore`: `*.jar` ausschließen, damit keine Server-Jar versehentlich im Repo landet.
@@ -215,6 +220,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Phase 5 – Feinschliff
 
+✅ abgeschlossen
+
 - [x] Zustände auf allen Seiten
   - **Panel nicht erreichbar** (Mockups 06, `js/connection-view.js`):
     - A: In den ersten 10 s nur ein Banner, die Seite ist abgedunkelt und gesperrt (`inert`).
@@ -258,6 +265,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - Windows-Kontrastmodus (`forced-colors`): Gewählte Chips, Sprache, Anbieter, aktuelle Seite und Schalter bekommen
     Systemfarben; Eingabefelder zeigen den Fokus per Outline, weil der Kontrastmodus `box-shadow` entfernt.
 - [x] `<lang-switch>`: Das `fieldset` hat ein unsichtbares `aria-label` („Sprache“), die Legend fehlt ja.
+- [x] EULA im Panel bestätigen – Details unter [Rechtliches](#rechtliches--marke-eula-weiterverbreitung)
+- [x] Checkbox: Das Kästchen wird nicht mehr schmal gedrückt, wenn der Text zweizeilig umbricht.
 - [x] Komponenten-Übersicht (`components.html`) um alle neuen Bausteine ergänzt:
   - Lädt jetzt `main.css` wie das Panel, also auch `layout.css`.
   - Neue Abschnitte: Auswahl, Status & Fortschritt, Menü/Dialog/Kopieren, Fehler, Verbindung zum Gerät.
@@ -269,7 +278,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 - [x] **Demo dauerhaft im Repo** statt einer Kopie (vorgezogen):
   - `js/api.js` ist nur noch die Schnittstelle (Typen) plus `export * from './api/demo.js'`.
-  - `js/api/demo.js` enthält die Umsetzung auf den Beispieldaten in `js/mock/`, inklusive `?sim=lost` und `?sim=error`.
+  - `js/api/demo.js` enthält die Umsetzung auf den Beispieldaten in `js/mock/`, inklusive `?sim=lost`, `?sim=error` und `?sim=eula`.
   - `scripts/build_dist.py` (Python, nur Standardbibliothek) baut die Demo nach `dist/` und stellt `api.js` dort
     immer auf die Demo – egal, worauf das Repo gerade zeigt.
 - [x] `pyproject.toml` (Version in PEP-440-Form `0.1.0a5`, Lizenz, `requires-python = ">=3.11"`) – vorgezogen,

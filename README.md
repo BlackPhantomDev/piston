@@ -30,8 +30,8 @@
 
 PiSton is in **early development** and cannot manage a real server yet. The frontend pages are done –
 Home, Console and Settings – and run on sample data that reacts like a vanilla server.
-Loading states, narrow screens, accessibility and a "panel unreachable" screen are done; next come confirming the
-EULA in the panel and error messages, then the Python backend.
+Loading states, error messages, narrow screens, accessibility, a "panel unreachable" screen and confirming
+the EULA in the panel are done too – the frontend is complete. Next comes the Python backend.
 
 Current version: **0.1.0-alpha.5** – see the [changelog](CHANGELOG.md).
 Progress is tracked in the [roadmap](PROGRESS.md) (German).
@@ -144,7 +144,8 @@ Then open <http://localhost:8080> for the panel and <http://localhost:8080/compo
 for an overview of all components and their states. To see what happens when the panel cannot be
 reached, open <http://localhost:8080/?sim=lost> – the sample connection breaks after a few seconds.
 <http://localhost:8080/?sim=error> shows the error messages: every change fails, and every list or
-setting fails to load the first time.
+setting fails to load the first time. <http://localhost:8080/?sim=eula> starts with a server whose EULA
+is not accepted yet.
 
 ### Demo
 
@@ -152,7 +153,7 @@ setting fails to load the first time.
 Minecraft server needed. Upload the contents of `dist/` to any static web host. The demo always uses the
 sample data in `public/js/mock/` – also once the real backend exists – so every change to the panel can be
 shown without a second branch. Add `?sim=lost` to the address to show a lost connection, `?sim=error` to
-show error messages, or both: `?sim=lost,error`.
+show error messages, `?sim=eula` for a server whose EULA is not accepted yet – or several: `?sim=lost,error`.
 
 ### Backend
 
