@@ -346,6 +346,41 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Später / Ideen
 
+### Wenn PiSton rundläuft (nach dem Release)
+
+- [ ] 📦 **Installer:** ein `install.sh`, das man direkt auf dem Gerät startet, wie bei Tailscale:
+      `curl -fsSL https://…/install.sh | sh`
+  - Er erledigt, was die README in Phase 11 von Hand beschreibt:
+    - User `minecraft` anlegen,
+    - `/opt/piston` mit venv einrichten,
+    - `piston.service` installieren,
+    - die sudoers-Regel setzen (nur die drei `systemctl`-Befehle).
+  - Reines POSIX-`sh`. Vorher prüft er das System (Raspberry Pi OS 64-bit bzw. Debian), Python ≥ 3.11 und Java.
+  - Man kann ihn mehrfach ausführen, ohne dass etwas kaputtgeht. Am Ende zeigt er die Adresse `http://<ip>:8080`.
+  - Er setzt nie `eula=true` und lädt keine `server.jar`. Das macht das Panel, und zwar erst nach der Bestätigung (siehe „Rechtliches“).
+  - In der README zusätzlich der vorsichtige Weg: erst herunterladen, ansehen, dann ausführen.
+  - Zu klären:
+    - Der Installer braucht Root-Rechte. AGENTS.md §11 erlaubt `sudo` bisher nur für die drei `systemctl`-Aufrufe.
+    - Wo liegt das Skript: Release-Asset, GitHub Pages oder eigene Domain?
+- [ ] 🔔 **Update-Hinweis:** Das Panel prüft regelmäßig die Releases auf GitHub. Gibt es eine neuere Version,
+      zeigt es einen Hinweis mit Link zum Repo und zu einer Update-Anleitung (die Anleitung ist noch auszuarbeiten).
+  - Gefragt wird vom Backend, nicht vom Browser: einmal am Tag, mit dem PiSton-User-Agent.
+    - `GET https://api.github.com/repos/BlackPhantomDev/piston/releases/latest` liefert nur stabile Versionen.
+    - Wer selbst eine Vorabversion (`-alpha`, `-beta`) nutzt, bekommt auch Vorabversionen angezeigt. Dafür braucht es `/releases`.
+  - Verglichen wird nach SemVer. Es gibt kein automatisches Update, nur Hinweis und Link.
+  - Die Prüfung lässt sich in den Einstellungen abschalten, denn sie verrät GitHub die IP des Geräts.
+  - Schlägt die Prüfung fehl (offline, Limit von 60 Anfragen pro Stunde), meldet das Panel nichts und versucht es beim nächsten Mal.
+  - Zu klären: `api.github.com` muss in die Liste erlaubter Hosts (AGENTS.md §8).
+    Kann der Installer auch aktualisieren, heißt die Anleitung einfach: „`install.sh` noch einmal ausführen“.
+- [ ] 🔍 **Klick auf die Versionsnummer** in der Sidebar öffnet ein Fenster:
+  - installierte Version und Zeitpunkt der letzten Prüfung,
+  - Button „Jetzt nach Updates suchen“ für die Suche von Hand,
+  - Link zu den Release-Notes.
+  - Die Versionsnummer wird dafür ein Button (per Tastatur erreichbar), auch im Fuß auf schmalen Bildschirmen.
+    Die Namensnennung „Powered by PiSton“ daneben bleibt unverändert sichtbar (ADDITIONAL_TERMS).
+
+### Weitere Ideen
+
 - 🌐 Englische Oberfläche: `js/i18n/en.js` anlegen und in `LOCALES` eintragen – der Umschalter ist schon da
 - 🧩 Forge / NeoForge – bewusst nicht enthalten, nur als „geplant“ im UI
 - 🚫 IP-Banns (`banned-ips.json`) – die Spielerlisten zeigen bisher nur Banns nach Name
