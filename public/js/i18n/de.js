@@ -437,4 +437,7 @@ export default {
     decrease: 'Weniger',
     increase: 'Mehr',
   },
+  legal: {
+    source: 'Quellcode',
+  },
 };

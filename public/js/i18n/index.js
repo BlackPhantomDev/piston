@@ -20,6 +20,7 @@
  */
 
 import de from './de.js';
+import en from './en.js';
 
 /**
  * @typedef {object} Locale
@@ -36,7 +37,7 @@ import de from './de.js';
  */
 export const LOCALES = [
   { code: 'de', name: 'Deutsch', short: 'DE', strings: de },
-  { code: 'en', name: 'English', short: 'EN', strings: null },
+  { code: 'en', name: 'English', short: 'EN', strings: en },
 ];
 
 const STORAGE_KEY = 'piston.locale';
