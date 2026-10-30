@@ -461,6 +461,16 @@
     height: var(--logo-size-s);
   }
 
+  /* Language switch at the right end of the top bar; the one in the sidebar footer
+     would only show up a second time when the sidebar slides in */
+  .topbar__lang {
+    margin-left: auto;
+  }
+
+  .sidebar__bottom lang-switch {
+    display: none;
+  }
+
   .sidebar {
     position: fixed;
     inset: 0 auto 0 0;
