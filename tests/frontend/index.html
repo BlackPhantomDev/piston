@@ -1,0 +1,80 @@
+<!doctype html>
+<!--
+  PiSton - A tiny web panel for your Minecraft server on a Raspberry Pi
+  Copyright (C) 2026 Mischa S.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  Additional terms apply under Section 7 of the license;
+  see the ADDITIONAL_TERMS file in the root of this repository.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <https://www.gnu.org/licenses/>.
+-->
+<!--
+  Frontend tests. Serve the repository root, not public/, so this page reaches the panel:
+    python3 -m http.server 8080
+  then open http://localhost:8080/tests/frontend/
+  ?only=toggle runs only the tests whose name contains "toggle".
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../../public/assets/logo/favicon.svg" type="image/svg+xml" />
+    <title>PiSton tests</title>
+    <link rel="stylesheet" href="../../public/main.css" />
+    <style>
+      body { padding: 24px; }
+      main { display: grid; gap: 16px; max-width: 1000px; }
+      .summary { font-weight: 600; }
+      .summary[data-result="pass"] { color: var(--grass); }
+      .summary[data-result="fail"] { color: var(--redstone); }
+      .results { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+      .results li { font-size: 14px; }
+      .result__mark { font-family: var(--font-mono); }
+      .results [data-result="pass"] .result__mark { color: var(--grass); }
+      .results [data-result="fail"] .result__mark { color: var(--redstone); }
+      .results pre { margin: 4px 0 8px 24px; white-space: pre-wrap; font-size: 13px; color: var(--deepslate-300); }
+      .fixture { padding: 16px; border: 1px dashed var(--deepslate-500); }
+      .fixture:empty { display: none; }
+      .frame-box { overflow: auto; border: 1px solid var(--deepslate-500); }
+      .frame-box iframe { display: block; height: 800px; border: 0; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>PiSton – frontend tests</h1>
+      <p class="summary" id="summary" role="status">Loading …</p>
+      <ol class="results" id="results"></ol>
+      <!-- Components under test live here while their test runs -->
+      <div class="fixture" id="fixture"></div>
+      <!-- The panel pages under test (pages.test.js) -->
+      <div class="frame-box">
+        <iframe id="page-frame" title="Panel page under test" src="about:blank"></iframe>
+      </div>
+    </main>
+
+    <script type="module">
+      import { run } from './runner.js';
+      import './components.test.js';
+      import './logic.test.js';
+      import './pages.test.js';
+
+      await run({
+        list: document.getElementById('results'),
+        summary: document.getElementById('summary'),
+        fixture: document.getElementById('fixture'),
+        only: new URLSearchParams(location.search).get('only') ?? undefined,
+      });
+    </script>
+  </body>
+</html>

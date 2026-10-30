@@ -147,6 +147,19 @@ reached, open <http://localhost:8080/?sim=lost> – the sample connection breaks
 setting fails to load the first time. <http://localhost:8080/?sim=eula> starts with a server whose EULA
 is not accepted yet.
 
+### Tests
+
+The frontend tests run in the browser – no Node.js, no test framework. Serve the repository root
+(not `public/`) and open the test page:
+
+```sh
+python3 -m http.server 8080
+```
+
+<http://localhost:8080/tests/frontend/> checks every component, the UI strings of both languages and the
+panel pages on sample data – including an accessibility check with [axe-core](https://github.com/dequelabs/axe-core)
+at desktop and phone width. A run takes about 20 seconds; `?only=toggle` runs only the matching tests.
+
 ### Demo
 
 `python3 scripts/build_dist.py` builds a demo into `dist/`: the panel on sample data, no backend and no
@@ -165,6 +178,7 @@ The backend will be a Python package in `server/`, started with `python -m serve
 ```
 pyproject.toml         version and Python dependencies
 scripts/build_dist.py  builds the demo into dist/
+tests/frontend/        frontend tests, run in the browser
 public/
 ├─ index.html          app shell: sidebar, navigation, content
 ├─ components.html     component overview
