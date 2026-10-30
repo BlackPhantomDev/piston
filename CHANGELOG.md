@@ -7,6 +7,10 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+## [0.1.0-alpha.7] – 2026-10-30
+
+English UI and frontend tests in the browser – plus a tidier repo: only the fonts in use, one prefix for all elements.
+
 ### Added
 
 - Frontend tests that run in the browser, without Node.js: `tests/frontend/` checks every component, both UI
@@ -175,7 +179,8 @@ First tagged state: the frontend runs on sample data, there is no backend yet.
 - Language switch prepared (German active, English planned).
 - Required "Powered by PiSton" attribution on every page (AGPL-3.0 §7).
 
-[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.6...HEAD
+[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.7...HEAD
+[0.1.0-alpha.7]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.6...v0.1.0-alpha.7
 [0.1.0-alpha.6]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.5...v0.1.0-alpha.6
 [0.1.0-alpha.5]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.4...v0.1.0-alpha.5
 [0.1.0-alpha.4]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.3...v0.1.0-alpha.4

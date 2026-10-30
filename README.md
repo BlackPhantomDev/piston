@@ -15,7 +15,7 @@
 
 <p align="center">
   <a href="LICENCE"><img src="https://img.shields.io/badge/license-AGPL--3.0--or--later-6DB33F" alt="License: AGPL-3.0-or-later"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.1.0--alpha.6-A3A19C" alt="Version 0.1.0-alpha.6"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.1.0--alpha.7-A3A19C" alt="Version 0.1.0-alpha.7"></a>
   <img src="https://img.shields.io/badge/status-early%20development-A3A19C" alt="Status: early development">
   <img src="https://img.shields.io/badge/python-%E2%89%A5%203.11-3A3B40" alt="Python 3.11 or newer">
 </p>
@@ -33,7 +33,7 @@ Home, Console and Settings – and run on sample data that reacts like a vanilla
 Loading states, error messages, narrow screens, accessibility, a "panel unreachable" screen and confirming
 the EULA in the panel are done too – the frontend is complete. Next comes the Python backend.
 
-Current version: **0.1.0-alpha.6** – see the [changelog](CHANGELOG.md).
+Current version: **0.1.0-alpha.7** – see the [changelog](CHANGELOG.md).
 Progress is tracked in the [roadmap](PROGRESS.md) (German).
 
 ## Features
