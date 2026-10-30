@@ -21,25 +21,11 @@
 
 /* Local web fonts (no CDN – the panel must work offline in the LAN).
    Variable fonts: one file per family covers all weights used in the styleguide.
-   Chakra Petch only ships static files: one @font-face per weight. */
+   Chakra Petch only ships static files: one @font-face per weight, and the panel only uses Bold.
+   Only these files are in assets/fonts/. No italics, no other Chakra Petch weights –
+   if the panel ever needs one, add the file from the font's download and a rule here. */
 
-/* ---------- Chakra Petch – display: titles, headings, metrics (500 / 600 / 700) ---------- */
-@font-face {
-  font-family: "Chakra Petch";
-  src: url("../assets/fonts/Chakra_Petch/ChakraPetch-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Chakra Petch";
-  src: url("../assets/fonts/Chakra_Petch/ChakraPetch-SemiBold.ttf") format("truetype");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
+/* ---------- Chakra Petch – display: titles, headings, metrics (700) ---------- */
 @font-face {
   font-family: "Chakra Petch";
   src: url("../assets/fonts/Chakra_Petch/ChakraPetch-Bold.ttf") format("truetype");
@@ -66,27 +52,11 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Inter";
-  src: url("../assets/fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf") format("truetype");
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
-}
-
 /* ---------- JetBrains Mono – console, commands, IPs (400 / 600) ---------- */
 @font-face {
   font-family: "JetBrains Mono";
   src: url("../assets/fonts/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf") format("truetype");
   font-weight: 100 800;
   font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("../assets/fonts/JetBrains_Mono/JetBrainsMono-Italic-VariableFont_wght.ttf") format("truetype");
-  font-weight: 100 800;
-  font-style: italic;
   font-display: swap;
 }
