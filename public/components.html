@@ -25,10 +25,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
     <title>PiSton – Komponenten</title>
-    <link rel="stylesheet" href="css/fonts.css">
-    <link rel="stylesheet" href="css/tokens.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="main.css">
     <script type="module" src="js/main.js"></script>
     <style>
         /* Layout of this overview page only */
@@ -36,11 +33,23 @@
         .demo > section { display: grid; gap: var(--space-3); }
         .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
         .demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-4); align-items: start; }
+        .demo-stack { display: grid; gap: var(--space-3); }
+        .demo-note { color: var(--color-text-muted); font-size: var(--fs-label); line-height: var(--lh-label); }
+        .demo-narrow { max-width: 400px; }
+        /* In the panel the banner sticks to the top of the content – here it is just a sample */
+        .demo .connection-banner { position: static; margin: 0; }
+        @media (max-width: 599.98px) { .demo { padding: var(--space-5) var(--space-3); } }
     </style>
 </head>
 <body>
+<a class="skip-link" href="#components-title">Zum Inhalt springen</a>
+
 <main class="demo">
-    <h1>Komponenten</h1>
+    <div class="demo-stack">
+        <h1 id="components-title" tabindex="-1">Komponenten</h1>
+        <p class="demo-note">Alle Bausteine des Panels mit ihren Zuständen. Der erste Tab-Stopp ist der Skip-Link
+            <code>.skip-link</code> – im Panel springt er zur Überschrift der Seite.</p>
+    </div>
 
     <section>
         <h2>Buttons</h2>
@@ -49,6 +58,7 @@
             <button class="btn btn--secondary">Neu starten</button>
             <button class="btn btn--ghost">Abbrechen</button>
             <button class="btn btn--danger">Server stoppen</button>
+            <button class="btn btn--outline-danger">Zurücksetzen</button>
         </div>
         <div class="card demo-row">
             <button class="btn btn--primary" disabled>Server starten</button>
@@ -116,6 +126,75 @@
     </section>
 
     <section>
+        <h2>Auswahl</h2>
+
+        <h3>Chips als Radiogruppe <code>.choice-chips</code>, mit Anzahl <code>.choice-chip__count</code></h3>
+        <div class="card demo-stack">
+            <fieldset class="choice-chips">
+                <legend class="visually-hidden">Nach Level filtern</legend>
+                <label class="choice-chip"><input type="radio" name="demo-level" value="all" checked><span>Alle</span></label>
+                <label class="choice-chip"><input type="radio" name="demo-level" value="info"><span>Info</span></label>
+                <label class="choice-chip"><input type="radio" name="demo-level" value="warn"><span>Warnungen</span></label>
+                <label class="choice-chip"><input type="radio" name="demo-level" value="error"><span>Fehler</span></label>
+            </fieldset>
+            <fieldset class="choice-chips">
+                <legend class="visually-hidden">Liste</legend>
+                <label class="choice-chip"><input type="radio" name="demo-list" value="whitelist" checked><span>Whitelist</span><span class="choice-chip__count">4</span></label>
+                <label class="choice-chip"><input type="radio" name="demo-list" value="ops"><span>Operatoren</span><span class="choice-chip__count">2</span></label>
+                <label class="choice-chip"><input type="radio" name="demo-list" value="bans"><span>Gebannt</span><span class="choice-chip__count">1</span></label>
+            </fieldset>
+        </div>
+
+        <h3>Chips als Sprungmarken – aktueller Abschnitt mit <code>aria-current="true"</code></h3>
+        <div class="card">
+            <nav class="choice-chips" aria-label="Abschnitte" id="demo-section-nav">
+                <button class="choice-chip" type="button" aria-current="true">Allgemein</button>
+                <button class="choice-chip" type="button">Welt</button>
+                <button class="choice-chip" type="button">Spieler &amp; Regeln</button>
+                <button class="choice-chip" type="button">Gefahrenzone</button>
+            </nav>
+        </div>
+
+        <h3>Options-Karten <code>.option-cards</code></h3>
+        <div class="card">
+            <fieldset class="option-cards">
+                <legend>Anbieter</legend>
+                <label class="option-card">
+                    <input type="radio" name="demo-provider" value="vanilla" checked>
+                    <span class="option-card__title">Vanilla</span>
+                    <span class="option-card__sub">Offizieller Server</span>
+                </label>
+                <label class="option-card">
+                    <input type="radio" name="demo-provider" value="paper">
+                    <span class="option-card__title">Paper</span>
+                    <span class="option-card__sub">Plugins, schneller</span>
+                </label>
+                <label class="option-card">
+                    <input type="radio" name="demo-provider" value="fabric">
+                    <span class="option-card__title">Fabric</span>
+                    <span class="option-card__sub">Leichte Mods</span>
+                </label>
+                <label class="option-card">
+                    <input type="radio" name="demo-provider" value="forge" disabled>
+                    <span class="option-card__title">Forge / NeoForge</span>
+                    <span class="option-card__sub">Geplant – noch nicht enthalten</span>
+                </label>
+            </fieldset>
+        </div>
+
+        <h3>Befehls-Chips <code>.chip</code> in <code>.chip-list</code></h3>
+        <div class="card">
+            <ul class="chip-list">
+                <li><button class="chip" type="button">list</button></li>
+                <li><button class="chip" type="button">save-all</button></li>
+                <li><button class="chip" type="button">time set day</button></li>
+                <li><button class="chip" type="button">whitelist add</button></li>
+                <li><button class="chip" type="button" disabled>say</button></li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
         <h2>Schalter &amp; Checkbox</h2>
         <div class="card demo-grid">
             <div>
@@ -172,39 +251,51 @@
                     <h2>Spieler</h2>
                     <p class="card__meta">3 online</p>
                 </header>
-                <ul class="card__list">
+                <ul class="card__list" id="demo-players">
                     <li class="list-row">
                         <span class="avatar" aria-hidden="true">S</span>
                         <div class="list-row__main">
                             <p class="list-row__title">Steve</p>
-                            <p class="list-row__sub">Overworld · seit 47 min</p>
+                            <p class="list-row__sub">Overworld · OP</p>
                         </div>
                         <span class="list-row__meta">23 ms</span>
-                        <button class="btn btn--ghost btn--icon btn--s" type="button" aria-label="Aktionen für Steve">
-                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
-                        </button>
+                        <action-menu label="Aktionen für Steve">
+                            <button value="tell">Nachricht senden …</button>
+                            <button value="deop">Operator-Rechte entziehen</button>
+                            <hr>
+                            <button value="kick" data-danger>Kicken</button>
+                            <button value="ban" data-danger>Bannen</button>
+                        </action-menu>
                     </li>
                     <li class="list-row">
                         <span class="avatar" aria-hidden="true">M</span>
                         <div class="list-row__main">
                             <p class="list-row__title">Mia_Baut</p>
-                            <p class="list-row__sub">Nether · seit 12 min</p>
+                            <p class="list-row__sub">Nether</p>
                         </div>
                         <span class="list-row__meta">88 ms</span>
-                        <button class="btn btn--ghost btn--icon btn--s" type="button" aria-label="Aktionen für Mia_Baut">
-                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
-                        </button>
+                        <action-menu label="Aktionen für Mia_Baut">
+                            <button value="tell">Nachricht senden …</button>
+                            <button value="op">Zum Operator machen</button>
+                            <hr>
+                            <button value="kick" data-danger>Kicken</button>
+                            <button value="ban" data-danger>Bannen</button>
+                        </action-menu>
                     </li>
                     <li class="list-row">
                         <span class="avatar" aria-hidden="true">C</span>
                         <div class="list-row__main">
                             <p class="list-row__title">Creeperfan</p>
-                            <p class="list-row__sub">The End · seit 8 min</p>
+                            <p class="list-row__sub">The End</p>
                         </div>
                         <span class="list-row__meta">57 ms</span>
-                        <button class="btn btn--ghost btn--icon btn--s" type="button" aria-label="Aktionen für Creeperfan">
-                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
-                        </button>
+                        <action-menu label="Aktionen für Creeperfan">
+                            <button value="tell">Nachricht senden …</button>
+                            <button value="op">Zum Operator machen</button>
+                            <hr>
+                            <button value="kick" data-danger>Kicken</button>
+                            <button value="ban" data-danger>Bannen</button>
+                        </action-menu>
                     </li>
                 </ul>
             </section>
@@ -217,6 +308,48 @@
                 <div class="card__body card__body--console">
                     <log-view id="demo-log"></log-view>
                 </div>
+            </section>
+        </div>
+
+        <h3>Liste mit Hinzufügen <code>.list-add</code>, Hinweis <code>.list-note</code> und leerer Liste <code>.card__empty</code></h3>
+        <div class="card-grid card-grid--wide">
+            <section class="card">
+                <header class="card__header">
+                    <h2>Spielerlisten</h2>
+                    <span class="card__meta">Gilt sofort, ohne Speichern</span>
+                </header>
+                <div class="card__body card__body--stack">
+                    <p class="list-note">Die Whitelist ist ausgeschaltet. Die Einträge gelten erst, wenn du sie unter „Spieler &amp; Regeln“ einschaltest.</p>
+                    <form class="list-add" novalidate onsubmit="return false">
+                        <mc-field label="Spielername">
+                            <input class="input" maxlength="16" autocomplete="off" spellcheck="false">
+                        </mc-field>
+                        <button class="btn btn--primary" type="submit">Hinzufügen</button>
+                    </form>
+                </div>
+                <ul class="card__list">
+                    <li class="list-row">
+                        <span class="avatar" aria-hidden="true">A</span>
+                        <div class="list-row__main">
+                            <p class="list-row__title">Alex</p>
+                        </div>
+                        <button class="btn btn--ghost" type="button" aria-label="Alex von der Whitelist entfernen">Entfernen</button>
+                    </li>
+                    <li class="list-row">
+                        <span class="avatar" aria-hidden="true">L</span>
+                        <div class="list-row__main">
+                            <p class="list-row__title">Lena_MC</p>
+                        </div>
+                        <button class="btn btn--ghost" type="button" aria-label="Lena_MC von der Whitelist entfernen">Entfernen</button>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <header class="card__header">
+                    <h2>Gebannt</h2>
+                </header>
+                <p class="card__empty">Niemand ist gebannt.</p>
             </section>
         </div>
 
@@ -236,6 +369,27 @@
             <div class="setting-list">
                 <mc-toggle layout="row" checked description="Spieler können Netherportale benutzen.">Nether aktiv</mc-toggle>
                 <mc-toggle layout="row" checked description="Dörfer, Tempel und Festungen in neuen Chunks.">Strukturen generieren</mc-toggle>
+            </div>
+        </section>
+
+        <h3>Gefahrenzone <code>.card--danger</code> mit Zeilen <code>.option-row</code></h3>
+        <section class="card card--danger">
+            <header class="card__header">
+                <h2>Gefahrenzone</h2>
+            </header>
+            <div class="option-row">
+                <div class="option-row__text">
+                    <p class="option-row__title">Welt zurücksetzen</p>
+                    <p class="option-row__desc">Löscht die aktuelle Welt und erzeugt sie mit dem Seed neu. Vorher wird ein Backup erstellt.</p>
+                </div>
+                <button class="btn btn--danger" type="button">Welt zurücksetzen</button>
+            </div>
+            <div class="option-row">
+                <div class="option-row__text">
+                    <p class="option-row__title">Auf Standardwerte zurücksetzen</p>
+                    <p class="option-row__desc">Setzt alle Einstellungen dieser Seite auf die Werte einer frischen server.properties.</p>
+                </div>
+                <button class="btn btn--outline-danger" type="button">Zurücksetzen</button>
             </div>
         </section>
 
@@ -271,23 +425,188 @@
             </button>
         </div>
 
-        <h3>Info-Box <code>.card--outline.card--compact</code></h3>
+        <h3>Info-Box <code>.card--outline.card--compact</code> und Info-Pill <code>.info-pill</code></h3>
         <div class="demo-row">
             <div class="card card--outline card--compact">
                 <p class="card__label">Adresse</p>
                 <p class="card__value">192.168.1.20:25565</p>
             </div>
+            <p class="info-pill">
+                <span class="info-pill__label">Installiert:</span>
+                <span class="info-pill__value">Vanilla 26.3 · Java 25</span>
+            </p>
         </div>
     </section>
 
     <section>
-        <h2>Status &amp; Konsole</h2>
+        <h2>Status &amp; Fortschritt</h2>
+
+        <h3>Status-Badge <code>&lt;status-badge&gt;</code> – Text und Form, nie nur Farbe</h3>
         <div class="card demo-row">
+            <status-badge status="loading"></status-badge>
             <status-badge status="online"></status-badge>
             <status-badge status="offline"></status-badge>
             <status-badge status="starting"></status-badge>
             <status-badge status="stopping"></status-badge>
         </div>
+
+        <h3>Prüfliste <code>.check-list</code> – ok, fehlt, Hinweis</h3>
+        <div class="check-list">
+            <p class="check-list__title">Vor dem Wechsel geprüft</p>
+            <ul>
+                <li class="check-list__item" data-result="ok"><span>Java: benötigt Java 25, installiert Java 25 – passt</span></li>
+                <li class="check-list__item" data-result="fail"><span>Die Minecraft-EULA ist noch nicht akzeptiert (eula.txt). <a href="https://aka.ms/MinecraftEULA" target="_blank" rel="noopener noreferrer">EULA lesen</a></span></li>
+                <li class="check-list__item" data-result="info"><span>Ältere Version als installiert – die Welt kommt danach nur über ein Backup zurück.</span></li>
+            </ul>
+        </div>
+
+        <h3>Schritte <code>.steps</code> – läuft und abgebrochen</h3>
+        <div class="card demo-stack">
+            <div>
+                <ol class="steps" aria-label="Ablauf des Wechsels">
+                    <li class="steps__item" data-state="done">Stoppen</li>
+                    <li class="steps__item" data-state="done">Backup</li>
+                    <li class="steps__item" data-state="active" aria-current="step">Download &amp; Prüfsumme</li>
+                    <li class="steps__item">Jar tauschen</li>
+                    <li class="steps__item">Starten</li>
+                </ol>
+                <p class="version-switch__status">Wechsel läuft … 3/5 · Download &amp; Prüfsumme</p>
+            </div>
+            <div>
+                <ol class="steps" aria-label="Ablauf des Wechsels (abgebrochen)">
+                    <li class="steps__item" data-state="done">Stoppen</li>
+                    <li class="steps__item" data-state="done">Backup</li>
+                    <li class="steps__item" data-state="failed">Download &amp; Prüfsumme</li>
+                    <li class="steps__item">Jar tauschen</li>
+                    <li class="steps__item">Starten</li>
+                </ol>
+                <p class="version-switch__status error-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>Wechsel abgebrochen: Die heruntergeladene Datei ist beschädigt (Prüfsumme passt nicht). Die bisherige Version läuft weiter.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Menü, Dialog &amp; Kopieren</h2>
+
+        <h3>Aktionsmenü <code>&lt;action-menu&gt;</code> – Pfeiltasten, Home/End, Escape; feuert <code>action</code></h3>
+        <div class="card demo-row">
+            <action-menu label="Aktionen für Alex" id="demo-menu">
+                <button value="tell">Nachricht senden …</button>
+                <button value="op">Zum Operator machen</button>
+                <hr>
+                <button value="kick" data-danger>Kicken</button>
+                <button value="ban" data-danger>Bannen</button>
+            </action-menu>
+            <p class="demo-note" role="status" id="demo-menu-result">Noch nichts gewählt.</p>
+        </div>
+
+        <h3>Bestätigungsdialog <code>confirmDialog()</code> aus <code>js/dialogs.js</code> – Fokus startet auf „Abbrechen“</h3>
+        <div class="card demo-row">
+            <button class="btn btn--danger" type="button" id="demo-dialog">Steve bannen …</button>
+            <p class="demo-note" role="status" id="demo-dialog-result"></p>
+        </div>
+
+        <h3>Befehl mit Kopier-Button <code>.command</code> + Tooltip <code>.tooltip</code> – <code>setupCopyButton()</code> aus <code>js/clipboard.js</code></h3>
+        <div class="card">
+            <div class="command">
+                <code><span class="command__prompt" aria-hidden="true">$ </span><span data-command>systemctl status piston</span></code>
+                <button class="command__copy" type="button" aria-label="Befehl kopieren">
+                    <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+                    <svg class="icon-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span class="tooltip" aria-hidden="true">Befehl kopieren</span>
+                </button>
+            </div>
+            <p class="visually-hidden" role="status" id="demo-copy-status"></p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Fehler</h2>
+        <p class="demo-note">Immer mit Icon und Text, nie nur Farbe. Die Texte nach dem Doppelpunkt kommen im Panel vom Backend
+            (<code>{ error: { code, message } }</code>), angezeigt mit den Helfern aus <code>js/errors.js</code>.
+            Alle Zustände live: <a href="index.html?sim=error#/settings">Panel mit ?sim=error</a>.</p>
+
+        <h3>Statuszeile <code>.error-text</code> – <code>setStatusText(el, text, { error: true })</code></h3>
+        <div class="card">
+            <p class="error-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>Nicht gespeichert: Die Datei server.properties ließ sich nicht schreiben. Es wurde nichts geändert.</p>
+        </div>
+
+        <h3>Fehlerzeile im Formular <code>.form-error</code> – leer nimmt sie keinen Platz ein</h3>
+        <div class="card demo-stack demo-narrow">
+            <mc-field label="Nachricht">
+                <input class="input" value="Hallo zusammen" autocomplete="off">
+            </mc-field>
+            <p class="form-error error-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>Nicht gesendet: Keine Verbindung zur Server-Konsole (RCON). Der Befehl wurde nicht gesendet.</p>
+            <div class="dialog__actions">
+                <button class="btn btn--ghost" type="button">Abbrechen</button>
+                <button class="btn btn--primary" type="button">Senden</button>
+            </div>
+        </div>
+
+        <h3>Nicht geladen <code>.load-error</code> – <code>showLoadError()</code>; „Erneut versuchen“ schlägt hier immer fehl</h3>
+        <div hidden id="demo-load-error"></div>
+
+        <h3>Meldung <code>.notice</code> – <code>showError(title, error)</code>, unten rechts, bleibt bis zum Schließen</h3>
+        <div class="demo-stack demo-narrow">
+            <div class="notice">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
+                <div class="notice__body">
+                    <p class="notice__title">Backup fehlgeschlagen</p>
+                    <p class="notice__message">Auf dem Speicher ist nicht genug Platz frei. Lösche alte Backups und versuch es noch einmal.</p>
+                </div>
+                <button class="btn btn--ghost btn--icon notice__close" type="button" aria-label="Meldung schließen">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="demo-row">
+                <button class="btn btn--secondary" type="button" id="demo-notice">Meldung unten rechts zeigen</button>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Verbindung zum Gerät</h2>
+        <p class="demo-note">Teile des Screens „Das Gerät antwortet nicht“ (<code>js/connection-view.js</code>).
+            Den ganzen Ablauf zeigt <a href="index.html?sim=lost">das Panel mit ?sim=lost</a>.</p>
+
+        <h3>Banner <code>.connection-banner</code> – unterbrochen und wiederhergestellt</h3>
+        <div class="demo-stack">
+            <div class="connection-banner" data-state="lost">
+                <span class="connection-banner__lost" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7H7a5 5 0 0 0 0 10h2"/><path d="M15 7h2a5 5 0 0 1 0 10h-2"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/></svg></span>
+                <span class="connection-banner__marker" aria-hidden="true"></span>
+                <p class="connection-banner__text">Verbindung unterbrochen – wird wiederhergestellt …</p>
+                <span class="connection-banner__lost connection-banner__busy" aria-hidden="true"><svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg></span>
+            </div>
+            <div class="connection-banner" data-state="restored">
+                <span class="connection-banner__lost" aria-hidden="true"></span>
+                <span class="connection-banner__marker" aria-hidden="true"></span>
+                <p class="connection-banner__text">Verbindung wiederhergestellt</p>
+            </div>
+        </div>
+
+        <h3>Pill <code>.connection-pill</code> – eigene Form, nicht das Quadrat von „Offline“</h3>
+        <div class="card demo-row">
+            <p class="connection-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7H7a5 5 0 0 0 0 10h2"/><path d="M15 7h2a5 5 0 0 1 0 10h-2"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/></svg><span>Verbindung getrennt</span></p>
+            <status-badge status="offline"></status-badge>
+        </div>
+
+        <h3>Nummerierte Prüfliste <code>.check-steps</code></h3>
+        <ol class="card check-steps" role="list">
+            <li>
+                <p class="check-steps__title">Ist das Gerät eingeschaltet?</p>
+                <p class="check-steps__text">Gemeint ist der Rechner, auf dem der PiSton-Dienst läuft – zum Beispiel ein Raspberry Pi. Er muss eingeschaltet und mit dem Netzwerk verbunden sein.</p>
+            </li>
+            <li>
+                <p class="check-steps__title">Hat sich die Adresse des Geräts geändert?</p>
+                <p class="check-steps__text">Versuche es über den Gerätenamen:</p>
+                <p class="check-steps__link">http://mc-server.local:8080</p>
+                <p class="check-steps__text">Dauerhaft hilft eine feste IP per DHCP-Reservierung im Router.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section>
+        <h2>Konsole</h2>
         <form class="console-input" onsubmit="return false">
             <span class="console-input__prompt" aria-hidden="true">&gt;</span>
             <input aria-label="Befehl" placeholder="Befehl eingeben, z. B. say Hallo" autocomplete="off">
@@ -301,7 +620,16 @@
     Powered by <a href="https://github.com/BlackPhantomDev/piston">PiSton</a> <span class="legal-notice__version" data-version></span>
     · <a href="https://github.com/BlackPhantomDev/piston">Quellcode</a> (AGPLv3)
 </footer>
+
+<!-- Notices of showError() -->
+<div class="notices" id="notices"></div>
+
 <script type="module">
+    import { ApiError } from './js/api.js';
+    import { setupCopyButton } from './js/clipboard.js';
+    import { confirmDialog } from './js/dialogs.js';
+    import { showError, showLoadError } from './js/errors.js';
+
     // Sample lines for the <log-view> demo above
     await customElements.whenDefined('log-view');
     document.getElementById('demo-log').add([
@@ -310,6 +638,57 @@
         { time: '15:08:02', level: 'ERROR', text: 'Failed to save chunk [12, -4]' },
         { time: '15:11:20', level: 'INFO', text: '<Alex> hat jemand Eisen übrig?' },
     ]);
+
+    // Jump links: the clicked chip becomes the current one
+    const sectionNav = document.getElementById('demo-section-nav');
+    sectionNav.addEventListener('click', (event) => {
+        const chip = event.target.closest('.choice-chip');
+        if (!chip) return;
+        for (const other of sectionNav.children) other.removeAttribute('aria-current');
+        chip.setAttribute('aria-current', 'true');
+    });
+
+    // Action menus: show what was chosen
+    const menuResult = document.getElementById('demo-menu-result');
+    for (const menu of document.querySelectorAll('action-menu')) {
+        menu.addEventListener('action', (event) => {
+            menuResult.textContent = `Gewählt: ${event.detail.value} (${menu.getAttribute('label')})`;
+        });
+    }
+
+    const dialogResult = document.getElementById('demo-dialog-result');
+    document.getElementById('demo-dialog').addEventListener('click', async () => {
+        const confirmed = await confirmDialog({
+            title: 'Steve bannen?',
+            text: 'Steve wird getrennt und kann erst wieder beitreten, wenn der Bann aufgehoben ist (pardon Steve).',
+            confirmLabel: 'Bannen',
+            danger: true,
+        });
+        dialogResult.textContent = confirmed ? 'Bestätigt.' : 'Abgebrochen.';
+    });
+
+    const copyButton = document.querySelector('.command__copy');
+    setupCopyButton(copyButton, {
+        text: () => copyButton.closest('.command').querySelector('[data-command]').textContent,
+        status: document.getElementById('demo-copy-status'),
+    });
+
+    // Load error: trying again takes a moment and fails again, so the box stays
+    const readFailed = new ApiError('read_failed', 'Die Spielerlisten ließen sich nicht lesen.');
+    const loadSlot = document.getElementById('demo-load-error');
+    const retry = async () => {
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        showLoadError(loadSlot, 'Die Spielerlisten konnten nicht geladen werden.', readFailed, retry);
+    };
+    showLoadError(loadSlot, 'Die Spielerlisten konnten nicht geladen werden.', readFailed, retry);
+
+    // Notices: the sample closes, the button shows a real one at the bottom right
+    for (const close of document.querySelectorAll('.demo .notice__close')) {
+        close.addEventListener('click', () => close.closest('.notice').remove());
+    }
+    document.getElementById('demo-notice').addEventListener('click', () => {
+        showError('Backup fehlgeschlagen', new ApiError('disk_full', 'Auf dem Speicher ist nicht genug Platz frei. Lösche alte Backups und versuch es noch einmal.'));
+    });
 </script>
 </body>
 </html>
