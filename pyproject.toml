@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "piston"
-# PEP 440 form of 0.1.0-alpha.5 – keep in step with public/js/version.js (AGENTS.md §10)
-version = "0.1.0a5"
+# PEP 440 form of 0.1.0-alpha.6 – keep in step with public/js/version.js (AGENTS.md §10)
+version = "0.1.0a6"
 description = "A tiny web panel for your Minecraft server on a Raspberry Pi"
 readme = "README.md"
 license = "AGPL-3.0-or-later"
