@@ -393,6 +393,9 @@
             </div>
         </section>
 
+        <h3>EULA-Hinweis <code>eulaNotice()</code> aus <code>js/eula.js</code> – Checkbox nie vorausgewählt; „Akzeptieren“ geht an die Demo</h3>
+        <div id="demo-eula"></div>
+
         <h3>Aktions-Karten <code>.action-card</code></h3>
         <div class="card-grid">
             <button class="action-card" type="button">
@@ -628,6 +631,7 @@
     import { ApiError } from './js/api.js';
     import { setupCopyButton } from './js/clipboard.js';
     import { confirmDialog } from './js/dialogs.js';
+    import { eulaNotice } from './js/eula.js';
     import { showError, showLoadError } from './js/errors.js';
 
     // Sample lines for the <log-view> demo above
@@ -638,6 +642,11 @@
         { time: '15:08:02', level: 'ERROR', text: 'Failed to save chunk [12, -4]' },
         { time: '15:11:20', level: 'INFO', text: '<Alex> hat jemand Eisen übrig?' },
     ]);
+
+    // EULA card as on Home and Settings while eula.txt is not true
+    const eula = eulaNotice();
+    document.getElementById('demo-eula').replaceWith(eula.el);
+    eula.update(false);
 
     // Jump links: the clicked chip becomes the current one
     const sectionNav = document.getElementById('demo-section-nav');
