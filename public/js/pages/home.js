@@ -29,6 +29,10 @@ import { fields, view } from "./view.js";
 
 export const titleKey = "nav.home";
 
+// TPS rating below the value: 20 is the target, from 19 nobody notices a difference
+const TPS_SMOOTH = 19;
+const TPS_SLOW = 15; // below this, players feel the lag clearly
+
 // Page skeleton: texts via data-i18n, data slots via data-field (filled in update()).
 const VIEW = `
   <header class="page__header">
@@ -71,6 +75,7 @@ const VIEW = `
       <div class="card stat">
         <p class="stat__label" data-i18n="home.tps"></p>
         <p class="stat__value" data-field="tps">–</p>
+        <p class="stat__hint" data-field="tpsHint" data-i18n="home.tpsTarget"></p>
       </div>
     </div>
   </section>
@@ -207,6 +212,7 @@ export function render(root) {
     updateCpuData(status.cpuPercent, running);
 
     f.tps.textContent = status.tps === null ? "–" : status.tps.toFixed(1);
+    f.tpsHint.textContent = tpsHint(status.tps);
   }
 
   // "Survival-Welt · Vanilla 26.3 · läuft seit 3 h 12 min" + the buttons that fit the state
@@ -433,6 +439,13 @@ export function render(root) {
     stopStatus();
     stopLog();
   };
+}
+
+/** "Ziel 20 · flüssig" – without a value (offline, unknown) just "Ziel 20". */
+function tpsHint(tps) {
+  if (tps === null) return t("home.tpsTarget");
+  const rating = tps >= TPS_SMOOTH ? "smooth" : tps >= TPS_SLOW ? "slow" : "lagging";
+  return `${t("home.tpsTarget")} · ${t(`home.tpsRating.${rating}`)}`;
 }
 
 function playerRow() {

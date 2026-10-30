@@ -83,7 +83,12 @@ export default {
   home: {
     players: 'Spieler online',
     tps: 'TPS',
-    tpsDesc: 'Ziel 20',
+    tpsTarget: 'Ziel 20',
+    tpsRating: {
+      smooth: 'flüssig',
+      slow: 'etwas verzögert',
+      lagging: 'stark verzögert',
+    },
     playerList: 'Spieler',
     quickactions: 'Schnellaktionen',
     ram: 'Arbeitsspeicher',
