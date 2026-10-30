@@ -1,0 +1,13 @@
+# Local only: rules for AI coding assistants (see README, "AI assistance") and the design mockups
+AGENTS.md
+/design
+
+# Demo build and Python environment
+/dist
+.venv/
+__pycache__/
+
+# Never commit game files – the server jar is always downloaded from the provider
+*.jar
+
+.DS_Store
