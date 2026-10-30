@@ -266,6 +266,9 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
     Systemfarben; Eingabefelder zeigen den Fokus per Outline, weil der Kontrastmodus `box-shadow` entfernt.
 - [x] `<lang-switch>`: Das `fieldset` hat ein unsichtbares `aria-label` („Sprache“), die Legend fehlt ja.
 - [x] EULA im Panel bestätigen – Details unter [Rechtliches](#rechtliches--marke-eula-weiterverbreitung)
+- [x] Nach Mockup 06 (Handy): Sprachumschalter in der Topbar rechts vom Logo, Servername auf Home in der Statuszeile
+- [x] TPS auf Home mit Unterzeile wie im Mockup 02: „Ziel 20 · flüssig“ (ab 19), „etwas verzögert“ (ab 15),
+      „stark verzögert“ (darunter); ohne Wert nur „Ziel 20“
 - [x] Checkbox: Das Kästchen wird nicht mehr schmal gedrückt, wenn der Text zweizeilig umbricht.
 - [x] Komponenten-Übersicht (`components.html`) um alle neuen Bausteine ergänzt:
   - Lädt jetzt `main.css` wie das Panel, also auch `layout.css`.
@@ -523,6 +526,9 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   Servername und Adresse kommen aus dem Status (`main.js` abonniert `onStatus`), bis dahin steht dort „–“.
 - Unter 900 px: Topbar mit Menü-Button, Sidebar gleitet über den Inhalt (`.app[data-nav-open]`).
   Schließen per Escape, Klick auf den Hintergrund oder Navigation; Fokus wandert in die Nav bzw. zurück zum Button.
+  Der Sprachumschalter sitzt dort rechts in der Topbar (`.topbar__lang`); der im Sidebar-Fuß ist ausgeblendet.
+- Home zeigt den Servernamen in der Statuszeile („Survival-Welt · Vanilla 26.3 · läuft seit …“): breit in einer
+  Zeile, ein zu langer Name wird mit „…“ gekürzt, Version und Laufzeit bleiben; unter 900 px steht der Name darüber.
 - Seiten in `js/pages/` exportieren `titleKey` und `render(root)` (optional Rückgabe einer Cleanup-Funktion).
   Unbekannte Hashes → `#/home`. Nach Navigation Fokus auf `<h1>`.
 - Seiten können einen Seitenwechsel aufhalten: `onBeforeLeave(guard)` aus `router.js`, Rückgabe in der Cleanup aufrufen.

@@ -7,6 +7,17 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+### Added
+
+- Home: below the TPS value, the target and how it runs – "Ziel 20 · flüssig", "etwas verzögert" below 19,
+  "stark verzögert" below 15. Without a value (offline, still loading) just "Ziel 20".
+
+### Changed
+
+- Phones: the language switch sits in the top bar, right of the logo – the sidebar no longer has to be opened for it.
+- Home shows the server name in its status line: "Survival-Welt · Vanilla 26.3 · läuft seit …" in one line on
+  wide screens (a long name is cut with "…"), and on its own line above on phones.
+
 ## [0.1.0-alpha.6] – 2026-10-30
 
 The frontend is complete: error messages, the EULA in the panel – and a demo that stays in the repo.
