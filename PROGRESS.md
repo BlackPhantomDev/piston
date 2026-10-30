@@ -80,10 +80,12 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - **Raspberry Pi:** „Pi“ allein ist frei, es ist der griechische Buchstabe.
   - Das Himbeer-Logo und „Raspberry Pi“ gehören nie in Name oder Logo.
   - Beschreibend ist es erlaubt („runs on a Raspberry Pi“).
-- **EULA:** Ein Minecraft-Server startet erst, wenn in `eula.txt` `eula=true` steht. Das Panel setzt das **nie
+- **EULA:** Ein Minecraft-Server startet erst, wenn in `eula.txt` `eula=true` steht. PiSton setzt das **nie
   selbst**, auch nicht nebenbei bei einem Versionswechsel oder bei der Einrichtung.
-  - Der Nutzer bestätigt ausdrücklich mit einer Checkbox. Sie ist nie vorausgewählt.
-  - Daneben steht ein Link zur EULA (`https://aka.ms/MinecraftEULA`).
+  - Der Nutzer bestätigt ausdrücklich, immer mit einem Link zur EULA (`https://aka.ms/MinecraftEULA`):
+    - im Panel mit einer Checkbox, die nie vorausgewählt ist,
+    - später auch im Installer, mit einem eingetippten „ja“ (Standard „nein“).
+  - Nichts überspringt die Bestätigung, auch keine Option oder Umgebungsvariable.
 - **Weiterverbreitung:** Die Guidelines verbieten, das Spiel oder Spieldateien weiterzugeben.
   - Keine `server.jar` und keine anderen Spieldateien im Repo, in Releases oder in einem fertigen Pi-Image.
   - Das Backend lädt die Jar immer direkt vom Anbieter. Für Vanilla ist das Mojangs Versions-Manifest,
@@ -106,6 +108,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - Hinweis, wenn `eula.txt` nicht `true` ist: auf Home (der Server startet dann nicht) und in den Einstellungen.
   - Dazu ein Link zur EULA, eine Checkbox (nie vorausgewählt) und ein Button.
   - Bisher gibt es nur den Prüfpunkt beim Versionswechsel.
+  - Bleibt nötig, auch wenn später der Installer fragt: bei Installation von Hand, Installer ohne Terminal,
+    „nein“ im Installer oder einem neuen Server-Ordner mit `eula=false`.
 - [x] `.gitignore`: `*.jar` ausschließen, damit keine Server-Jar versehentlich im Repo landet.
       Gilt bisher nur lokal, weil `.gitignore` selbst nicht im Repo ist (siehe Offene Punkte).
 - [ ] **EULA-Endpunkt** (Phase 9): `POST /api/eula` schreibt `eula=true` nur auf die ausdrückliche Bestätigung aus dem UI.
@@ -357,11 +361,19 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
     - die sudoers-Regel setzen (nur die drei `systemctl`-Befehle).
   - Reines POSIX-`sh`. Vorher prüft er das System (Raspberry Pi OS 64-bit bzw. Debian), Python ≥ 3.11 und Java.
   - Man kann ihn mehrfach ausführen, ohne dass etwas kaputtgeht. Am Ende zeigt er die Adresse `http://<ip>:8080`.
-  - Er setzt nie `eula=true` und lädt keine `server.jar`. Das macht das Panel, und zwar erst nach der Bestätigung (siehe „Rechtliches“).
+  - Danach richtet er auf Wunsch gleich den Minecraft-Server ein (nur mit Terminal):
+    - Auswahl von Anbieter (Vanilla, Paper, Fabric) und Version, dieselbe Auswahl wie im Panel.
+    - EULA-Frage mit Link zur EULA. Nur ein eingetipptes „ja“ zählt, Standard ist „nein“.
+      Bei `curl … | sh` ist die Eingabe die Pipe, deshalb liest der Installer die Antwort von `/dev/tty`.
+    - Den Download macht nicht das Skript, sondern das Backend: `python -m server setup` mit denselben
+      Provider-Modulen wie das Panel (Prüfsumme, Java-Prüfung). So gibt es keine zweite Download-Logik in `sh`.
+    - Ohne Terminal oder bei „nein“ übernimmt das Panel: EULA-Hinweis und Versionswechsel wie gewohnt.
   - In der README zusätzlich der vorsichtige Weg: erst herunterladen, ansehen, dann ausführen.
   - Zu klären:
     - Der Installer braucht Root-Rechte. AGENTS.md §11 erlaubt `sudo` bisher nur für die drei `systemctl`-Aufrufe.
     - Wo liegt das Skript: Release-Asset, GitHub Pages oder eigene Domain?
+    - Lässt man im Installer den Server weg, gibt es noch keine Jar. Dafür braucht das Panel einen Zustand
+      „noch kein Server installiert“, der bisher nicht vorgesehen ist.
 - [ ] 🔔 **Update-Hinweis:** Das Panel prüft regelmäßig die Releases auf GitHub. Gibt es eine neuere Version,
       zeigt es einen Hinweis mit Link zum Repo und zu einer Update-Anleitung (die Anleitung ist noch auszuarbeiten).
   - Gefragt wird vom Backend, nicht vom Browser: einmal am Tag, mit dem PiSton-User-Agent.
