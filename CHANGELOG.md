@@ -19,6 +19,9 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ### Changed
 
+- The status badge pulses with a ring around it when the state changes: calmly for online, faster for
+  offline – for just under 5 seconds, then it rests. While the server starts or stops, it pulses until done.
+  It stays still when the system asks for reduced motion.
 - The component overview (`components.html`) shows every building block again, including the new ones:
   choice chips, option cards, check list and steps, action menu, dialog, copy button with tooltip,
   error messages and the parts of the "Das Gerät antwortet nicht" screen.

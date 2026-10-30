@@ -479,6 +479,12 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   - `.command` – Befehl mit Kopier-Button, `.check-steps` – nummerierte Prüfliste; Kopieren mit Tooltip über
     `setupCopyButton()` aus `js/clipboard.js`.
   - `<status-badge>` kennt auch `loading` („Lädt …“, gepunkteter Marker), das ist der Standard ohne Status.
+    Das Badge pulsiert mit einem Ring um die Box:
+    - `online` ruhig (2 × `--pulse-calm` à 2,4 s) und `offline` schneller (4 × `--pulse-fast` à 1,2 s), jeweils 4,8 s nach
+      dem Statuswechsel, dann ist Ruhe. So bleibt es unter den 5 s, die WCAG 2.2.2 ohne Pause-Möglichkeit erlaubt.
+    - `starting` und `stopping` pulsieren, bis der Vorgang fertig ist, wie ein Spinner.
+    - Jeder neue Status startet den Puls neu. Derselbe Status noch einmal rendert das Badge nicht neu.
+    - Bei `prefers-reduced-motion` steht es still.
   - `.tooltip` – kurzer Hinweis über einem Control (`aria-hidden`, der Name kommt aus `aria-label`).
     Sichtbar bei Hover (nur wo es Hover gibt), Tastaturfokus und solange das Eltern-Element `data-state` hat.
   - Auswahl und Abläufe: `.choice-chips` (Radiogruppe oder Sprungmarken mit `aria-current`), `.option-cards`, `.chip`,
