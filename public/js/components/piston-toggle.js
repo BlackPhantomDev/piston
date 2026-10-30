@@ -35,6 +35,8 @@ export class PistonToggle extends HTMLElement {
   #internals = this.attachInternals();
   /** @type {HTMLButtonElement | null} */
   #switch = null;
+  // Disabled by a <fieldset disabled> around it – may arrive before connectedCallback
+  #formDisabled = false;
 
   connectedCallback() {
     if (this.#switch) return;
@@ -85,7 +87,8 @@ export class PistonToggle extends HTMLElement {
   }
 
   formDisabledCallback(disabled) {
-    if (this.#switch) this.#switch.disabled = disabled || this.disabled;
+    this.#formDisabled = disabled;
+    this.#sync();
   }
 
   get checked() {
@@ -111,7 +114,7 @@ export class PistonToggle extends HTMLElement {
   #sync() {
     if (!this.#switch) return;
     this.#switch.setAttribute('aria-checked', String(this.checked));
-    this.#switch.disabled = this.disabled;
+    this.#switch.disabled = this.disabled || this.#formDisabled;
     this.#internals.setFormValue(this.checked ? (this.getAttribute('value') ?? 'on') : null);
   }
 }
