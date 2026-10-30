@@ -347,6 +347,51 @@
   font-size: 14px;
 }
 
+/* Home: "Survival-Welt · Vanilla 26.3 · läuft seit …" in one line on wide screens.
+   Too long a name is cut with "…" – version and uptime always stay readable. */
+.page__heading,
+.page__status {
+  min-width: 0;
+}
+
+.page__meta--server {
+  display: flex;
+  gap: 0.35em;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.page__server-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page__server-name:empty {
+  display: none;
+}
+
+/* Read out like the other "·" of the line – without it, "Survival-WeltVanilla" runs together */
+.page__server-name:not(:empty) + span::before {
+  content: "· ";
+}
+
+/* Narrow screens: the name gets its own line above */
+@media (max-width: 899.98px) {
+  .page__meta--server {
+    display: block;
+    white-space: normal;
+  }
+
+  .page__server-name {
+    display: block;
+  }
+
+  .page__server-name:not(:empty) + span::before {
+    content: none;
+  }
+}
+
 .page__actions {
   display: flex;
   flex-wrap: wrap;

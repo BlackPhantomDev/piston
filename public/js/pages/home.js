@@ -36,7 +36,9 @@ const VIEW = `
       <h1 tabindex="-1" data-i18n="nav.home"></h1>
       <div class="page__status">
         <status-badge data-field="state"></status-badge>
-        <p class="page__meta" data-field="summary"></p>
+        <p class="page__meta page__meta--server">
+          <span class="page__server-name" data-field="serverName"></span><span data-field="summary"></span>
+        </p>
       </div>
     </div>
 
@@ -207,12 +209,13 @@ export function render(root) {
     f.tps.textContent = status.tps === null ? "–" : status.tps.toFixed(1);
   }
 
-  // "Vanilla 26.3 · läuft seit 3 h 12 min" + the buttons that fit the state
+  // "Survival-Welt · Vanilla 26.3 · läuft seit 3 h 12 min" + the buttons that fit the state
   function updateHeader(status) {
     const parts = [`${providerName(status.provider)} ${status.version}`];
     if (status.startedAt) {
       parts.push(t("server.runningFor", { duration: formatSince(status.startedAt) }));
     }
+    f.serverName.textContent = status.name;
     f.summary.textContent = parts.join(" · ");
 
     const running = status.state === "online" || status.state === "starting";
