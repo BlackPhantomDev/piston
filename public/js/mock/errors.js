@@ -21,7 +21,7 @@
 
 // What the backend answers when something goes wrong – { error: { code, message } },
 // AGENTS.md §9 – for the demo with ?sim=error (see sim.js):
-//   every change fails (start/stop, commands, backup, saving, lists, version, world),
+//   every change fails (start/stop, commands, backup, saving, lists, version, world, EULA),
 //   every read fails the first time and works on "Erneut versuchen".
 // The messages are the backend's: German, without paths or system details (AGENTS.md §8).
 // Without the parameter nothing fails. Only js/api/demo.js and mock files import this file.
@@ -43,6 +43,7 @@ const ERRORS = {
   listRemove: ['rcon_unavailable', 'Keine Verbindung zur Server-Konsole (RCON). Die Liste wurde nicht geändert.'],
   switchVersion: ['checksum_mismatch', 'Die heruntergeladene Datei ist beschädigt (Prüfsumme passt nicht). Die bisherige Version läuft weiter.'],
   resetWorld: ['disk_full', 'Für das Backup vorher ist nicht genug Platz frei. Die Welt ist unverändert.'],
+  eula: ['write_failed', 'Die Datei eula.txt ließ sich nicht schreiben. Die EULA ist noch nicht akzeptiert.'],
   // Reads – fail only the first time
   settings: ['read_failed', 'Die Datei server.properties ließ sich nicht lesen.'],
   defaults: ['read_failed', 'Die Standardwerte ließen sich nicht laden.'],
@@ -50,6 +51,11 @@ const ERRORS = {
   versions: ['provider_unreachable', 'Der Anbieter antwortet gerade nicht. Versuch es gleich noch einmal.'],
 };
 const READS = new Set(['settings', 'defaults', 'lists', 'versions']);
+
+/** @type {Record<string, [code: string, message: string]>} */
+const RULES = {
+  eulaMissing: ['eula_not_accepted', 'Die Minecraft-EULA ist noch nicht akzeptiert. Der Server startet erst danach.'],
+};
 
 /** Reads that already failed once */
 const failedReads = new Set();
@@ -68,6 +74,16 @@ export function mockError(what) {
     failedReads.add(what);
   }
   const [code, message] = ERRORS[what];
+  return new ApiError(code, message);
+}
+
+/**
+ * The backend's answer when a request breaks one of its rules – with or without ?sim=error.
+ * @param {keyof typeof RULES} rule
+ * @returns {ApiError}
+ */
+export function mockRule(rule) {
+  const [code, message] = RULES[rule];
   return new ApiError(code, message);
 }
 

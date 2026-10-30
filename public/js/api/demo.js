@@ -22,15 +22,23 @@
 // Demo implementation of api.js: everything runs in the browser on the sample data
 // in js/mock/ – no backend, no Minecraft server. Same functions, same data shapes
 // as the live version will have, so pages cannot tell the difference.
-// ?sim=error makes the "backend" answer with errors (mock/errors.js).
+// ?sim=error makes the "backend" answer with errors (mock/errors.js),
+// ?sim=eula starts without an accepted EULA (mock/status.js).
 // Stays in the repo for good: scripts/build_dist.py builds the demo from it.
 
 import { mockConnect, mockWatchConnection } from '../mock/connection.js';
-import { mockFail } from '../mock/errors.js';
+import { mockFail, mockRule } from '../mock/errors.js';
 import { mockChangeList, mockLists } from '../mock/lists.js';
 import { mockCommand, mockLogBacklog, mockLogLine } from '../mock/log.js';
 import { mockDefaultProperties, mockGetSettings, mockSaveSettings, mockVersions } from '../mock/settings.js';
-import { mockCreateBackup, mockResetWorld, mockServerAction, mockStatus, mockSwitchVersion } from '../mock/status.js';
+import {
+  mockAcceptEula,
+  mockCreateBackup,
+  mockResetWorld,
+  mockServerAction,
+  mockStatus,
+  mockSwitchVersion,
+} from '../mock/status.js';
 
 /** @typedef {import('../api.js').Connection} Connection */
 /** @typedef {import('../api.js').Lists} Lists */
@@ -170,7 +178,23 @@ function broadcastStatus() {
  */
 export async function serverAction(action) {
   await mockFail('serverAction');
+  // Like the backend: no start before the EULA is accepted (AGENTS.md §6.5)
+  if (action === 'start' && !mockStatus().eulaAccepted) throw mockRule('eulaMissing');
   mockServerAction(action, broadcastStatus);
+}
+
+/**
+ * Accepts the Minecraft EULA: writes eula=true to eula.txt (later POST /api/eula
+ * { accept: true }, a draft in AGENTS.md §9). Call it only from the user's explicit
+ * confirmation – ticked checkbox + button – never on your own (AGENTS.md §6.5).
+ * The new eulaAccepted arrives through onStatus().
+ * @returns {Promise<void>}
+ */
+export async function acceptEula() {
+  await mockFail('eula');
+  await new Promise((resolve) => setTimeout(resolve, MOCK_LATENCY_MS));
+  mockAcceptEula();
+  broadcastStatus();
 }
 
 /**

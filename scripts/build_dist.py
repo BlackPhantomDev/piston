@@ -24,7 +24,8 @@
 
 Upload the contents of dist/ to any static web host. Adding ?sim=lost to the
 address shows what happens when the connection to the device breaks, ?sim=error
-what happens when the backend answers with errors.
+what happens when the backend answers with errors, ?sim=eula a server whose
+EULA is not accepted yet.
 
 The demo always runs on js/api/demo.js and the sample data in js/mock/,
 whatever js/api.js points to in the repo – so every change to the panel

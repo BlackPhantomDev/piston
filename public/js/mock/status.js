@@ -24,12 +24,16 @@
 
 import { mockError } from './errors.js';
 import { mockOnList } from './lists.js';
+import { simulates } from './sim.js';
 
 const MINUTE = 60_000;
 const TRANSITION_MS = 2000; // how long "starting" / "stopping" take in the demo
 
+// ?sim=eula: the EULA is not accepted yet – without it the server does not run
+let eulaAccepted = !simulates('eula');
+
 /** @type {import('../api.js').Status['state']} */
-let state = 'online';
+let state = eulaAccepted ? 'online' : 'offline';
 let started = Date.now() - (3 * 60 + 12) * MINUTE;
 let lastBackup = new Date().setHours(6, 0, 0, 0); // today 06:00
 let installed = { provider: 'vanilla', version: '26.3' };
@@ -75,8 +79,22 @@ export function mockStatus() {
     cpuPercent: running ? 30 + Math.random() * 10 : 0,
     lastBackupAt: new Date(lastBackup).toISOString(),
     java: [25],
-    eulaAccepted: true,
+    eulaAccepted,
   };
+}
+
+/** The user accepted the EULA in the panel: eula.txt now says eula=true. */
+export function mockAcceptEula() {
+  eulaAccepted = true;
+}
+
+/**
+ * Where a start really ends: without the EULA, Minecraft quits right away
+ * ("You need to agree to the EULA …"), so the server is offline again.
+ * @param {typeof state} next
+ */
+function reached(next) {
+  return next === 'online' && !eulaAccepted ? 'offline' : next;
 }
 
 /** Names of everyone online right now, in list order (for mockCommand()). */
@@ -113,7 +131,7 @@ const STEPS = {
 export function mockServerAction(action, onChange) {
   STEPS[action].forEach((next, i) => {
     setTimeout(() => {
-      state = /** @type {typeof state} */ (next);
+      state = reached(/** @type {typeof state} */ (next));
       if (state === 'online') started = Date.now();
       onChange();
     }, i * TRANSITION_MS);
@@ -127,7 +145,7 @@ const wait = (/** @type {number} */ ms) => new Promise((resolve) => setTimeout(r
  * @param {() => void} onChange
  */
 function setState(next, onChange) {
-  state = next;
+  state = reached(next);
   if (state === 'online') started = Date.now();
   onChange();
 }

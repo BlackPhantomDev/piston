@@ -23,7 +23,8 @@
 // the types below – and picks where the data comes from:
 //   api/demo.js – sample data from js/mock/, no backend needed;
 //                 ?sim=lost shows what happens when the connection breaks,
-//                 ?sim=error what happens when the backend answers with an error
+//                 ?sim=error what happens when the backend answers with an error,
+//                 ?sim=eula a server whose EULA is not accepted yet
 //   api/live.js – the PiSton backend over fetch + WebSocket (comes with phase 7)
 // Pages never import those files directly. scripts/build_dist.py always builds
 // the demo, whatever the line below says.

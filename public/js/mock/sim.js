@@ -24,6 +24,7 @@
 // Several at once with a comma: ?sim=lost,error
 //   lost  – the connection to the panel breaks (connection.js)
 //   error – the backend answers with errors (errors.js)
+//   eula  – eula.txt does not say eula=true yet, so the server cannot start (status.js)
 
 const SIM = new Set(
   [location.search, location.hash.split('?')[1] ?? ''].flatMap((query) =>
@@ -31,7 +32,7 @@ const SIM = new Set(
   ),
 );
 
-/** @param {'lost' | 'error'} name */
+/** @param {'lost' | 'error' | 'eula'} name */
 export function simulates(name) {
   return SIM.has(name);
 }
