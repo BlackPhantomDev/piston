@@ -393,6 +393,17 @@ export default {
     cancel: 'Abbrechen',
     none: 'keins',
   },
+  eula: {
+    title: 'Minecraft-EULA akzeptieren',
+    text: 'Der Minecraft-Server startet erst, wenn die Endbenutzer-Lizenzvereinbarung (EULA) von Mojang akzeptiert ist. PiSton akzeptiert sie nie von selbst – das entscheidest du.',
+    link: 'EULA lesen',
+    newTab: ' (öffnet in neuem Tab)',
+    confirm: 'Ich habe die Minecraft-EULA gelesen und akzeptiere sie.',
+    accept: 'Akzeptieren',
+    required: 'Bitte bestätige zuerst, dass du die EULA gelesen hast und akzeptierst.',
+    accepted: 'EULA akzeptiert. Der Server kann jetzt starten.',
+    failed: 'Nicht akzeptiert: {reason}',
+  },
   // Messages of the backend (error.message) are shown as they come – these are the panel's own
   errors: {
     unknown: 'Etwas ist schiefgegangen. Lade die Seite neu und versuch es noch einmal.',

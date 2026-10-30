@@ -2012,6 +2012,32 @@ action-menu > [aria-expanded="true"] {
 }
 
 /* =========================================================================
+   EULA card – js/eula.js: link, checkbox (never ticked in advance), button
+   ========================================================================= */
+
+.eula__form {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+}
+
+/* After "Akzeptieren": the confirmation replaces the form */
+.eula__done {
+  padding: var(--card-pad);
+  color: var(--color-online-text);
+  font-weight: var(--fw-semibold);
+}
+
+.eula__done::before {
+  content: "✓" / "";
+  margin-right: var(--space-2);
+}
+
+.eula__done:empty {
+  display: none;
+}
+
+/* =========================================================================
    Errors – what went wrong, always with icon and words (js/errors.js)
    ========================================================================= */
 

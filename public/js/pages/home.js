@@ -21,6 +21,7 @@
 
 import * as api from "../api.js";
 import { confirmDialog } from "../dialogs.js";
+import { eulaNotice } from "../eula.js";
 import { errorText, setStatusText, showError } from "../errors.js";
 import { dimensionName, formatSince, formatWhen, providerName } from "../format.js";
 import { t } from "../i18n/index.js";
@@ -54,6 +55,8 @@ const VIEW = `
       </button>
     </div>
   </header>
+
+  <div data-field="eulaSlot"></div>
 
   <section class="page-section" aria-labelledby="home-server-monitoring">
     <h2 id="home-server-monitoring" data-i18n="home.serverMonitoring"></h2>
@@ -183,11 +186,16 @@ export function render(root) {
   root.append(view(VIEW));
   const f = fields(root);
 
+  // Shown while eula.txt is not true – the server cannot start before that
+  const eula = eulaNotice();
+  f.eulaSlot.replaceWith(eula.el);
+
   let lastStatus;
 
   function update(status) {
     lastStatus = status;
     f.state.setAttribute("status", status.state);
+    eula.update(status.eulaAccepted);
     updateHeader(status);
     updateQuickActions(status);
     updatePlayersData(status.players, status.state);
@@ -212,9 +220,9 @@ export function render(root) {
     f.restartBtn.hidden = !running;
     f.stopBtn.hidden = !running;
 
-    // While starting/stopping, nothing can be clicked
+    // While starting/stopping, nothing can be clicked; without the EULA there is no start
     const busy = status.state === "starting" || status.state === "stopping";
-    f.startBtn.disabled = busy;
+    f.startBtn.disabled = busy || !status.eulaAccepted;
     f.restartBtn.disabled = busy;
     f.stopBtn.disabled = busy;
 

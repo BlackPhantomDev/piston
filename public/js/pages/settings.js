@@ -21,6 +21,7 @@
 
 import * as api from '../api.js';
 import { confirmDialog } from '../dialogs.js';
+import { eulaNotice } from '../eula.js';
 import { errorText, hideLoadError, setStatusText, showLoadError } from '../errors.js';
 import { formatWhen, providerName } from '../format.js';
 import { t } from '../i18n/index.js';
@@ -46,6 +47,8 @@ const VIEW = `
         <p class="page__meta" data-i18n="settings.subtitle"></p>
       </div>
     </header>
+
+    <div data-field="eulaSlot"></div>
 
     <nav class="choice-chips" data-i18n-label="settings.sectionsLabel" data-field="sectionNav">
       <button class="choice-chip" type="button" data-target="settings-general" data-i18n="settings.sections.general"></button>
@@ -326,6 +329,10 @@ export function render(root) {
   root.append(view(VIEW));
   const f = fields(root);
   const form = f.form;
+
+  // Shown while eula.txt is not true (AGENTS.md §6.5)
+  const eula = eulaNotice();
+  f.eulaSlot.replaceWith(eula.el);
 
   let alive = true; // false once the user navigated away (async results are dropped)
   /** @type {import('../api.js').Settings | null} last loaded or saved values */
@@ -863,6 +870,7 @@ export function render(root) {
   const stopStatus = api.onStatus((next) => {
     const first = status === null;
     status = next;
+    eula.update(next.eulaAccepted);
     const java = next.java.length ? ` · Java ${Math.max(...next.java)}` : '';
     f.installed.textContent = `${providerName(next.provider)} ${next.version}${java}`;
     // The port can only change while the server is stopped
