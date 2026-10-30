@@ -19,6 +19,9 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ### Changed
 
+- The component overview (`components.html`) shows every building block again, including the new ones:
+  choice chips, option cards, check list and steps, action menu, dialog, copy button with tooltip,
+  error messages and the parts of the "Das Gerät antwortet nicht" screen.
 - The demo stays in the repo for good: `js/api.js` is now the contract and picks the implementation,
   the sample-data version lives in `js/api/demo.js`. The live backend will come as `js/api/live.js`.
 

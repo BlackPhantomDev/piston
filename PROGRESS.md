@@ -12,7 +12,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 > [!TIP]
 > **Als Nächstes**
-> Feinschliff (Phase 5): EULA im UI bestätigen, Komponenten-Übersicht ergänzen
+> Feinschliff (Phase 5): EULA im UI bestätigen – der letzte offene Punkt der Phase
 
 > [!NOTE]
 > **Reihenfolge: erst das Frontend, dann das Backend.** Alle Seiten entstehen zuerst vollständig mit
@@ -258,7 +258,12 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - Windows-Kontrastmodus (`forced-colors`): Gewählte Chips, Sprache, Anbieter, aktuelle Seite und Schalter bekommen
     Systemfarben; Eingabefelder zeigen den Fokus per Outline, weil der Kontrastmodus `box-shadow` entfernt.
 - [x] `<lang-switch>`: Das `fieldset` hat ein unsichtbares `aria-label` („Sprache“), die Legend fehlt ja.
-- [ ] Komponenten-Übersicht um neue Bausteine ergänzen
+- [x] Komponenten-Übersicht (`components.html`) um alle neuen Bausteine ergänzt:
+  - Lädt jetzt `main.css` wie das Panel, also auch `layout.css`.
+  - Neue Abschnitte: Auswahl, Status & Fortschritt, Menü/Dialog/Kopieren, Fehler, Verbindung zum Gerät.
+    Dazu Listen mit Hinzufügen, Gefahrenzone, Info-Pill, Badge „Lädt …“ und der Skip-Link.
+  - Menü, Dialog, Kopieren, „Erneut versuchen“ und die Meldung unten rechts funktionieren dort echt.
+  - Geprüft mit axe bei 1440 und 375 px.
 
 ## Phase 6 – Backend-Grundgerüst
 
@@ -476,6 +481,11 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
   - `<status-badge>` kennt auch `loading` („Lädt …“, gepunkteter Marker), das ist der Standard ohne Status.
   - `.tooltip` – kurzer Hinweis über einem Control (`aria-hidden`, der Name kommt aus `aria-label`).
     Sichtbar bei Hover (nur wo es Hover gibt), Tastaturfokus und solange das Eltern-Element `data-state` hat.
+  - Auswahl und Abläufe: `.choice-chips` (Radiogruppe oder Sprungmarken mit `aria-current`), `.option-cards`, `.chip`,
+    `.check-list` (`ok`/`fail`/`info`), `.steps` (`done`/`active`/`failed`), `.option-row`, `.card--danger`, `.info-pill`.
+  - Fehler, immer mit Icon und Text (`js/errors.js`): `.error-text` (Statuszeile), `.form-error` (leer unsichtbar),
+    `.load-error` (mit „Erneut versuchen“), `.notice` (Meldung unten rechts in `#notices`).
+  - Alle Bausteine stehen mit ihren Zuständen auf `components.html`.
 - **Web Components** (Light DOM, registrieren sich beim Import, gesammelt in `js/components/index.js`):
   - `<mc-field label help error>` – Label/Hilfe/Fehler, verdrahtet `for`, `aria-describedby`, `aria-invalid`; Fehler per `el.error = '…'`.
   - `<mc-toggle checked disabled name value description layout="row">` – `<button role="switch">`, form-associated, feuert `change`. `layout="row"` = große Einstellungszeile (52 × 28) aus Mockup 04.
