@@ -567,8 +567,10 @@ mc-toggle[disabled] .toggle__label {
   cursor: pointer;
 }
 
+/* flex-shrink: a label that wraps to two lines must not squeeze the box */
 .checkbox input {
   display: grid;
+  flex-shrink: 0;
   place-items: center;
   width: var(--checkbox-size);
   height: var(--checkbox-size);
