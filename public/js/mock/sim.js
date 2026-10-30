@@ -26,11 +26,18 @@
 //   error – the backend answers with errors (errors.js)
 //   eula  – eula.txt does not say eula=true yet, so the server cannot start (status.js)
 
-const SIM = new Set(
-  [location.search, location.hash.split('?')[1] ?? ''].flatMap((query) =>
-    new URLSearchParams(query).getAll('sim').flatMap((value) => value.split(',')),
-  ),
-);
+/** @param {string} query  e.g. "sim=lost,error" */
+const simsIn = (query) =>
+  new URLSearchParams(query).getAll('sim').flatMap((value) => value.split(',')).filter(Boolean);
+
+const SIM = new Set([location.search, location.hash.split('?')[1] ?? ''].flatMap(simsIn));
+
+// The parameter is read once, when the page loads. Typing ?sim=… behind the # of an
+// open panel only changes the hash – so reload, and the new trouble plays from the start.
+// Links inside the panel drop the query; that keeps the running simulation as it is.
+addEventListener('hashchange', () => {
+  if (simsIn(location.hash.split('?')[1] ?? '').some((name) => !SIM.has(name))) location.reload();
+});
 
 /** @param {'lost' | 'error' | 'eula'} name */
 export function simulates(name) {
