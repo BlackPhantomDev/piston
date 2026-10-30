@@ -9,6 +9,8 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ### Added
 
+- Frontend tests that run in the browser, without Node.js: `tests/frontend/` checks every component, both UI
+  languages and the pages on sample data, including axe-core at desktop and phone width.
 - English UI: switch with DE | EN. Backend errors arrive in German and are looked up by their code;
   dates and times follow the browser's regional variant (en-GB, en-US, …).
 - Home: below the TPS value, the target and how it runs – "Ziel 20 · flüssig", "etwas verzögert" below 19,
@@ -19,6 +21,18 @@ Versions below 1.0.0 are in development – anything may still change.
 - Phones: the language switch sits in the top bar, right of the logo – the sidebar no longer has to be opened for it.
 - Home shows the server name in its status line: "Survival-Welt · Vanilla 26.3 · läuft seit …" in one line on
   wide screens (a long name is cut with "…"), and on its own line above on phones.
+- All custom elements share the `piston-` prefix: `<piston-field>`, `<piston-toggle>`, `<piston-status-badge>`, …
+  (before: `mc-…` mixed with names without a prefix). `css/style.css` is now `css/base.css`.
+- `.gitignore` is part of the repository, so `*.jar`, `.venv/` and `dist/` stay out of fresh clones too.
+  The README explains that PiSton is developed with AI assistance.
+
+### Fixed
+
+- A `<piston-toggle>` inside a disabled `<fieldset>` could still be switched.
+
+### Removed
+
+- Unused font files: the static and italic cuts and every Chakra Petch weight but Bold – 23 MB down to 1.2 MB.
 
 ## [0.1.0-alpha.6] – 2026-10-30
 

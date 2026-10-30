@@ -199,6 +199,11 @@ public/
 The UI speaks German and English – switch with DE | EN in the sidebar (on phones in the top bar).
 All strings live in `public/js/i18n/`, so another language is one more file.
 
+### AI assistance
+
+PiSton is developed with the help of AI coding assistants. The project rules they follow live in an
+`AGENTS.md` that is kept local – that is why it shows up in `.gitignore`.
+
 ## License
 
 Copyright © 2026 Mischa S.

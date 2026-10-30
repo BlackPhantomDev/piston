@@ -116,7 +116,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - Bleibt nötig, auch wenn später der Installer fragt: bei Installation von Hand, Installer ohne Terminal,
     „nein“ im Installer oder einem neuen Server-Ordner mit `eula=false`.
 - [x] `.gitignore`: `*.jar` ausschließen, damit keine Server-Jar versehentlich im Repo landet.
-      Gilt bisher nur lokal, weil `.gitignore` selbst nicht im Repo ist (siehe Offene Punkte).
+      `.gitignore` ist im Repo, die Regel gilt also auch bei einem frischen Klon.
 - [ ] **EULA-Endpunkt** (Phase 9): `POST /api/eula` schreibt `eula=true` nur auf die ausdrückliche Bestätigung aus dem UI.
       Steht als Entwurf in AGENTS.md §9.
 - [ ] **Release** (Phase 11):
@@ -150,7 +150,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] Layout-Styles + Layout-Tokens (`css/layout.css`) · `ecdcb50`
 - [x] i18n: `LOCALES`, Rückfall auf Deutsch, `setLocale()`, `translate()` für `data-i18n` · `bdd4a08`
 - [x] Hash-Routing `#/home`, `#/konsole`, `#/einstellungen` + Seiten-Platzhalter · `be16173` (später umbenannt in `#/console`, `#/settings`)
-- [x] Sprachumschalter `<lang-switch>` (Englisch „geplant“) · `1ab9235`
+- [x] Sprachumschalter `<piston-lang-switch>` (Englisch „geplant“) · `1ab9235`
 - [x] Sidebar nach Mockup 02, Topbar + Slide-in auf schmalen Bildschirmen · `11faa81`
 - [x] README, Roadmap · `155162b`, `730e0fc`
 
@@ -166,12 +166,12 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] Spielerliste mit Dimension, Ping und „OP“ (Online-Zeit bewusst weggelassen), im Kopf „6 online“
 - [x] Spielerliste wird an Ort und Stelle aktualisiert: Fokus und offenes Menü überstehen das Status-Update alle 5 s
 - [x] Leere Spielerliste: „Gerade ist niemand online.“ bzw. „Der Server läuft nicht.“
-- [x] Aktionsmenü je Spieler (`<action-menu>`):
+- [x] Aktionsmenü je Spieler (`<piston-action-menu>`):
   - Nachricht senden (`tell`, Dialog)
   - Zum Operator machen / Operator-Rechte entziehen (`op` / `deop`)
   - Kicken und Bannen, beide mit Bestätigung
   - Fliegt ein Spieler raus, wandert der Fokus zur nächsten Zeile.
-- [x] Letzte Konsolenausgabe (Ausschnitt) mit `<log-view>`
+- [x] Letzte Konsolenausgabe (Ausschnitt) mit `<piston-log-view>`
 - [x] Schnellaktionen: Welt speichern, Backup erstellen, Nachricht an alle (Dialog), Tag setzen
 - [x] Gliederung: Server-Monitoring, System-Monitoring, Spieler + Konsole, Schnellaktionen
 - [x] Start / Stopp / Neustart (Buttons je nach Status, im Mock mit Übergängen)
@@ -181,7 +181,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ✅ abgeschlossen
 
-- [x] `<log-view>`: Zeit, Level, Text; WARN/ERROR hervorgehoben, Chat-Absender grün
+- [x] `<piston-log-view>`: Zeit, Level, Text; WARN/ERROR hervorgehoben, Chat-Absender grün
 - [x] Konsole-Seite nach Mockup 03: Kopf mit Status, Panel mit Befehlszeile, „Häufige Befehle“
 - [x] Filter: Alle, Info, Warnungen, Fehler (`filter`-Attribut, reines CSS) + Textsuche
 - [x] Befehlseingabe mit Verlauf (↑/↓); eigener Befehl (CMD) + Antwort (RCON) im Log
@@ -259,12 +259,12 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
       (Menü offen, Dialoge, Fehler im Formular, Sidebar auf dem Handy, Server offline) – keine Verstöße mehr.
   - Tastatur: Jeder Tab-Stopp hat einen sichtbaren Fokus (Home 21, Konsole 23, Einstellungen 50 Stopps).
   - Neu: Link „Zum Inhalt springen“ als erster Tab-Stopp. Er springt zur `<h1>`, die Route im Hash bleibt.
-  - Konsole: `role="log"` sitzt auf `<log-view>` statt auf dem `<ol>`, damit die Zeilen eine Liste bleiben.
+  - Konsole: `role="log"` sitzt auf `<piston-log-view>` statt auf dem `<ol>`, damit die Zeilen eine Liste bleiben.
   - Platzhalterfarbe `#8A8884` (5:1 statt 3,8:1).
   - Schritte beim Versionswechsel: „erledigt“ jetzt mit ✓, nicht nur grün (WCAG 1.4.1).
   - Windows-Kontrastmodus (`forced-colors`): Gewählte Chips, Sprache, Anbieter, aktuelle Seite und Schalter bekommen
     Systemfarben; Eingabefelder zeigen den Fokus per Outline, weil der Kontrastmodus `box-shadow` entfernt.
-- [x] `<lang-switch>`: Das `fieldset` hat ein unsichtbares `aria-label` („Sprache“), die Legend fehlt ja.
+- [x] `<piston-lang-switch>`: Das `fieldset` hat ein unsichtbares `aria-label` („Sprache“), die Legend fehlt ja.
 - [x] EULA im Panel bestätigen – Details unter [Rechtliches](#rechtliches--marke-eula-weiterverbreitung)
 - [x] Nach Mockup 06 (Handy): Sprachumschalter in der Topbar rechts vom Logo, Servername auf Home in der Statuszeile
 - [x] TPS auf Home mit Unterzeile wie im Mockup 02: „Ziel 20 · flüssig“ (ab 19), „etwas verzögert“ (ab 15),
@@ -424,17 +424,27 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 
 ## Offene Punkte & Aufräumarbeiten
 
-- [ ] **Gitignored, fehlt bei frischem Klon:** `AGENTS.md`, `design/` – und `.gitignore` ignoriert sich selbst. Entscheiden, ob sie ins Repo gehören.
-      Dringender, seit `.gitignore` auch `*.jar` und `.venv/` ausschließt: Ohne die Datei im Repo greifen diese Regeln
-      bei einem frischen Klon nicht.
-- [ ] `AGENTS.md` §4 beschreibt die Soll-Struktur, nicht den Ist-Zustand (siehe [Ordnerstruktur](#ordnerstruktur))
+- [x] `.gitignore` ist im Repo, damit `*.jar`, `.venv/` und `dist/` auch bei einem frischen Klon ausgeschlossen sind.
+      `AGENTS.md` und `design/` bleiben lokal; das README sagt im Abschnitt „AI assistance“, warum `AGENTS.md` dort steht.
+- [x] `AGENTS.md` §4 zeigt jetzt den Stand des Repos (siehe [Ordnerstruktur](#ordnerstruktur))
 - [x] Platzhalterfarbe `#757575` hatte auf `#18191B` nur ~3,8:1 Kontrast – jetzt `#8A8884` mit 5:1
-- [ ] Fonts als WOFF2 statt TTF (~60–70 % kleiner)
-- [ ] Ungenutzte Font-Dateien: die `static/`-Ordner von Inter, JetBrains Mono und Pixelify Sans sowie 7 Schnitte von
-      Chakra Petch (geladen werden nur Medium, SemiBold und Bold). `scripts/build_dist.py` lässt sie im `dist/` schon weg.
+- [ ] Fonts als WOFF2 statt TTF (~60–70 % kleiner). Google liefert nur TTF; umwandeln ginge einmalig mit `fontTools`
+      (`fonttools ttLib.woff2 compress`). Keine der vier Schriften hat einen Reserved Font Name, die OFL erlaubt das ohne Umbenennen.
+- [x] Ungenutzte Font-Dateien gelöscht (23 MB → 1,2 MB): die `static/`-Ordner, die README.txt von Google, die Kursiv-Dateien
+      (das Panel nutzt keine Kursivschrift) und alle Chakra-Petch-Schnitte außer Bold – nur der wird verwendet.
+      Es bleiben 5 Schriftdateien und je eine `OFL.txt`.
 - [x] „Quellcode“ in der Namensnennung ist per `data-i18n="legal.source"` übersetzbar. Der deutsche Text bleibt im HTML
       als Rückfall ohne JS. `components.html` bleibt deutsch, die Seite ist nur für die Entwicklung.
-- [ ] Komponenten bisher nur visuell geprüft, keine automatisierten Tests
+- [x] Automatisierte Frontend-Tests in `tests/frontend/`, im Browser ohne Node (Option „Testseite“, 30.10.2026):
+  - Eigener kleiner Runner (`runner.js`), 56 Tests in rund 20 s: alle 8 Komponenten, `versions.js`, `format.js`, `errors.js`,
+    gleiche Schlüssel und Platzhalter in `de.js`/`en.js`, und die Seiten auf Beispieldaten im iframe
+    (auch `?sim=error|eula|lost`) mit axe-core bei 1280 und 375 px.
+  - Aufruf: `python3 -m http.server 8080` in der Repo-Wurzel, dann `http://localhost:8080/tests/frontend/` (`?only=…` filtert).
+  - Gegenprobe: Ein leeres `aria-label` lässt 5 Tests scheitern (leerer Text, axe auf allen Handy-Seiten).
+  - Gleich gefunden: `<piston-toggle>` in einem gesperrten `<fieldset>` blieb bedienbar – behoben.
+- [ ] **Frontend-Tests später anpassen** (Details in AGENTS.md §10):
+  - ab Phase 7, wenn `api.js` auf `live.js` zeigt: Seiten-Tests müssen die Demo erzwingen (z. B. gegen `dist/` testen);
+  - mit `python -m unittest` laufen lassen: Python-Test öffnet die Testseite headless und liest `window.testResults`.
 - [x] Display-Schrift Chakra Petch statt Pixelify Sans (Titel, Überschriften, Kennzahlen, Avatare); Pixelify nur noch im Logo (`--font-logo`)
 - [x] `README.md` mit Beschreibung, Lizenz, Disclaimer, Sicherheitshinweis
 - [x] Repo aus dem Synology-Drive-Ordner nach `~/dev.local/piston` umgezogen
@@ -466,24 +476,21 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - `LICENCE` enthält ausschließlich den unveränderten AGPL-Text (damit GitHub die Lizenz erkennt).
 
 ### Ordnerstruktur
-Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden nur verschoben, nicht umbenannt:
-
-| AGENTS.md | tatsächlich |
-|---|---|
-| `public/fonts/` | `public/assets/fonts/` |
-| `public/brand/` | `public/assets/logo/` |
-| `public/css/base.css` | `public/css/style.css` |
-| `public/js/app.js` | `public/js/main.js` (Einstieg) + `router.js` + `nav.js` |
-| `<mc-button>` in `js/components/` | – (ein `<button class="btn">` reicht) |
-| `docs/design/` | `design/mockups/` (gitignored) |
-| – | `public/main.css` (CSS-Einstieg, `@import` aller Stylesheets) |
-| – | `public/css/layout.css` (App-Shell) |
+`AGENTS.md` §4 zeigt den Stand des Repos; was erst ab Phase 6 kommt, ist dort markiert. Entschieden am 30.10.2026:
+- Logo und Schriften liegen unter `public/assets/` (`logo/`, `fonts/`) – Assets des Frontends, so besser erkennbar.
+- JS ist auf Module verteilt statt einer `app.js`: `main.js` (Einstieg), `router.js`, `nav.js` und je ein Modul pro Aufgabe.
+- `css/style.css` heißt jetzt `css/base.css`; dazu `fonts.css`, `layout.css` (App-Shell) und `public/main.css` als Einstieg.
+- Eigene Elemente heißen einheitlich `piston-…` (`<piston-field>`, `<piston-status-badge>`, …), Datei und Klasse genauso
+  (`piston-field.js`, `PistonField`). Vorher `mc-…` und ohne Präfix gemischt; `mc` steht für Minecraft und gehört nicht in eigene Namen.
+  BEM-Klassen darin (`.status-badge__marker`, `.lang-switch__option`) bleiben, sie sind keine Elemente.
+- Kein eigenes Button-Element – ein `<button class="btn">` reicht.
+- Die Mockups (`design/mockups/`) kommen nicht ins Repo. Wenn PiSton öffentlich ist, kommen Design-Vorlagen für die Komponenten dazu.
 
 ### Komponenten
 - **Nur CSS** auf nativen Elementen (bessere Barrierefreiheit, kein JS nötig):
   `.btn` (`--primary/--secondary/--ghost/--danger`, `--s/--l`, `--icon`), `.input` (`--mono`),
   `.select`, `.input-group` + `__addon`, `.checkbox`, `.card`, `.console-input`, `.setting-list`.
-  Kein `<mc-button>` – ein `<button class="btn">` reicht.
+  Kein eigenes Button-Element – ein `<button class="btn">` reicht.
 - **Boxen** (nur CSS, Vorlagen auf `components.html`):
   - `.card` – Grundbox; `--outline` (nur Rahmen), `--compact` (enger), `--flush` (ohne Innenabstand).
     Mit `.card__header` (Titel + `.card__meta` / `.card__link`) entfällt der Innenabstand automatisch;
@@ -496,7 +503,7 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
     `.list-note` – kurzer Hinweis über einer Liste; `.choice-chip__count` – Anzahl im Chip.
   - `.command` – Befehl mit Kopier-Button, `.check-steps` – nummerierte Prüfliste; Kopieren mit Tooltip über
     `setupCopyButton()` aus `js/clipboard.js`.
-  - `<status-badge>` kennt auch `loading` („Lädt …“, gepunkteter Marker), das ist der Standard ohne Status.
+  - `<piston-status-badge>` kennt auch `loading` („Lädt …“, gepunkteter Marker), das ist der Standard ohne Status.
     Das Badge pulsiert mit einem Ring um die Box:
     - `online` ruhig (2 × `--pulse-calm` à 2,4 s) und `offline` schneller (4 × `--pulse-fast` à 1,2 s), jeweils 4,8 s nach
       dem Statuswechsel, dann ist Ruhe. So bleibt es unter den 5 s, die WCAG 2.2.2 ohne Pause-Möglichkeit erlaubt.
@@ -511,16 +518,16 @@ Ist-Zustand, weicht bewusst von `AGENTS.md` §4 ab – vorhandene Dateien wurden
     `.load-error` (mit „Erneut versuchen“), `.notice` (Meldung unten rechts in `#notices`).
   - Alle Bausteine stehen mit ihren Zuständen auf `components.html`.
 - **Web Components** (Light DOM, registrieren sich beim Import, gesammelt in `js/components/index.js`):
-  - `<mc-field label help error>` – Label/Hilfe/Fehler, verdrahtet `for`, `aria-describedby`, `aria-invalid`; Fehler per `el.error = '…'`.
-  - `<mc-toggle checked disabled name value description layout="row">` – `<button role="switch">`, form-associated, feuert `change`. `layout="row"` = große Einstellungszeile (52 × 28) aus Mockup 04.
-  - `<mc-stepper>` – umschließt `<input type="number">`, −/+ an min/max gesperrt.
-  - `<mc-range>` – umschließt `<input type="range">`, füllt die Spur, schreibt Wert in `<output for>`.
-  - `<status-badge status="online|offline|starting|stopping">` – Text + Form-Marker, `role="status"`.
-  - `<lang-switch>` – Sprachumschalter aus `LOCALES`, native Radios als Segment-Schalter (je 44 × 44 px).
-  - `<log-view limit live follow filter>` – Konsolenausgabe, `el.add(lines)`; Spalten per Subgrid,
+  - `<piston-field label help error>` – Label/Hilfe/Fehler, verdrahtet `for`, `aria-describedby`, `aria-invalid`; Fehler per `el.error = '…'`.
+  - `<piston-toggle checked disabled name value description layout="row">` – `<button role="switch">`, form-associated, feuert `change`. `layout="row"` = große Einstellungszeile (52 × 28) aus Mockup 04.
+  - `<piston-stepper>` – umschließt `<input type="number">`, −/+ an min/max gesperrt.
+  - `<piston-range>` – umschließt `<input type="range">`, füllt die Spur, schreibt Wert in `<output for>`.
+  - `<piston-status-badge status="online|offline|starting|stopping">` – Text + Form-Marker, `role="status"`.
+  - `<piston-lang-switch>` – Sprachumschalter aus `LOCALES`, native Radios als Segment-Schalter (je 44 × 44 px).
+  - `<piston-log-view limit live follow filter>` – Konsolenausgabe, `el.add(lines)`; Spalten per Subgrid,
     `.log--truncate` für einzeilige Vorschau, `.log--lg` für die Konsole.
     Mit `live` bekommt das Element selbst `role="log"`; dazu `aria-label` und, wenn es scrollt, `tabindex="0"`.
-  - `<action-menu label>` – „⋯“-Button mit Menü aus den `<button value>`-Kindern (`<hr>` = Trenner, `data-danger` = rot).
+  - `<piston-action-menu label>` – „⋯“-Button mit Menü aus den `<button value>`-Kindern (`<hr>` = Trenner, `data-danger` = rot).
     Natives Popover, Pfeiltasten/Home/End, feuert `action` mit `detail.value`. Klappt nach oben, wenn unten kein Platz ist.
 
 ### App-Shell (`index.html`, `css/layout.css`)
