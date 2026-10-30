@@ -25,10 +25,10 @@ import { uid } from './uid.js';
  * Toggle switch rendered as <button role="switch" aria-checked> plus a clickable label.
  * Form-associated: submits `value` (default "on") when checked. Fires `change` on toggle.
  *
- * <mc-toggle name="pvp" checked>PvP erlaubt</mc-toggle>
- * <mc-toggle layout="row" description="Players can use nether portals.">Nether enabled</mc-toggle>
+ * <piston-toggle name="pvp" checked>PvP erlaubt</piston-toggle>
+ * <piston-toggle layout="row" description="Players can use nether portals.">Nether enabled</piston-toggle>
  */
-export class McToggle extends HTMLElement {
+export class PistonToggle extends HTMLElement {
   static formAssociated = true;
   static observedAttributes = ['checked', 'disabled'];
 
@@ -116,4 +116,4 @@ export class McToggle extends HTMLElement {
   }
 }
 
-customElements.define('mc-toggle', McToggle);
+customElements.define('piston-toggle', PistonToggle);

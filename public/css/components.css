@@ -21,10 +21,10 @@
 
 /* Components – source: design/mockups/01-Styleguide.svg (sections 03, 04, badges) */
 
-mc-field:not(:defined),
-mc-toggle:not(:defined),
-mc-stepper:not(:defined),
-status-badge:not(:defined) {
+piston-field:not(:defined),
+piston-toggle:not(:defined),
+piston-stepper:not(:defined),
+piston-status-badge:not(:defined) {
   visibility: hidden;
 }
 
@@ -173,7 +173,7 @@ status-badge:not(:defined) {
 
 /* =========================================================================
    Field: label above, control, help / error below
-   <mc-field label="…" help="…"><input class="input"></mc-field>
+   <piston-field label="…" help="…"><input class="input"></piston-field>
    ========================================================================= */
 
 .field {
@@ -340,7 +340,7 @@ status-badge:not(:defined) {
   font-size: var(--fs-label);
 }
 
-/* Stepper: <mc-stepper><input type="number" min max></mc-stepper> */
+/* Stepper: <piston-stepper><input type="number" min max></piston-stepper> */
 .stepper input {
   text-align: center;
   appearance: textfield;
@@ -377,7 +377,7 @@ status-badge:not(:defined) {
 
 /* =========================================================================
    Range slider
-   <mc-range><input type="range" id="…"></mc-range> (+ optional <output for="…">)
+   <piston-range><input type="range" id="…"></piston-range> (+ optional <output for="…">)
    ========================================================================= */
 
 .range {
@@ -443,11 +443,11 @@ status-badge:not(:defined) {
 
 /* =========================================================================
    Toggle switch
-   <mc-toggle description="…" layout="row">Label</mc-toggle>
+   <piston-toggle description="…" layout="row">Label</piston-toggle>
    renders <button role="switch" aria-checked> + <label>
    ========================================================================= */
 
-mc-toggle {
+piston-toggle {
   --_w: var(--toggle-w);
   --_h: var(--toggle-h);
   --_knob: var(--toggle-knob);
@@ -459,7 +459,7 @@ mc-toggle {
   min-height: var(--control-h-m);
 }
 
-mc-toggle[layout="row"] {
+piston-toggle[layout="row"] {
   --_w: var(--toggle-w-l);
   --_h: var(--toggle-h-l);
   --_knob: var(--toggle-knob-l);
@@ -534,7 +534,7 @@ mc-toggle[layout="row"] {
   cursor: pointer;
 }
 
-mc-toggle[layout="row"] .toggle__label {
+piston-toggle[layout="row"] .toggle__label {
   font-weight: var(--fw-semibold);
 }
 
@@ -544,7 +544,7 @@ mc-toggle[layout="row"] .toggle__label {
   line-height: var(--lh-label);
 }
 
-mc-toggle[disabled] .toggle__label {
+piston-toggle[disabled] .toggle__label {
   color: var(--color-text-muted);
   cursor: not-allowed;
 }
@@ -610,10 +610,10 @@ mc-toggle[disabled] .toggle__label {
 
 /* =========================================================================
    Status badge – always text + shape marker, never colour alone
-   <status-badge status="online|offline|starting|stopping">
+   <piston-status-badge status="online|offline|starting|stopping">
    ========================================================================= */
 
-status-badge {
+piston-status-badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -634,27 +634,27 @@ status-badge {
   background-color: currentColor;
 }
 
-status-badge[data-state="online"] {
+piston-status-badge[data-state="online"] {
   background-color: var(--color-online-bg);
   color: var(--color-online-text);
 }
 
-status-badge[data-state="online"] .status-badge__marker {
+piston-status-badge[data-state="online"] .status-badge__marker {
   background-color: var(--color-online);
 }
 
-status-badge[data-state="offline"] {
+piston-status-badge[data-state="offline"] {
   background-color: var(--color-offline-bg);
   color: var(--color-offline-text);
 }
 
-status-badge[data-state="offline"] .status-badge__marker {
+piston-status-badge[data-state="offline"] .status-badge__marker {
   background-color: var(--color-offline);
 }
 
 /* Transitional states: hollow square */
-status-badge[data-state="starting"] .status-badge__marker,
-status-badge[data-state="stopping"] .status-badge__marker {
+piston-status-badge[data-state="starting"] .status-badge__marker,
+piston-status-badge[data-state="stopping"] .status-badge__marker {
   border: 2px solid var(--color-text-muted);
   border-radius: 1px;
   background-color: transparent;
@@ -666,20 +666,20 @@ status-badge[data-state="stopping"] .status-badge__marker {
    - Starting and stopping: until done, like a spinner – it shows that something is happening.
    Still when motion is reduced (and in forced colors, which drop box-shadow) – the text
    and the marker still say the state. The badge restarts the pulse on every change. */
-status-badge[data-state="online"] {
+piston-status-badge[data-state="online"] {
   --_pulse: color-mix(in srgb, var(--color-online) 55%, transparent);
 
   animation: status-pulse var(--pulse-calm) ease-out 2; /* 2 × 2.4 s = 4.8 s */
 }
 
-status-badge[data-state="offline"] {
+piston-status-badge[data-state="offline"] {
   --_pulse: color-mix(in srgb, var(--color-offline) 55%, transparent);
 
   animation: status-pulse var(--pulse-fast) ease-out 4; /* 4 × 1.2 s = 4.8 s */
 }
 
-status-badge[data-state="starting"],
-status-badge[data-state="stopping"] {
+piston-status-badge[data-state="starting"],
+piston-status-badge[data-state="stopping"] {
   --_pulse: color-mix(in srgb, var(--color-text-muted) 55%, transparent);
 
   animation: status-pulse var(--pulse-fast) ease-out infinite;
@@ -691,17 +691,17 @@ status-badge[data-state="stopping"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  status-badge {
+  piston-status-badge {
     animation: none !important;
   }
 }
 
 /* Nothing known yet: dotted outline, muted text – never a guessed "Offline" */
-status-badge[data-state="loading"] {
+piston-status-badge[data-state="loading"] {
   color: var(--color-text-muted);
 }
 
-status-badge[data-state="loading"] .status-badge__marker {
+piston-status-badge[data-state="loading"] .status-badge__marker {
   border: 2px dotted var(--color-text-muted);
   border-radius: 1px;
   background-color: transparent;
@@ -709,7 +709,7 @@ status-badge[data-state="loading"] .status-badge__marker {
 
 /* =========================================================================
    Language switch – native radios as a segmented control
-   <lang-switch> renders: <fieldset class="lang-switch"><legend>…</legend>
+   <piston-lang-switch> renders: <fieldset class="piston-lang-switch"><legend>…</legend>
      <div class="lang-switch__options"><label class="lang-switch__option">
        <input type="radio"> DE</label>…</div></fieldset>
    ========================================================================= */
@@ -904,7 +904,7 @@ status-badge[data-state="loading"] .status-badge__marker {
   border-radius: 0 0 calc(var(--radius-card) - var(--border-width)) calc(var(--radius-card) - var(--border-width));
 }
 
-/* Setting rows (<mc-toggle layout="row">) inside a card */
+/* Setting rows (<piston-toggle layout="row">) inside a card */
 .card > .setting-list > * {
   padding-inline: var(--card-pad);
 }
@@ -970,7 +970,7 @@ status-badge[data-state="loading"] .status-badge__marker {
 }
 
 /* The dots of the "⋯" button line up with the text edge of the card header */
-.list-row > action-menu {
+.list-row > piston-action-menu {
   margin-right: -12px;
 }
 
@@ -995,7 +995,7 @@ status-badge[data-state="loading"] .status-badge__marker {
   gap: var(--space-3);
 }
 
-.list-add > mc-field {
+.list-add > piston-field {
   flex: 1 1 220px;
 }
 
@@ -1059,8 +1059,8 @@ status-badge[data-state="loading"] .status-badge__marker {
 }
 
 /* =========================================================================
-   Log output – <log-view> renders the list (js/components/log-view.js)
-   <log-view limit="8"></log-view>
+   Log output – <piston-log-view> renders the list (js/components/piston-log-view.js)
+   <piston-log-view limit="8"></piston-log-view>
      <ol class="log"><li class="log__line log__line--warn">
        <span class="log__time">[15:07:30]</span> <span class="log__level">WARN</span>
        <span class="log__text">Can't keep up!</span></li></ol>
@@ -1068,7 +1068,7 @@ status-badge[data-state="loading"] .status-badge__marker {
    so colour is never the only hint.
    ========================================================================= */
 
-log-view {
+piston-log-view {
   display: block;
 }
 
@@ -1135,10 +1135,10 @@ log-view {
   color: var(--color-text-muted);
 }
 
-/* filter="…" on <log-view>: show one level only */
-log-view[filter="info"] .log__line:not(.log__line--info),
-log-view[filter="warn"] .log__line:not(.log__line--warn),
-log-view[filter="error"] .log__line:not(.log__line--error) {
+/* filter="…" on <piston-log-view>: show one level only */
+piston-log-view[filter="info"] .log__line:not(.log__line--info),
+piston-log-view[filter="warn"] .log__line:not(.log__line--warn),
+piston-log-view[filter="error"] .log__line:not(.log__line--error) {
   display: none;
 }
 
@@ -1158,7 +1158,7 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
 /* =========================================================================
    Console panel – scrolling log with the command line at the bottom
    <section class="console-panel">
-     <log-view class="console-panel__output log--lg" live follow></log-view>
+     <piston-log-view class="console-panel__output log--lg" live follow></piston-log-view>
      <form class="console-input">…</form>
    </section>
    ========================================================================= */
@@ -1555,21 +1555,21 @@ log-view[filter="error"] .log__line:not(.log__line--error) {
 }
 
 /* =========================================================================
-   Action menu – built by <action-menu>: "⋯" button + popover with entries
+   Action menu – built by <piston-action-menu>: "⋯" button + popover with entries
    ========================================================================= */
 
-action-menu {
+piston-action-menu {
   display: inline-flex;
   flex-shrink: 0;
 }
 
 /* The button stays highlighted while its menu is open */
-action-menu > [aria-expanded="true"] {
+piston-action-menu > [aria-expanded="true"] {
   background-color: var(--color-surface-raised);
 }
 
 .menu {
-  /* The browser centres popovers; <action-menu> sets top and right instead */
+  /* The browser centres popovers; <piston-action-menu> sets top and right instead */
   position: fixed;
   inset: auto;
   min-width: 200px;
@@ -1679,7 +1679,7 @@ action-menu > [aria-expanded="true"] {
 
 /* =========================================================================
    Form grid – fields side by side, wrapping on narrow screens
-   <div class="form-grid"><mc-field>…</mc-field>…</div>
+   <div class="form-grid"><piston-field>…</piston-field>…</div>
    ========================================================================= */
 
 .form-grid {

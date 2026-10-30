@@ -26,14 +26,14 @@ import { uid } from './uid.js';
  * Form field wrapper: label above, help text and error message below.
  * Wires label/for, aria-describedby and aria-invalid on the first control inside.
  *
- * <mc-field label="Server-Port" help="Default: 25565">
+ * <piston-field label="Server-Port" help="Default: 25565">
  *   <input class="input input--mono" name="server-port">
- * </mc-field>
+ * </piston-field>
  *
  * A child <label> is used as-is instead of the label attribute
  * (e.g. to show a live <output> value next to the text).
  */
-export class McField extends HTMLElement {
+export class PistonField extends HTMLElement {
   /** @type {HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null} */
   #control = null;
   #help = null;
@@ -99,4 +99,4 @@ export class McField extends HTMLElement {
   }
 }
 
-customElements.define('mc-field', McField);
+customElements.define('piston-field', PistonField);

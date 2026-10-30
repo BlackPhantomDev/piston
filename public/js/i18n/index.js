@@ -122,7 +122,7 @@ const ATTR_PREFIX = 'data-i18n-';
  *   data-i18n="key"          → text content
  *   data-i18n-label="key"    → aria-label
  *   data-i18n-<attr>="key"   → any other attribute, e.g. data-i18n-placeholder,
- *                              data-i18n-help (<mc-field>), data-i18n-description (<mc-toggle>)
+ *                              data-i18n-help (<piston-field>), data-i18n-description (<piston-toggle>)
  * Run it before the markup is connected, so components read translated attributes.
  * Also sets <html lang> to the active language.
  * @param {ParentNode} [root]

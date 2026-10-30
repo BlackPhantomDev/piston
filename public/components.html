@@ -90,16 +90,16 @@
     <section>
         <h2>Eingabefelder</h2>
         <div class="card demo-grid">
-            <mc-field label="Standard" help="Hilfetext zum Feld">
+            <piston-field label="Standard" help="Hilfetext zum Feld">
                 <input class="input" placeholder="z. B. Mein Server">
-            </mc-field>
-            <mc-field label="Fehler" help="1–65535" error="Port muss zwischen 1 und 65535 liegen">
+            </piston-field>
+            <piston-field label="Fehler" help="1–65535" error="Port muss zwischen 1 und 65535 liegen">
                 <input class="input input--mono" value="99999">
-            </mc-field>
-            <mc-field label="Deaktiviert" help="Nur bei gestopptem Server änderbar">
+            </piston-field>
+            <piston-field label="Deaktiviert" help="Nur bei gestopptem Server änderbar">
                 <input class="input input--mono" value="25565" disabled>
-            </mc-field>
-            <mc-field label="Auswahl (Select)">
+            </piston-field>
+            <piston-field label="Auswahl (Select)">
                 <div class="select">
                     <select class="input">
                         <option>Friedlich</option>
@@ -108,20 +108,20 @@
                         <option>Schwer</option>
                     </select>
                 </div>
-            </mc-field>
-            <mc-field label="Zahl mit Stepper">
-                <mc-stepper><input type="number" min="1" max="100" value="20"></mc-stepper>
-            </mc-field>
-            <mc-field>
+            </piston-field>
+            <piston-field label="Zahl mit Stepper">
+                <piston-stepper><input type="number" min="1" max="100" value="20"></piston-stepper>
+            </piston-field>
+            <piston-field>
                 <label>Regler · Sichtweite <output for="view-distance">10</output></label>
-                <mc-range><input type="range" id="view-distance" min="2" max="32" value="10"></mc-range>
-            </mc-field>
-            <mc-field label="Mit Einheit">
+                <piston-range><input type="range" id="view-distance" min="2" max="32" value="10"></piston-range>
+            </piston-field>
+            <piston-field label="Mit Einheit">
                 <div class="input-group">
                     <input type="number" value="4096">
                     <span class="input-group__addon">MB</span>
                 </div>
-            </mc-field>
+            </piston-field>
         </div>
     </section>
 
@@ -198,9 +198,9 @@
         <h2>Schalter &amp; Checkbox</h2>
         <div class="card demo-grid">
             <div>
-                <mc-toggle checked>PvP erlaubt</mc-toggle>
-                <mc-toggle>Whitelist aktiv</mc-toggle>
-                <mc-toggle disabled>Deaktiviert</mc-toggle>
+                <piston-toggle checked>PvP erlaubt</piston-toggle>
+                <piston-toggle>Whitelist aktiv</piston-toggle>
+                <piston-toggle disabled>Deaktiviert</piston-toggle>
             </div>
             <div>
                 <label class="checkbox"><input type="checkbox" checked> Command-Blöcke</label><br>
@@ -209,11 +209,11 @@
             </div>
         </div>
         <div class="card setting-list">
-            <mc-toggle layout="row" checked description="Spieler können Netherportale benutzen.">Nether aktiv</mc-toggle>
-            <mc-toggle layout="row" description="Nur freigegebene Spieler dürfen beitreten.">Whitelist</mc-toggle>
+            <piston-toggle layout="row" checked description="Spieler können Netherportale benutzen.">Nether aktiv</piston-toggle>
+            <piston-toggle layout="row" description="Nur freigegebene Spieler dürfen beitreten.">Whitelist</piston-toggle>
         </div>
         <div class="card demo-row">
-            <lang-switch></lang-switch>
+            <piston-lang-switch></piston-lang-switch>
         </div>
     </section>
 
@@ -244,7 +244,7 @@
             </div>
         </div>
 
-        <h3>Panel mit Kopf und Liste <code>.card__header</code> + <code>.card__list</code> / <code>&lt;log-view&gt;</code> in <code>.card-grid--wide</code></h3>
+        <h3>Panel mit Kopf und Liste <code>.card__header</code> + <code>.card__list</code> / <code>&lt;piston-log-view&gt;</code> in <code>.card-grid--wide</code></h3>
         <div class="card-grid card-grid--wide">
             <section class="card">
                 <header class="card__header">
@@ -259,13 +259,13 @@
                             <p class="list-row__sub">Overworld · OP</p>
                         </div>
                         <span class="list-row__meta">23 ms</span>
-                        <action-menu label="Aktionen für Steve">
+                        <piston-action-menu label="Aktionen für Steve">
                             <button value="tell">Nachricht senden …</button>
                             <button value="deop">Operator-Rechte entziehen</button>
                             <hr>
                             <button value="kick" data-danger>Kicken</button>
                             <button value="ban" data-danger>Bannen</button>
-                        </action-menu>
+                        </piston-action-menu>
                     </li>
                     <li class="list-row">
                         <span class="avatar" aria-hidden="true">M</span>
@@ -274,13 +274,13 @@
                             <p class="list-row__sub">Nether</p>
                         </div>
                         <span class="list-row__meta">88 ms</span>
-                        <action-menu label="Aktionen für Mia_Baut">
+                        <piston-action-menu label="Aktionen für Mia_Baut">
                             <button value="tell">Nachricht senden …</button>
                             <button value="op">Zum Operator machen</button>
                             <hr>
                             <button value="kick" data-danger>Kicken</button>
                             <button value="ban" data-danger>Bannen</button>
-                        </action-menu>
+                        </piston-action-menu>
                     </li>
                     <li class="list-row">
                         <span class="avatar" aria-hidden="true">C</span>
@@ -289,13 +289,13 @@
                             <p class="list-row__sub">The End</p>
                         </div>
                         <span class="list-row__meta">57 ms</span>
-                        <action-menu label="Aktionen für Creeperfan">
+                        <piston-action-menu label="Aktionen für Creeperfan">
                             <button value="tell">Nachricht senden …</button>
                             <button value="op">Zum Operator machen</button>
                             <hr>
                             <button value="kick" data-danger>Kicken</button>
                             <button value="ban" data-danger>Bannen</button>
-                        </action-menu>
+                        </piston-action-menu>
                     </li>
                 </ul>
             </section>
@@ -306,7 +306,7 @@
                     <a class="card__link" href="index.html#/console">Zur Konsole</a>
                 </header>
                 <div class="card__body card__body--console">
-                    <log-view id="demo-log"></log-view>
+                    <piston-log-view id="demo-log"></piston-log-view>
                 </div>
             </section>
         </div>
@@ -321,9 +321,9 @@
                 <div class="card__body card__body--stack">
                     <p class="list-note">Die Whitelist ist ausgeschaltet. Die Einträge gelten erst, wenn du sie unter „Spieler &amp; Regeln“ einschaltest.</p>
                     <form class="list-add" novalidate onsubmit="return false">
-                        <mc-field label="Spielername">
+                        <piston-field label="Spielername">
                             <input class="input" maxlength="16" autocomplete="off" spellcheck="false">
-                        </mc-field>
+                        </piston-field>
                         <button class="btn btn--primary" type="submit">Hinzufügen</button>
                     </form>
                 </div>
@@ -359,16 +359,16 @@
                 <h2>Welt</h2>
             </header>
             <div class="card__body demo-grid">
-                <mc-field label="Weltname">
+                <piston-field label="Weltname">
                     <input class="input" value="world">
-                </mc-field>
-                <mc-field label="Seed" help="Gilt nur für neu erzeugte Welten.">
+                </piston-field>
+                <piston-field label="Seed" help="Gilt nur für neu erzeugte Welten.">
                     <input class="input input--mono" placeholder="leer = zufällig">
-                </mc-field>
+                </piston-field>
             </div>
             <div class="setting-list">
-                <mc-toggle layout="row" checked description="Spieler können Netherportale benutzen.">Nether aktiv</mc-toggle>
-                <mc-toggle layout="row" checked description="Dörfer, Tempel und Festungen in neuen Chunks.">Strukturen generieren</mc-toggle>
+                <piston-toggle layout="row" checked description="Spieler können Netherportale benutzen.">Nether aktiv</piston-toggle>
+                <piston-toggle layout="row" checked description="Dörfer, Tempel und Festungen in neuen Chunks.">Strukturen generieren</piston-toggle>
             </div>
         </section>
 
@@ -444,13 +444,13 @@
     <section>
         <h2>Status &amp; Fortschritt</h2>
 
-        <h3>Status-Badge <code>&lt;status-badge&gt;</code> – Text und Form, nie nur Farbe</h3>
+        <h3>Status-Badge <code>&lt;piston-status-badge&gt;</code> – Text und Form, nie nur Farbe</h3>
         <div class="card demo-row">
-            <status-badge status="loading"></status-badge>
-            <status-badge status="online"></status-badge>
-            <status-badge status="offline"></status-badge>
-            <status-badge status="starting"></status-badge>
-            <status-badge status="stopping"></status-badge>
+            <piston-status-badge status="loading"></piston-status-badge>
+            <piston-status-badge status="online"></piston-status-badge>
+            <piston-status-badge status="offline"></piston-status-badge>
+            <piston-status-badge status="starting"></piston-status-badge>
+            <piston-status-badge status="stopping"></piston-status-badge>
         </div>
 
         <h3>Prüfliste <code>.check-list</code> – ok, fehlt, Hinweis</h3>
@@ -491,15 +491,15 @@
     <section>
         <h2>Menü, Dialog &amp; Kopieren</h2>
 
-        <h3>Aktionsmenü <code>&lt;action-menu&gt;</code> – Pfeiltasten, Home/End, Escape; feuert <code>action</code></h3>
+        <h3>Aktionsmenü <code>&lt;piston-action-menu&gt;</code> – Pfeiltasten, Home/End, Escape; feuert <code>action</code></h3>
         <div class="card demo-row">
-            <action-menu label="Aktionen für Alex" id="demo-menu">
+            <piston-action-menu label="Aktionen für Alex" id="demo-menu">
                 <button value="tell">Nachricht senden …</button>
                 <button value="op">Zum Operator machen</button>
                 <hr>
                 <button value="kick" data-danger>Kicken</button>
                 <button value="ban" data-danger>Bannen</button>
-            </action-menu>
+            </piston-action-menu>
             <p class="demo-note" role="status" id="demo-menu-result">Noch nichts gewählt.</p>
         </div>
 
@@ -536,9 +536,9 @@
 
         <h3>Fehlerzeile im Formular <code>.form-error</code> – leer nimmt sie keinen Platz ein</h3>
         <div class="card demo-stack demo-narrow">
-            <mc-field label="Nachricht">
+            <piston-field label="Nachricht">
                 <input class="input" value="Hallo zusammen" autocomplete="off">
-            </mc-field>
+            </piston-field>
             <p class="form-error error-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>Nicht gesendet: Keine Verbindung zur Server-Konsole (RCON). Der Befehl wurde nicht gesendet.</p>
             <div class="dialog__actions">
                 <button class="btn btn--ghost" type="button">Abbrechen</button>
@@ -590,7 +590,7 @@
         <h3>Pill <code>.connection-pill</code> – eigene Form, nicht das Quadrat von „Offline“</h3>
         <div class="card demo-row">
             <p class="connection-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7H7a5 5 0 0 0 0 10h2"/><path d="M15 7h2a5 5 0 0 1 0 10h-2"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/></svg><span>Verbindung getrennt</span></p>
-            <status-badge status="offline"></status-badge>
+            <piston-status-badge status="offline"></piston-status-badge>
         </div>
 
         <h3>Nummerierte Prüfliste <code>.check-steps</code></h3>
@@ -634,8 +634,8 @@
     import { eulaNotice } from './js/eula.js';
     import { showError, showLoadError } from './js/errors.js';
 
-    // Sample lines for the <log-view> demo above
-    await customElements.whenDefined('log-view');
+    // Sample lines for the <piston-log-view> demo above
+    await customElements.whenDefined('piston-log-view');
     document.getElementById('demo-log').add([
         { time: '15:05:14', level: 'INFO', text: 'Saved the game' },
         { time: '15:07:30', level: 'WARN', text: "Can't keep up! Is the server overloaded? Running 2140ms behind" },
@@ -659,7 +659,7 @@
 
     // Action menus: show what was chosen
     const menuResult = document.getElementById('demo-menu-result');
-    for (const menu of document.querySelectorAll('action-menu')) {
+    for (const menu of document.querySelectorAll('piston-action-menu')) {
         menu.addEventListener('action', (event) => {
             menuResult.textContent = `Gewählt: ${event.detail.value} (${menu.getAttribute('label')})`;
         });

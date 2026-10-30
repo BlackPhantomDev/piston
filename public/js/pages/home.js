@@ -39,7 +39,7 @@ const VIEW = `
     <div class="page__heading">
       <h1 tabindex="-1" data-i18n="nav.home"></h1>
       <div class="page__status">
-        <status-badge data-field="state"></status-badge>
+        <piston-status-badge data-field="state"></piston-status-badge>
         <p class="page__meta page__meta--server">
           <span class="page__server-name" data-field="serverName"></span><span data-field="summary"></span>
         </p>
@@ -112,7 +112,7 @@ const VIEW = `
         <a class="card__link" href="#/console" data-i18n="home.consoleLink"></a>
       </header>
       <div class="card__body card__body--console">
-        <log-view class="log--truncate" limit="8" data-field="log"></log-view>
+        <piston-log-view class="log--truncate" limit="8" data-field="log"></piston-log-view>
       </div>
     </div>
   </section>
@@ -178,14 +178,14 @@ const PLAYER_ROW = `
       <p class="list-row__sub" data-field="details"></p>
     </div>
     <span class="list-row__meta" data-field="ping"></span>
-    <action-menu data-field="menu">
+    <piston-action-menu data-field="menu">
       <button value="tell" data-i18n="home.playerMenu.tell"></button>
       <button value="op" data-i18n="home.playerMenu.op" data-field="opItem"></button>
       <button value="deop" data-i18n="home.playerMenu.deop" data-field="deopItem"></button>
       <hr>
       <button value="kick" data-danger data-i18n="home.playerMenu.kick"></button>
       <button value="ban" data-danger data-i18n="home.playerMenu.ban"></button>
-    </action-menu>
+    </piston-action-menu>
   </li>`;
 
 /** @param {HTMLElement} root */
@@ -338,7 +338,7 @@ export function render(root) {
     setStatusText(f.messageError, "");
   });
 
-  // Player menu (<action-menu> fires "action"); kick and ban ask first
+  // Player menu (<piston-action-menu> fires "action"); kick and ban ask first
   f.players.addEventListener("action", async (event) => {
     const name = event.target.closest("[data-player]")?.dataset.player;
     const action = event.detail.value;
@@ -412,7 +412,7 @@ export function render(root) {
     // The focused player left (e.g. kicked): continue on the row that took its place
     if (focusedIndex !== -1 && !rows[focusedIndex].isConnected) {
       const next = f.players.children[Math.min(focusedIndex, f.players.children.length - 1)];
-      (next?.querySelector("action-menu > button") ?? f.playersHeading).focus();
+      (next?.querySelector("piston-action-menu > button") ?? f.playersHeading).focus();
     }
   }
 

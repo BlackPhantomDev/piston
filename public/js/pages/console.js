@@ -41,7 +41,7 @@ const VIEW = `
     <div class="page__heading">
       <h1 tabindex="-1" data-i18n="nav.console"></h1>
       <div class="page__status">
-        <status-badge data-field="state"></status-badge>
+        <piston-status-badge data-field="state"></piston-status-badge>
         <p class="page__meta" data-i18n="console.subtitle"></p>
       </div>
     </div>
@@ -68,8 +68,8 @@ const VIEW = `
   </div>
 
   <section class="console-panel">
-    <log-view class="console-panel__output log--lg" live follow tabindex="0"
-              data-i18n-label="console.output" data-field="log"></log-view>
+    <piston-log-view class="console-panel__output log--lg" live follow tabindex="0"
+              data-i18n-label="console.output" data-field="log"></piston-log-view>
     <p class="console-panel__empty" data-i18n="console.loading" data-field="empty"></p>
     <button class="btn btn--secondary btn--s console-panel__jump" type="button" hidden data-field="jumpBtn">
       <span data-i18n="console.jump"></span><span aria-hidden="true">↓</span>

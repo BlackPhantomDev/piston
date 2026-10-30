@@ -68,15 +68,15 @@ const VIEW = `
           <h2 id="settings-general-title" tabindex="-1" data-i18n="settings.sections.general"></h2>
         </header>
         <div class="card__body form-grid">
-          <mc-field class="form-grid__wide" data-i18n-help="settings.motdHelp">
+          <piston-field class="form-grid__wide" data-i18n-help="settings.motdHelp">
             <label data-i18n="settings.motd"></label>
             <input class="input" name="motd" maxlength="59" autocomplete="off">
-          </mc-field>
-          <mc-field>
+          </piston-field>
+          <piston-field>
             <label data-i18n="settings.maxPlayers"></label>
-            <mc-stepper><input type="number" name="max-players" min="1" max="100" step="1" required></mc-stepper>
-          </mc-field>
-          <mc-field>
+            <piston-stepper><input type="number" name="max-players" min="1" max="100" step="1" required></piston-stepper>
+          </piston-field>
+          <piston-field>
             <label data-i18n="settings.gamemode"></label>
             <div class="select">
               <select class="input" name="gamemode">
@@ -86,8 +86,8 @@ const VIEW = `
                 <option value="spectator" data-i18n="settings.gamemodes.spectator"></option>
               </select>
             </div>
-          </mc-field>
-          <mc-field>
+          </piston-field>
+          <piston-field>
             <label data-i18n="settings.difficulty"></label>
             <div class="select">
               <select class="input" name="difficulty">
@@ -97,7 +97,7 @@ const VIEW = `
                 <option value="hard" data-i18n="settings.difficulties.hard"></option>
               </select>
             </div>
-          </mc-field>
+          </piston-field>
         </div>
       </section>
 
@@ -106,27 +106,27 @@ const VIEW = `
           <h2 id="settings-world-title" tabindex="-1" data-i18n="settings.sections.world"></h2>
         </header>
         <div class="card__body form-grid">
-          <mc-field>
+          <piston-field>
             <label data-i18n="settings.levelName"></label>
             <input class="input input--mono" name="level-name" required autocomplete="off" spellcheck="false">
-          </mc-field>
-          <mc-field data-i18n-help="settings.seedHelp">
+          </piston-field>
+          <piston-field data-i18n-help="settings.seedHelp">
             <label data-i18n="settings.seed"></label>
             <input class="input input--mono" name="level-seed" autocomplete="off" spellcheck="false"
                    data-i18n-placeholder="settings.seedPlaceholder">
-          </mc-field>
-          <mc-field>
+          </piston-field>
+          <piston-field>
             <label><span data-i18n="settings.viewDistance"></span> · <output for="settings-view-distance"></output> <span data-i18n="settings.chunks"></span></label>
-            <mc-range><input type="range" id="settings-view-distance" name="view-distance" min="2" max="32" step="1"></mc-range>
-          </mc-field>
-          <mc-field>
+            <piston-range><input type="range" id="settings-view-distance" name="view-distance" min="2" max="32" step="1"></piston-range>
+          </piston-field>
+          <piston-field>
             <label><span data-i18n="settings.simulationDistance"></span> · <output for="settings-simulation-distance"></output> <span data-i18n="settings.chunks"></span></label>
-            <mc-range><input type="range" id="settings-simulation-distance" name="simulation-distance" min="3" max="32" step="1"></mc-range>
-          </mc-field>
+            <piston-range><input type="range" id="settings-simulation-distance" name="simulation-distance" min="3" max="32" step="1"></piston-range>
+          </piston-field>
         </div>
         <div class="setting-list">
-          <mc-toggle layout="row" name="allow-nether" data-i18n="settings.allowNether" data-i18n-description="settings.allowNetherHelp"></mc-toggle>
-          <mc-toggle layout="row" name="generate-structures" data-i18n="settings.generateStructures" data-i18n-description="settings.generateStructuresHelp"></mc-toggle>
+          <piston-toggle layout="row" name="allow-nether" data-i18n="settings.allowNether" data-i18n-description="settings.allowNetherHelp"></piston-toggle>
+          <piston-toggle layout="row" name="generate-structures" data-i18n="settings.generateStructures" data-i18n-description="settings.generateStructuresHelp"></piston-toggle>
         </div>
       </section>
 
@@ -135,28 +135,28 @@ const VIEW = `
           <h2 id="settings-players-title" tabindex="-1" data-i18n="settings.sections.players"></h2>
         </header>
         <div class="setting-list">
-          <mc-toggle layout="row" name="white-list" data-i18n="settings.whitelist" data-i18n-description="settings.whitelistHelp"></mc-toggle>
-          <mc-toggle layout="row" name="pvp" data-i18n="settings.pvp" data-i18n-description="settings.pvpHelp"></mc-toggle>
-          <mc-toggle layout="row" name="online-mode" data-i18n="settings.onlineMode" data-i18n-description="settings.onlineModeHelp"></mc-toggle>
-          <mc-toggle layout="row" name="hardcore" data-i18n="settings.hardcore" data-i18n-description="settings.hardcoreHelp"></mc-toggle>
-          <mc-toggle layout="row" name="enable-command-block" data-i18n="settings.commandBlocks" data-i18n-description="settings.commandBlocksHelp"></mc-toggle>
-          <mc-toggle layout="row" name="allow-flight" data-i18n="settings.allowFlight" data-i18n-description="settings.allowFlightHelp"></mc-toggle>
+          <piston-toggle layout="row" name="white-list" data-i18n="settings.whitelist" data-i18n-description="settings.whitelistHelp"></piston-toggle>
+          <piston-toggle layout="row" name="pvp" data-i18n="settings.pvp" data-i18n-description="settings.pvpHelp"></piston-toggle>
+          <piston-toggle layout="row" name="online-mode" data-i18n="settings.onlineMode" data-i18n-description="settings.onlineModeHelp"></piston-toggle>
+          <piston-toggle layout="row" name="hardcore" data-i18n="settings.hardcore" data-i18n-description="settings.hardcoreHelp"></piston-toggle>
+          <piston-toggle layout="row" name="enable-command-block" data-i18n="settings.commandBlocks" data-i18n-description="settings.commandBlocksHelp"></piston-toggle>
+          <piston-toggle layout="row" name="allow-flight" data-i18n="settings.allowFlight" data-i18n-description="settings.allowFlightHelp"></piston-toggle>
         </div>
         <div class="card__body form-grid">
-          <mc-field>
+          <piston-field>
             <label data-i18n="settings.spawnProtection"></label>
             <div class="input-group">
               <input type="number" name="spawn-protection" min="0" max="64" step="1" required>
               <span class="input-group__addon" data-i18n="settings.blocks"></span>
             </div>
-          </mc-field>
-          <mc-field data-i18n-help="settings.idleTimeoutHelp">
+          </piston-field>
+          <piston-field data-i18n-help="settings.idleTimeoutHelp">
             <label data-i18n="settings.idleTimeout"></label>
             <div class="input-group">
               <input type="number" name="player-idle-timeout" min="0" max="1440" step="1" required>
               <span class="input-group__addon" data-i18n="settings.minutes"></span>
             </div>
-          </mc-field>
+          </piston-field>
         </div>
       </section>
 
@@ -165,23 +165,23 @@ const VIEW = `
           <h2 id="settings-performance-title" tabindex="-1" data-i18n="settings.sections.performance"></h2>
         </header>
         <div class="card__body form-grid">
-          <mc-field data-i18n-help="settings.memoryHelp">
+          <piston-field data-i18n-help="settings.memoryHelp">
             <label data-i18n="settings.memory"></label>
             <div class="input-group">
               <input type="number" name="memoryMb" data-scope="panel" min="512" max="7168" step="256" required>
               <span class="input-group__addon">MB</span>
             </div>
-          </mc-field>
-          <mc-field data-i18n-help="settings.serverPortHelp">
+          </piston-field>
+          <piston-field data-i18n-help="settings.serverPortHelp">
             <label data-i18n="settings.serverPort"></label>
             <input class="input input--mono" type="number" name="server-port" min="1" max="65535" step="1" required>
-          </mc-field>
-          <mc-field>
+          </piston-field>
+          <piston-field>
             <label data-i18n="settings.autoRestart"></label>
             <div class="select">
               <select class="input" name="autoRestart" data-scope="panel" data-field="autoRestart"></select>
             </div>
-          </mc-field>
+          </piston-field>
         </div>
       </section>
     </form>
@@ -201,14 +201,14 @@ const VIEW = `
         </fieldset>
         <p class="list-note" hidden data-field="listNote"></p>
         <form class="list-add" novalidate data-field="listForm">
-          <mc-field data-field="nameField">
+          <piston-field data-field="nameField">
             <label data-i18n="settings.lists.name"></label>
             <input class="input" name="player" maxlength="16" autocomplete="off" autocapitalize="off" spellcheck="false">
-          </mc-field>
-          <mc-field hidden data-field="reasonField">
+          </piston-field>
+          <piston-field hidden data-field="reasonField">
             <label data-i18n="settings.lists.reason"></label>
             <input class="input" name="reason" maxlength="100" autocomplete="off">
-          </mc-field>
+          </piston-field>
           <button class="btn btn--primary" type="submit" data-field="addBtn"></button>
         </form>
         <p class="form-error" role="alert" data-field="listError"></p>
@@ -253,12 +253,12 @@ const VIEW = `
         </fieldset>
 
         <div class="field">
-          <mc-field>
+          <piston-field>
             <label data-i18n="settings.mcVersion"></label>
             <div class="select">
               <select class="input input--mono" data-field="versionSelect"><option value="" data-i18n="settings.versionsLoading"></option></select>
             </div>
-          </mc-field>
+          </piston-field>
           <label class="checkbox">
             <input type="checkbox" data-field="snapshots">
             <span data-i18n="settings.snapshots"></span>
@@ -369,7 +369,7 @@ export function render(root) {
   function readForm() {
     const values = { properties: {}, panel: {} };
     for (const { el, name, scope } of controls()) {
-      if (el.localName === 'mc-toggle') values[scope][name] = el.checked;
+      if (el.localName === 'piston-toggle') values[scope][name] = el.checked;
       else if (el.type === 'number' || el.type === 'range') values[scope][name] = el.value === '' ? '' : Number(el.value);
       else values[scope][name] = el.value;
     }
@@ -380,15 +380,15 @@ export function render(root) {
     for (const { el, name, scope } of controls()) {
       if (!(name in values[scope])) continue;
       const value = values[scope][name];
-      if (el.localName === 'mc-toggle') {
+      if (el.localName === 'piston-toggle') {
         el.checked = Boolean(value);
         continue;
       }
       el.value = String(value);
-      el.closest('mc-range')?.refresh();
-      if (el.closest('mc-stepper')) el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.closest('piston-range')?.refresh();
+      if (el.closest('piston-stepper')) el.dispatchEvent(new Event('input', { bubbles: true }));
     }
-    for (const field of form.querySelectorAll('mc-field')) field.error = '';
+    for (const field of form.querySelectorAll('piston-field')) field.error = '';
   }
 
   function isDirty() {
@@ -401,7 +401,7 @@ export function render(root) {
 
   /** Error text for one control, '' if valid. */
   function check(el) {
-    if (el.disabled || el.localName === 'mc-toggle') return '';
+    if (el.disabled || el.localName === 'piston-toggle') return '';
     const value = el.value.trim();
     if (value === '') return el.required ? t('settings.errors.required') : '';
     if (el.type !== 'number') return '';
@@ -418,7 +418,7 @@ export function render(root) {
     let first = null;
     for (const { el } of controls()) {
       const message = check(el);
-      const field = el.closest('mc-field');
+      const field = el.closest('piston-field');
       if (field) field.error = message;
       if (message && !first) first = el;
     }
@@ -447,7 +447,7 @@ export function render(root) {
 
   form.addEventListener('input', (event) => {
     // Re-check a field that shows an error, so the message goes away once fixed
-    const field = event.target.closest?.('mc-field');
+    const field = event.target.closest?.('piston-field');
     if (field?.error) field.error = check(event.target);
     if (f.saveStatus.dataset.state === 'invalid' && !hasErrors()) setSaveStatus('unsaved');
     updateSaveBar();

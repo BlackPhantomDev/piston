@@ -43,9 +43,9 @@ const LEVEL_CLASSES = { WARN: 'warn', ERROR: 'error', FATAL: 'error', CMD: 'cmd'
  *                 unless the user has scrolled up
  *   filter="warn" show one level only: info | warn | error (CSS, see components.css)
  *
- * <log-view limit="8"></log-view>   then   el.add(lines)
+ * <piston-log-view limit="8"></piston-log-view>   then   el.add(lines)
  */
-export class LogView extends HTMLElement {
+export class PistonLogView extends HTMLElement {
   #list = document.createElement('ol');
   #query = '';
 
@@ -154,4 +154,4 @@ function span(className, text) {
   return el;
 }
 
-customElements.define('log-view', LogView);
+customElements.define('piston-log-view', PistonLogView);

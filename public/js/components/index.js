@@ -20,11 +20,11 @@
  */
 
 // Each module registers its custom element on import.
-import './mc-field.js';
-import './mc-toggle.js';
-import './mc-stepper.js';
-import './mc-range.js';
-import './status-badge.js';
-import './lang-switch.js';
-import './log-view.js';
-import './action-menu.js';
+import './piston-field.js';
+import './piston-toggle.js';
+import './piston-stepper.js';
+import './piston-range.js';
+import './piston-status-badge.js';
+import './piston-lang-switch.js';
+import './piston-log-view.js';
+import './piston-action-menu.js';

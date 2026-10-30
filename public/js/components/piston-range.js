@@ -23,9 +23,9 @@
  * Range slider: paints the filled part of the track (WebKit has no
  * ::-moz-range-progress) and mirrors the value into <output for="…">.
  *
- * <mc-range><input type="range" id="view-distance" min="2" max="32" value="10"></mc-range>
+ * <piston-range><input type="range" id="view-distance" min="2" max="32" value="10"></piston-range>
  */
-export class McRange extends HTMLElement {
+export class PistonRange extends HTMLElement {
   /** @type {HTMLInputElement | null} */
   #input = null;
 
@@ -55,4 +55,4 @@ export class McRange extends HTMLElement {
   }
 }
 
-customElements.define('mc-range', McRange);
+customElements.define('piston-range', PistonRange);

@@ -46,13 +46,13 @@ function dotsIcon() {
  * Choosing an entry closes the menu, puts focus back on the button and fires
  * "action" with detail.value. Hidden or disabled entries are skipped.
  *
- * <action-menu label="Aktionen für Steve">
+ * <piston-action-menu label="Aktionen für Steve">
  *   <button value="tell">Nachricht senden …</button>
  *   <hr>
  *   <button value="kick" data-danger>Kicken …</button>
- * </action-menu>
+ * </piston-action-menu>
  */
-export class ActionMenu extends HTMLElement {
+export class PistonActionMenu extends HTMLElement {
   static observedAttributes = ['label'];
 
   /** @type {HTMLButtonElement | undefined} */
@@ -198,4 +198,4 @@ export class ActionMenu extends HTMLElement {
   }
 }
 
-customElements.define('action-menu', ActionMenu);
+customElements.define('piston-action-menu', PistonActionMenu);

@@ -199,7 +199,7 @@ export async function acceptEula() {
 
 /**
  * Calls back with the buffered lines as soon as they arrive, then with each new line.
- * Lines are always oldest first – pass them straight to <log-view>.add().
+ * Lines are always oldest first – pass them straight to <piston-log-view>.add().
  * @param {(lines: LogLine[]) => void} callback
  * @returns {() => void} unsubscribe
  */

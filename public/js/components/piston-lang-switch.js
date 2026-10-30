@@ -27,9 +27,9 @@ import { uid } from './uid.js';
  * styled as a segmented control. Languages without strings are disabled
  * and marked as planned. Choosing one stores it and reloads the page.
  *
- * <lang-switch></lang-switch>
+ * <piston-lang-switch></piston-lang-switch>
  */
-export class LangSwitch extends HTMLElement {
+export class PistonLangSwitch extends HTMLElement {
   connectedCallback() {
     if (this.firstChild) return;
 
@@ -81,4 +81,4 @@ export class LangSwitch extends HTMLElement {
   }
 }
 
-customElements.define('lang-switch', LangSwitch);
+customElements.define('piston-lang-switch', PistonLangSwitch);

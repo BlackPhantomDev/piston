@@ -25,9 +25,9 @@ import { t } from '../i18n/index.js';
  * Number input with − / + buttons. The native input stays the source of truth
  * (name, min, max, step, form submission, arrow keys).
  *
- * <mc-stepper><input type="number" name="max-players" min="1" max="100" value="20"></mc-stepper>
+ * <piston-stepper><input type="number" name="max-players" min="1" max="100" value="20"></piston-stepper>
  */
-export class McStepper extends HTMLElement {
+export class PistonStepper extends HTMLElement {
   /** @type {HTMLInputElement | null} */
   #input = null;
   #decrease = null;
@@ -72,4 +72,4 @@ export class McStepper extends HTMLElement {
   }
 }
 
-customElements.define('mc-stepper', McStepper);
+customElements.define('piston-stepper', PistonStepper);

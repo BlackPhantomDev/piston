@@ -27,9 +27,9 @@ const STATES = ['loading', 'online', 'offline', 'starting', 'stopping'];
  * Server status: text + shape marker, never colour alone.
  * Announces changes politely to screen readers (role="status").
  *
- * <status-badge status="online"></status-badge>
+ * <piston-status-badge status="online"></piston-status-badge>
  */
-export class StatusBadge extends HTMLElement {
+export class PistonStatusBadge extends HTMLElement {
   static observedAttributes = ['status'];
 
   connectedCallback() {
@@ -66,4 +66,4 @@ export class StatusBadge extends HTMLElement {
   }
 }
 
-customElements.define('status-badge', StatusBadge);
+customElements.define('piston-status-badge', PistonStatusBadge);

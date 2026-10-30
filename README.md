@@ -176,7 +176,7 @@ public/
 │  ├─ api.js           the pages' only access to server data – picks demo or live
 │  ├─ api/demo.js      demo: everything on sample data
 │  ├─ mock/            the sample data
-│  ├─ components/      Web Components (<action-menu>, <log-view>, <status-badge>, …)
+│  ├─ components/      Web Components (<piston-action-menu>, <piston-log-view>, <piston-status-badge>, …)
 │  ├─ i18n/            UI strings
 │  └─ pages/           one module per page
 └─ assets/             logo and fonts
