@@ -451,5 +451,17 @@ export default {
   },
   legal: {
     source: 'Source code',
+    // Only in the demo (dist/), see scripts/build_dist.py
+    title: 'Legal',
+    text: 'This demo shows PiSton with sample data and controls no real server. The imprint and privacy policy of siegristdigital.ch apply to this site.',
+    imprint: 'Imprint',
+    privacy: 'Privacy policy',
+    newTab: ' (opens in a new tab)',
+    storage: 'The demo sets no cookies and uses no tracking. Only the chosen language is kept in your browser.',
+    logs: 'Like any website, the web server keeps technical access data in server logs when the demo is opened, such as IP address, time and requested file. How long and why is set out in the privacy policy.',
+    // Fixed wording of the trademark notices – English in every language (lang="en" in the markup)
+    minecraft: 'Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.',
+    raspberryPi: 'Raspberry Pi is a trademark of Raspberry Pi Ltd.',
+    close: 'Close',
   },
 };

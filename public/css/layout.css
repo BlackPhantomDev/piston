@@ -468,6 +468,36 @@
   display: none;
 }
 
+/* "Rechtliches" in the demo (scripts/build_dist.py): opens a dialog, so a button – looks like the links next to it */
+.legal-notice__button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--grass);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.legal-notice__button:hover {
+  color: var(--grass-hover);
+}
+
+.legal-dialog__links {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Trademark notices: small print, still 4.5:1 */
+.legal-dialog__fine {
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+}
+
 /* =========================================================================
    Narrow screens: top bar + sidebar slides over the content
    ========================================================================= */

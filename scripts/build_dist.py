@@ -34,7 +34,10 @@ ends up in the next demo without a second branch.
 What goes into dist/:
 - public/ without the component overview and macOS files,
 - only the fonts that css/fonts.css loads, each with its licence (OFL.txt),
-- LICENCE, ADDITIONAL_TERMS and THIRD-PARTY-NOTICES.
+- LICENCE, ADDITIONAL_TERMS and THIRD-PARTY-NOTICES,
+- "Rechtliches" next to the attribution, opening a dialog with imprint, privacy
+  policy and trademark notices: the demo is a public website, the panel at home
+  is not, so public/index.html only has placeholders for it.
 """
 
 from __future__ import annotations
@@ -55,6 +58,53 @@ FONT_URL = re.compile(r'url\("\.\./(assets/fonts/[^"]+)"\)')
 API_SOURCE = re.compile(r"^export \* from '\./api/\w+\.js';$", re.MULTILINE)
 DEMO_SOURCE = "export * from './api/demo.js';"
 VERSION = re.compile(r"VERSION = '([^']+)'")
+
+# Legal pages of the demo – the addresses are given in AGENTS.md §1 "Website", never guess them
+IMPRINT_URL = "https://siegristdigital.ch/imprint"
+PRIVACY_URL = "https://siegristdigital.ch/privacy"
+
+
+def _external(url: str, key: str, text: str) -> str:
+    """Link that opens in a new tab and says so to screen readers."""
+    return (
+        f'<a href="{url}" target="_blank" rel="noopener noreferrer"><span data-i18n="{key}">{text}</span>'
+        '<span class="visually-hidden" data-i18n="legal.newTab"> (öffnet in neuem Tab)</span></a>'
+    )
+
+
+_OPENER = (
+    '<button class="legal-notice__button" type="button" aria-haspopup="dialog" data-opens="legal-dialog"'
+    ' data-i18n="legal.title">Rechtliches</button>'
+)
+# German text is the fallback without JS; translate() swaps in the active language
+_DIALOG = f"""<dialog class="dialog" id="legal-dialog" aria-labelledby="legal-title" aria-describedby="legal-text">
+      <form class="dialog__form" method="dialog">
+        <h2 id="legal-title" data-i18n="legal.title">Rechtliches</h2>
+        <p id="legal-text" data-i18n="legal.text">Diese Demo zeigt PiSton mit Beispieldaten und steuert keinen echten Server. Für diese Seite gelten das Impressum und die Datenschutzerklärung von siegristdigital.ch.</p>
+        <ul class="legal-dialog__links">
+          <li>{_external(IMPRINT_URL, "legal.imprint", "Impressum")}</li>
+          <li>{_external(PRIVACY_URL, "legal.privacy", "Datenschutzerklärung")}</li>
+        </ul>
+        <p data-i18n="legal.storage">Die Demo setzt keine Cookies und nutzt kein Tracking. Nur die gewählte Sprache bleibt in deinem Browser gespeichert.</p>
+        <p data-i18n="legal.logs">Wie bei jeder Website speichert der Webserver beim Aufruf technische Zugriffsdaten in Server-Logs, etwa IP-Adresse, Zeitpunkt und aufgerufene Datei. Wie lange und wozu, steht in der Datenschutzerklärung.</p>
+        <div>
+          <p class="legal-dialog__fine" lang="en" data-i18n="legal.minecraft">Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.</p>
+          <p class="legal-dialog__fine" lang="en" data-i18n="legal.raspberryPi">Raspberry Pi is a trademark of Raspberry Pi Ltd.</p>
+        </div>
+        <div class="dialog__actions">
+          <button class="btn btn--secondary" data-i18n="legal.close">Schließen</button>
+        </div>
+      </form>
+    </dialog>"""
+# Placeholder in public/index.html → what replaces it in dist/index.html
+LEGAL = {
+    "<!-- dist: legal line – the demo only, added by scripts/build_dist.py -->":
+        f'<span class="legal-notice__line">{_OPENER}</span>',
+    "<!-- dist: legal inline – the demo only, added by scripts/build_dist.py -->":
+        f"· {_OPENER}",
+    "<!-- dist: legal dialog – the demo only, added by scripts/build_dist.py -->":
+        _DIALOG,
+}
 
 
 def build(out: Path) -> None:
@@ -93,6 +143,15 @@ def build(out: Path) -> None:
     if count != 1:
         raise SystemExit(f"{api}: expected one line like {DEMO_SOURCE!r}, found {count}")
     api.write_text(source, encoding="utf-8")
+
+    # The demo is a public website: "Rechtliches" next to the attribution (sidebar and narrow-screen footer)
+    index = out / "index.html"
+    html = index.read_text(encoding="utf-8")
+    for placeholder, link in LEGAL.items():
+        if html.count(placeholder) != 1:
+            raise SystemExit(f"{index}: expected the placeholder {placeholder!r} once, found {html.count(placeholder)}")
+        html = html.replace(placeholder, link)
+    index.write_text(html, encoding="utf-8")
 
     files = [path for path in out.rglob("*") if path.is_file()]
     size_mb = sum(path.stat().st_size for path in files) / 1_000_000

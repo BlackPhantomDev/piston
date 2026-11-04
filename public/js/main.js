@@ -41,6 +41,12 @@ const app = document.querySelector('.app');
 if (app) {
   translate();
 
+  // <button data-opens="id"> opens the <dialog id> as a modal – the demo's "Rechtliches" (scripts/build_dist.py)
+  for (const opener of document.querySelectorAll('[data-opens]')) {
+    const dialog = document.getElementById(/** @type {HTMLElement} */ (opener).dataset.opens ?? '');
+    if (dialog instanceof HTMLDialogElement) opener.addEventListener('click', () => dialog.showModal());
+  }
+
   const nav = initNav(
     /** @type {HTMLElement} */ (app),
     /** @type {HTMLButtonElement} */ (document.getElementById('nav-toggle')),
