@@ -115,6 +115,10 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - Test: `tests/test_build_dist.py`, der erste Python-Test. axe im geöffneten Dialog (DE/EN, 1280/375 px): keine Verstöße.
 - [ ] **Datenschutzerklärung auf siegristdigital.ch:** Sie sollte die Demo nennen – Hosting (Server-Logs mit IP)
       und die Sprachwahl im `localStorage`. Liegt außerhalb dieses Repos.
+- [ ] **Rechtliches der Demo umstellen:** Die Demo (`https://demo.pistonpanel.dev`) verlinkt vorläufig Impressum und
+      Datenschutz der Firmenwebsite. Sobald `pistonpanel.dev` eigene Seiten dafür hat: Adressen in `build_dist.py`
+      (`IMPRINT_URL`, `PRIVACY_URL`) und AGENTS.md §1 ändern, Hinweistext `legal.text` in `de.js`/`en.js` anpassen
+      („…von siegristdigital.ch“).
 - [x] Version wechseln ist gesperrt, solange die EULA nicht akzeptiert ist. Es gibt einen Prüfpunkt mit Link zur EULA.
 - [x] **Logo überarbeitet:** Der alte Würfel-Sockel erinnerte an den Minecraft-Kolben.
   - Jetzt: Zylinder als Sockel, Kolbenstange, runder grüner Kopf mit π.
