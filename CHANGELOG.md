@@ -7,6 +7,10 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+## [0.1.0-alpha.9] – 2026-11-04
+
+The demo as a public website: imprint, privacy policy and trademark notices one click away.
+
 ### Added
 
 - The demo (`dist/`) has "Rechtliches" next to the attribution: a dialog with imprint and privacy policy
@@ -209,7 +213,8 @@ First tagged state: the frontend runs on sample data, there is no backend yet.
 - Language switch prepared (German active, English planned).
 - Required "Powered by PiSton" attribution on every page (AGPL-3.0 §7).
 
-[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.8...HEAD
+[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.9...HEAD
+[0.1.0-alpha.9]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.8...v0.1.0-alpha.9
 [0.1.0-alpha.8]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.7...v0.1.0-alpha.8
 [0.1.0-alpha.7]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.6...v0.1.0-alpha.7
 [0.1.0-alpha.6]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.5...v0.1.0-alpha.6
