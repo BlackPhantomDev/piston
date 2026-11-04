@@ -7,6 +7,10 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+## [0.1.0-alpha.8] – 2026-11-04
+
+The finished frontend: the project website in the attribution, and disabled controls that stay readable.
+
 ### Changed
 
 - "Powered by PiSton" now links to the project website, [pistonpanel.dev](https://pistonpanel.dev);
@@ -192,7 +196,8 @@ First tagged state: the frontend runs on sample data, there is no backend yet.
 - Language switch prepared (German active, English planned).
 - Required "Powered by PiSton" attribution on every page (AGPL-3.0 §7).
 
-[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.7...HEAD
+[Unreleased]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.8...HEAD
+[0.1.0-alpha.8]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.7...v0.1.0-alpha.8
 [0.1.0-alpha.7]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.6...v0.1.0-alpha.7
 [0.1.0-alpha.6]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.5...v0.1.0-alpha.6
 [0.1.0-alpha.5]: https://github.com/BlackPhantomDev/piston/compare/v0.1.0-alpha.4...v0.1.0-alpha.5

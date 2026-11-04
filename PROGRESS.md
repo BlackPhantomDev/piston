@@ -1,6 +1,6 @@
 # 🗺️ PiSton – Roadmap
 
-**Stand:** 04.11.2026 · **Version:** `0.1.0-alpha.7` · **Aktuelle Phase:** 6 – Backend-Grundgerüst
+**Stand:** 04.11.2026 · **Version:** `0.1.0-alpha.8` · **Aktuelle Phase:** 6 – Backend-Grundgerüst
 
 ```
 Frontend  ▰▰▰▰▰▰  6 von 6 Phasen
@@ -295,7 +295,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - `js/api/demo.js` enthält die Umsetzung auf den Beispieldaten in `js/mock/`, inklusive `?sim=lost`, `?sim=error` und `?sim=eula`.
   - `scripts/build_dist.py` (Python, nur Standardbibliothek) baut die Demo nach `dist/` und stellt `api.js` dort
     immer auf die Demo – egal, worauf das Repo gerade zeigt.
-- [x] `pyproject.toml` (Version in PEP-440-Form `0.1.0a7`, Lizenz, `requires-python = ">=3.11"`) – vorgezogen,
+- [x] `pyproject.toml` (Version in PEP-440-Form `0.1.0a8`, Lizenz, `requires-python = ">=3.11"`) – vorgezogen,
       ersetzt die frühere `package.json`
 - [ ] venv (`python3 -m venv .venv && .venv/bin/pip install -e .`), `aiohttp` als einzige Abhängigkeit in `pyproject.toml`
 - [x] `.gitignore`: `.venv/`, `__pycache__/` – nur lokal, solange `.gitignore` selbst nicht im Repo ist (siehe Offene Punkte)
@@ -578,7 +578,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   dem Inhalt** auf schmalen Bildschirmen, wo die Sidebar eingeklappt ist. Je Breite ist genau eine davon sichtbar.
 
 ### Versionierung
-- Semantic Versioning, aktuell **`0.1.0-alpha.7`**. Quelle: `pyproject.toml` (PEP-440-Form `0.1.0a7`);
+- Semantic Versioning, aktuell **`0.1.0-alpha.8`**. Quelle: `pyproject.toml` (PEP-440-Form `0.1.0a8`);
   Kopie für den Browser in `public/js/version.js` (SemVer-Form)
   (beide gemeinsam ändern). Anzeige bei der Namensnennung, also im Sidebar-Fuß bzw. auf schmalen Bildschirmen im Footer.
   Änderungen in `CHANGELOG.md`.
