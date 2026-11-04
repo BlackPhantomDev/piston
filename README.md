@@ -10,7 +10,8 @@
 
 <p align="center">
   <strong>A tiny web panel for your Minecraft server on a Raspberry Pi.</strong><br>
-  Start, stop and watch a single Minecraft Java server from your browser – lean enough to run next to the game on a Pi.
+  Start, stop and watch a single Minecraft Java server from your browser – lean enough to run next to the game on a Pi.<br>
+  <a href="https://pistonpanel.dev">pistonpanel.dev</a>
 </p>
 
 <p align="center">
