@@ -832,8 +832,8 @@
 
 /* Attempt running: looks disabled, stays focusable (aria-disabled) */
 .retry .btn[aria-disabled="true"] {
-  border-bottom-color: var(--deepslate-600);
-  background-color: var(--deepslate-500);
+  border-bottom-color: var(--deepslate-700);
+  background-color: var(--deepslate-600);
   color: var(--color-text-muted);
   cursor: progress;
 }

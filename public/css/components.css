@@ -100,10 +100,12 @@ piston-status-badge:not(:defined) {
   outline: var(--focus-ring-danger);
 }
 
+/* Disabled controls: muted text (5:1 or more), dimmer surface – never opacity,
+   so the text stays readable (the same for chips, checkboxes, action cards) */
 .btn--primary:disabled,
 .btn--danger:disabled {
-  background-color: var(--deepslate-500);
-  border-bottom-color: var(--deepslate-600);
+  background-color: var(--deepslate-600);
+  border-bottom-color: var(--deepslate-700);
   color: var(--color-text-muted);
 }
 
@@ -604,8 +606,20 @@ piston-toggle[disabled] .toggle__label {
 
 .checkbox input:disabled,
 .checkbox:has(input:disabled) {
+  color: var(--color-text-muted);
   cursor: not-allowed;
-  opacity: .5;
+}
+
+.checkbox input:disabled {
+  border-color: var(--deepslate-500);
+}
+
+.checkbox input:checked:disabled {
+  background-color: var(--deepslate-500);
+}
+
+.checkbox input:checked:disabled::before {
+  border-color: var(--color-text-muted);
 }
 
 /* =========================================================================
@@ -796,7 +810,8 @@ piston-status-badge[data-state="loading"] .status-badge__marker {
 }
 
 .lang-switch__option:has(input:disabled) {
-  opacity: .5;
+  border-color: var(--deepslate-600);
+  background-color: var(--color-surface);
   cursor: not-allowed;
 }
 
@@ -1307,7 +1322,8 @@ piston-log-view[filter="error"] .log__line:not(.log__line--error) {
 }
 
 .chip:disabled {
-  opacity: .5;
+  border-color: var(--deepslate-600);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
@@ -1429,9 +1445,15 @@ piston-log-view[filter="error"] .log__line:not(.log__line--error) {
   background-color: var(--color-surface-raised);
 }
 
+/* Title and reason ("Server offline") stay readable: muted, not faded */
 .action-card:disabled {
-  opacity: .5;
+  border-color: var(--deepslate-600);
+  color: var(--color-text-muted);
   cursor: not-allowed;
+}
+
+.action-card:disabled .action-card__icon {
+  color: var(--color-text-muted);
 }
 
 .action-card__icon {

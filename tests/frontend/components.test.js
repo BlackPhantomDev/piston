@@ -366,3 +366,83 @@ group('piston-lang-switch', () => {
     }
   });
 });
+
+// axe skips disabled controls (WCAG 1.4.3 exempts them), so their text is checked here:
+// still 4.5:1, and never faded with opacity – a disabled action card tells why ("Server offline").
+
+/** @param {string} css "rgb(r, g, b)" or "rgba(r, g, b, a)" */
+const rgba = (css) => {
+  const [r, g, b, a = 1] = /** @type {number[]} */ (css.match(/[\d.]+/g)?.map(Number));
+  return { r, g, b, a };
+};
+
+/** @param {{ r: number, g: number, b: number }} c */
+const luminance = ({ r, g, b }) => {
+  const [lr, lg, lb] = [r, g, b].map((v) => {
+    const s = v / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * lr + 0.7152 * lg + 0.0722 * lb;
+};
+
+/** Background behind an element: its own and its ancestors' layers, blended until opaque. @param {Element} el */
+function backgroundOf(el) {
+  const layers = [];
+  for (let node = /** @type {Element | null} */ (el); node; node = node.parentElement) {
+    const bg = rgba(getComputedStyle(node).backgroundColor);
+    if (bg.a > 0) layers.push(bg);
+    if (bg.a === 1) break;
+  }
+  let color = { r: 0, g: 0, b: 0 };
+  for (const { r, g, b, a } of layers.reverse()) {
+    color = { r: r * a + color.r * (1 - a), g: g * a + color.g * (1 - a), b: b * a + color.b * (1 - a) };
+  }
+  return color;
+}
+
+/** @param {Element} el */
+function contrast(el) {
+  const [hi, lo] = [luminance(rgba(getComputedStyle(el).color)), luminance(backgroundOf(el))].sort((a, b) => b - a);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+group('disabled controls', () => {
+  test('text stays readable: 4.5:1 or more, no opacity', ({ mount }) => {
+    const root = mount(`
+      <div class="card">
+        <button class="btn btn--primary" disabled>Primary</button>
+        <button class="btn btn--secondary" disabled>Secondary</button>
+        <button class="btn btn--ghost" disabled>Ghost</button>
+        <button class="btn btn--danger" disabled>Danger</button>
+        <button class="chip" type="button" disabled>say</button>
+        <label class="checkbox"><input type="checkbox" disabled> Checkbox</label>
+        <label class="checkbox"><input type="checkbox" checked disabled> Checked</label>
+        <piston-toggle disabled>Toggle</piston-toggle>
+        <input class="input" value="25565" aria-label="Port" disabled>
+        <label class="option-card">
+          <input type="radio" name="provider" disabled>
+          <span class="option-card__title">Forge</span>
+          <span class="option-card__sub">Planned</span>
+        </label>
+        <button class="action-card" type="button" disabled>
+          <span class="action-card__icon"></span>
+          <span class="action-card__text">
+            <span class="action-card__title">Tag setzen</span>
+            <span class="action-card__sub">Server offline</span>
+          </span>
+        </button>
+      </div>`);
+    const texts = root.querySelectorAll(
+      '.btn, .chip, .checkbox, .toggle__label, .input, .option-card__title, .option-card__sub, .action-card__title, .action-card__sub',
+    );
+    equal(texts.length, 13, 'texts checked');
+    for (const el of texts) {
+      const name = `${el.className.split(' ')[0]} "${(el.textContent || /** @type {HTMLInputElement} */ (el).value).trim()}"`;
+      for (let node = /** @type {Element | null} */ (el); node && node !== root; node = node.parentElement) {
+        equal(getComputedStyle(node).opacity, '1', `${name}: opacity of ${node.className.split(' ')[0] || node.localName}`);
+      }
+      const ratio = contrast(el);
+      assert(ratio >= 4.5, `${name}: contrast ${ratio.toFixed(2)}:1, needs 4.5:1`);
+    }
+  });
+});
