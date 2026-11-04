@@ -22,9 +22,12 @@
 // The panel on sample data, page by page in an <iframe>: it renders, nothing is
 // wider than the screen, and axe-core finds no accessibility violations (WCAG 2.2 AA).
 
-import { assert, deepEqual, group, sleep, test, waitFor } from './runner.js';
+import { assert, deepEqual, equal, group, sleep, test, waitFor } from './runner.js';
+import { t } from '../../public/js/i18n/index.js';
 
 const PANEL = new URL('../../public/index.html', import.meta.url);
+const WEBSITE = 'https://pistonpanel.dev/';
+const REPO = 'https://github.com/BlackPhantomDev/piston';
 const AXE = new URL('vendor/axe.min.js', import.meta.url);
 const AXE_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'];
 const DESKTOP = 1280;
@@ -83,6 +86,23 @@ function assertFits(doc, width) {
   assert(scroll <= width, `page is ${scroll} px wide on a ${width} px screen`);
 }
 
+/**
+ * The required attribution (ADDITIONAL_TERMS, term 1): exactly one notice is visible,
+ * "Powered by PiSton" links to the website, "Quellcode" to the repository.
+ * @param {Document} doc
+ */
+function assertAttribution(doc) {
+  const visible = [...doc.querySelectorAll('.legal-notice')].filter((el) => el.getClientRects().length > 0);
+  equal(visible.length, 1, 'visible attribution notices');
+  const notice = visible[0];
+  assert(notice.textContent?.includes('Powered by'), '"Powered by" in the attribution');
+  const links = [...notice.querySelectorAll('a')];
+  const powered = links.find((a) => a.textContent?.trim() === 'PiSton');
+  equal(powered?.href, WEBSITE, '"PiSton" link');
+  const source = links.find((a) => a.textContent?.trim() === t('legal.source'));
+  equal(source?.href, REPO, 'source code link');
+}
+
 const status = (/** @type {Document} */ doc) => doc.querySelector('.page__status piston-status-badge')?.getAttribute('data-state');
 
 /** Pages and states: address, what "loaded" means, and the screen widths to check. */
@@ -123,6 +143,7 @@ group('pages', () => {
         const doc = await openPage(address, width, ready, timeout);
         assert(doc.querySelector('main:not([hidden]) h1')?.textContent?.trim(), 'a page title');
         assertFits(doc, width);
+        assertAttribution(doc);
         deepEqual(await axeViolations(doc), [], 'axe violations');
       });
     }
