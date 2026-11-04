@@ -13,6 +13,11 @@ The finished frontend: the project website in the attribution, and disabled cont
 
 ### Added
 
+- The demo (`dist/`) has "Rechtliches" next to the attribution: a dialog with imprint and privacy policy
+  (opening in a new tab), a note that the demo sets no cookies and uses no tracking, what the web server keeps
+  in its logs, and the Minecraft and Raspberry Pi trademark notices. It is a public website; the panel at home is not and stays without it.
+- First Python test: `python -m unittest` checks the demo build (sample data, "Rechtliches" only in `dist/`).
+
 - `scripts/release.py`: checks version, changelog and branch, builds the demo into `dist/`, then tags the
   release and pushes `main` and the tag together.
 

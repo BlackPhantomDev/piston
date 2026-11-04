@@ -168,6 +168,8 @@ Minecraft server needed. Upload the contents of `dist/` to any static web host. 
 sample data in `public/js/mock/` – also once the real backend exists – so every change to the panel can be
 shown without a second branch. Add `?sim=lost` to the address to show a lost connection, `?sim=error` to
 show error messages, `?sim=eula` for a server whose EULA is not accepted yet – or several: `?sim=lost,error`.
+As a public website, the demo has a "Legal" link next to the attribution – a dialog with imprint, privacy
+policy and trademark notices; the panel itself does not.
 
 ### Releases
 

@@ -103,6 +103,18 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] Disclaimer im README
 - [ ] Website: Disclaimer und Raspberry-Pi-Markenhinweis in der Fußzeile jeder Seite
       (eigenes Repo `BlackPhantomDev/pistonpanel-website`, wird nicht von hier aus geändert)
+- [x] **„Rechtliches“ in der Demo** (04.11.2026): Die Demo ist eine öffentliche Website, das Panel läuft privat im LAN.
+      Nur `dist/` hat deshalb neben der Namensnennung „Rechtliches“. Das öffnet einen Dialog:
+  - Hinweis, dass Impressum (`https://siegristdigital.ch/imprint`) und Datenschutzerklärung
+    (`https://siegristdigital.ch/privacy`) der Firmenwebsite auch für die Demo gelten, mit beiden Links (neuer Tab, angesagt).
+  - Keine Cookies, kein Tracking – nur die Sprachwahl bleibt im Browser (`localStorage`, `piston.locale`).
+  - Server-Logs: Der Webserver speichert Zugriffsdaten (IP, Zeitpunkt, Datei); Dauer und Zweck stehen in der Datenschutzerklärung.
+  - Markenhinweise zu Minecraft und Raspberry Pi, in jeder Sprache englisch.
+  - Bewusst ohne Bestätigungs-Checkbox vor den Links: Impressum und Datenschutz müssen ohne Hürde erreichbar sein.
+  - `scripts/build_dist.py` ersetzt drei Platzhalter-Kommentare in `public/index.html`; `main.js` öffnet Dialoge über `data-opens`.
+  - Test: `tests/test_build_dist.py`, der erste Python-Test. axe im geöffneten Dialog (DE/EN, 1280/375 px): keine Verstöße.
+- [ ] **Datenschutzerklärung auf siegristdigital.ch:** Sie sollte die Demo nennen – Hosting (Server-Logs mit IP)
+      und die Sprachwahl im `localStorage`. Liegt außerhalb dieses Repos.
 - [x] Version wechseln ist gesperrt, solange die EULA nicht akzeptiert ist. Es gibt einen Prüfpunkt mit Link zur EULA.
 - [x] **Logo überarbeitet:** Der alte Würfel-Sockel erinnerte an den Minecraft-Kolben.
   - Jetzt: Zylinder als Sockel, Kolbenstange, runder grüner Kopf mit π.
