@@ -11,6 +11,11 @@ Versions below 1.0.0 are in development – anything may still change.
 
 The finished frontend: the project website in the attribution, and disabled controls that stay readable.
 
+### Added
+
+- `scripts/release.py`: checks version, changelog and branch, builds the demo into `dist/`, then tags the
+  release and pushes `main` and the tag together.
+
 ### Changed
 
 - "Powered by PiSton" now links to the project website, [pistonpanel.dev](https://pistonpanel.dev);

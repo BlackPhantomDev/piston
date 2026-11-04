@@ -169,6 +169,12 @@ sample data in `public/js/mock/` – also once the real backend exists – so ev
 shown without a second branch. Add `?sim=lost` to the address to show a lost connection, `?sim=error` to
 show error messages, `?sim=eula` for a server whose EULA is not accepted yet – or several: `?sim=lost,error`.
 
+### Releases
+
+After the release commit, `python3 scripts/release.py` checks that `version.js`, `pyproject.toml` and the
+changelog agree and that `main` is clean and up to date, builds `dist/`, then – after asking – sets the tag
+`vX` and pushes `main` and the tag together. `--dry-run` stops after the build.
+
 ### Backend
 
 The backend will be a Python package in `server/`, started with `python -m server`; tests run with
@@ -179,6 +185,7 @@ The backend will be a Python package in `server/`, started with `python -m serve
 ```
 pyproject.toml         version and Python dependencies
 scripts/build_dist.py  builds the demo into dist/
+scripts/release.py     tags and pushes a release, builds dist/
 tests/frontend/        frontend tests, run in the browser
 public/
 ├─ index.html          app shell: sidebar, navigation, content

@@ -587,6 +587,10 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   → `0.x.0` (neue Funktionen) → `1.0.0` (stabil). Regeln: `AGENTS.md` §10 „Versionierung“.
 - Kein `0.1.1-…` vor `0.1.0`: Die Patch-Stelle zählt Fehlerkorrekturen *nach* einem Release.
   Bis dahin zählt nur `N` hoch, auch zweistellig.
+- Release: erst der Commit `chore: release X` (Version in `pyproject.toml`, `version.js`, README, PROGRESS, CHANGELOG),
+  dann `python3 scripts/release.py`. Das Skript prüft Version, Changelog, sauberen und aktuellen `main` und den freien
+  Tag, baut `dist/` und setzt nach Rückfrage den annotierten Tag `vX` („PiSton X“). Danach pusht es `main` und den Tag
+  zusammen (`--atomic`). `--dry-run` hört nach dem Build auf, `--yes` fragt nicht.
 
 ### Sprache (i18n)
 - UI-Texte zentral in `js/i18n/de.js` und `js/i18n/en.js` (gleiche Schlüssel), Zugriff über `t('status.online')`.
