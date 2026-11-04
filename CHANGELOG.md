@@ -7,6 +7,19 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+### Changed
+
+- "Powered by PiSton" now links to the project website, [pistonpanel.dev](https://pistonpanel.dev);
+  "Quellcode" still leads to the repository. The frontend tests check both links on every page.
+- README: link to the website below the tagline.
+
+### Fixed
+
+- Disabled controls are readable again: checkboxes, command chips, action cards, the language switch and
+  primary/danger buttons were faded with opacity, down to 2.6:1. They now use the muted text colour like
+  disabled toggles and inputs (5:1 or more), so "Server offline" on a disabled action card can be read.
+  A new frontend test checks this, since axe skips disabled elements.
+
 ## [0.1.0-alpha.7] – 2026-10-30
 
 English UI and frontend tests in the browser – plus a tidier repo: only the fonts in use, one prefix for all elements.

@@ -1,6 +1,6 @@
 # 🗺️ PiSton – Roadmap
 
-**Stand:** 30.10.2026 · **Version:** `0.1.0-alpha.7` · **Aktuelle Phase:** 6 – Backend-Grundgerüst
+**Stand:** 04.11.2026 · **Version:** `0.1.0-alpha.7` · **Aktuelle Phase:** 6 – Backend-Grundgerüst
 
 ```
 Frontend  ▰▰▰▰▰▰  6 von 6 Phasen
@@ -72,7 +72,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - „Minecraft“ erscheint nie in Name, Logo oder Titel.
   - Beschreibend ist es erlaubt, z. B. „for Minecraft Java Edition“ oder das Feld „Minecraft-Version“.
   - Wo „Minecraft“ steht, gehört der Disclaimer dazu: *Not an official Minecraft product. Not approved by or
-    associated with Mojang or Microsoft.*
+    associated with Mojang or Microsoft.* Das gilt für README, Release, Image und die Website
+    (Fußzeile jeder Seite).
 - **Logo:** Ein Kolben ist ein normales technisches Bauteil, aber das Logo darf nicht wie der Minecraft-Kolben
   aussehen.
   - Nicht verwenden: einen Würfel als Sockel mit ausgefahrener Stange und flacher Platte, Pixeltextur,
@@ -82,6 +83,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - **Raspberry Pi:** „Pi“ allein ist frei, es ist der griechische Buchstabe.
   - Das Himbeer-Logo und „Raspberry Pi“ gehören nie in Name oder Logo.
   - Beschreibend ist es erlaubt („runs on a Raspberry Pi“).
+  - Die Website trägt zusätzlich: *Raspberry Pi is a trademark of Raspberry Pi Ltd.*
 - **EULA:** Ein Minecraft-Server startet erst, wenn in `eula.txt` `eula=true` steht. PiSton setzt das **nie
   selbst**, auch nicht nebenbei bei einem Versionswechsel oder bei der Einrichtung.
   - Der Nutzer bestätigt ausdrücklich, immer mit einem Link zur EULA (`https://aka.ms/MinecraftEULA`):
@@ -99,6 +101,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] „Minecraft“ und „Raspberry Pi“ nur beschreibend:
       Tagline, README, `pyproject.toml`, im UI das Feld „Minecraft-Version“ und der EULA-Hinweis
 - [x] Disclaimer im README
+- [ ] Website: Disclaimer und Raspberry-Pi-Markenhinweis in der Fußzeile jeder Seite
+      (eigenes Repo `BlackPhantomDev/pistonpanel-website`, wird nicht von hier aus geändert)
 - [x] Version wechseln ist gesperrt, solange die EULA nicht akzeptiert ist. Es gibt einen Prüfpunkt mit Link zur EULA.
 - [x] **Logo überarbeitet:** Der alte Würfel-Sockel erinnerte an den Minecraft-Kolben.
   - Jetzt: Zylinder als Sockel, Kolbenstange, runder grüner Kopf mit π.
@@ -359,7 +363,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - Ausgehende Anfragen über `aiohttp.ClientSession`.
   - Tests mit gemockten Antworten.
   - Downloads nur von den Hosts aus AGENTS.md §6.5, Prüfsumme muss passen.
-  - Paper verlangt einen eigenen User-Agent mit Kontakt.
+  - Paper verlangt einen eigenen User-Agent mit Kontakt: `piston-panel/<version> (https://pistonpanel.dev)`.
 - [ ] `GET /api/versions` mit `&snapshots=true` (Entwurf in AGENTS.md §9)
 - [ ] Ablauf mit Fortschritt per WebSocket, Rückfall auf `server.jar.prev`
 
@@ -395,7 +399,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - In der README zusätzlich der vorsichtige Weg: erst herunterladen, ansehen, dann ausführen.
   - Zu klären:
     - Der Installer braucht Root-Rechte. AGENTS.md §11 erlaubt `sudo` bisher nur für die drei `systemctl`-Aufrufe.
-    - Wo liegt das Skript: Release-Asset, GitHub Pages oder eigene Domain?
+    - Wo liegt das Skript: Release-Asset oder `pistonpanel.dev` (Website-Repo)?
     - Lässt man im Installer den Server weg, gibt es noch keine Jar. Dafür braucht das Panel einen Zustand
       „noch kein Server installiert“, der bisher nicht vorgesehen ist.
 - [ ] 🔔 **Update-Hinweis:** Das Panel prüft regelmäßig die Releases auf GitHub. Gibt es eine neuere Version,
@@ -433,18 +437,30 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] Ungenutzte Font-Dateien gelöscht (23 MB → 1,2 MB): die `static/`-Ordner, die README.txt von Google, die Kursiv-Dateien
       (das Panel nutzt keine Kursivschrift) und alle Chakra-Petch-Schnitte außer Bold – nur der wird verwendet.
       Es bleiben 5 Schriftdateien und je eine `OFL.txt`.
+- [x] „Powered by PiSton“ verlinkt auf `https://pistonpanel.dev`, „Quellcode“ weiter aufs Repo (04.11.2026).
+      Die Seiten-Tests prüfen bei 1280 und 375 px, dass genau eine Namensnennung sichtbar ist und beide Links stimmen.
+  - Offen: `ADDITIONAL_TERMS` (Punkt 1) und README („License“) verlangen einen Link aufs Repo – erfüllt der
+    „Quellcode“-Link. Soll die Website dort auch genannt werden, ist das eine Änderung am Lizenztext.
 - [x] „Quellcode“ in der Namensnennung ist per `data-i18n="legal.source"` übersetzbar. Der deutsche Text bleibt im HTML
       als Rückfall ohne JS. `components.html` bleibt deutsch, die Seite ist nur für die Entwicklung.
 - [x] Automatisierte Frontend-Tests in `tests/frontend/`, im Browser ohne Node (Option „Testseite“, 30.10.2026):
-  - Eigener kleiner Runner (`runner.js`), 56 Tests in rund 20 s: alle 8 Komponenten, `versions.js`, `format.js`, `errors.js`,
+  - Eigener kleiner Runner (`runner.js`), 57 Tests in rund 20 s: alle 8 Komponenten, `versions.js`, `format.js`, `errors.js`,
     gleiche Schlüssel und Platzhalter in `de.js`/`en.js`, und die Seiten auf Beispieldaten im iframe
     (auch `?sim=error|eula|lost`) mit axe-core bei 1280 und 375 px.
   - Aufruf: `python3 -m http.server 8080` in der Repo-Wurzel, dann `http://localhost:8080/tests/frontend/` (`?only=…` filtert).
   - Gegenprobe: Ein leeres `aria-label` lässt 5 Tests scheitern (leerer Text, axe auf allen Handy-Seiten).
   - Gleich gefunden: `<piston-toggle>` in einem gesperrten `<fieldset>` blieb bedienbar – behoben.
+- [x] Deaktivierte Bedienelemente lesbar (04.11.2026, gefunden mit einem WCAG-Kontrast-Plugin auf `components.html`):
+      Checkbox, Chip, Aktions-Karte, Sprachumschalter sowie Primary-/Danger-Buttons waren per `opacity` bis auf 2,6:1
+      verblasst. Jetzt wie Toggle und Eingabefeld: `--color-text-muted` (ab 5:1), Flächen und Rahmen eine Stufe dunkler,
+      nie `opacity`. WCAG 1.4.3 nimmt deaktivierte Elemente zwar aus, aber z. B. „Server offline“ ist eine Begründung,
+      die man lesen können muss. Test „disabled controls“ in `components.test.js` (axe überspringt deaktivierte Elemente).
 - [ ] **Frontend-Tests später anpassen** (Details in AGENTS.md §10):
   - ab Phase 7, wenn `api.js` auf `live.js` zeigt: Seiten-Tests müssen die Demo erzwingen (z. B. gegen `dist/` testen);
   - mit `python -m unittest` laufen lassen: Python-Test öffnet die Testseite headless und liest `window.testResults`.
+    Achtung: Headless Chrome mit `--virtual-time-budget` lässt CSS-Transitions stehen. axe misst grüne Buttons dann
+    mitten im Übergang von „deaktiviert“ zu „aktiv“ und meldet 4 Kontrastfehler (Konsole: Senden, Einstellungen:
+    Hinzufügen). Ohne Transitions laufen alle Tests durch, also für den Headless-Lauf Transitions abschalten.
 - [x] Display-Schrift Chakra Petch statt Pixelify Sans (Titel, Überschriften, Kennzahlen, Avatare); Pixelify nur noch im Logo (`--font-logo`)
 - [x] `README.md` mit Beschreibung, Lizenz, Disclaimer, Sicherheitshinweis
 - [x] Repo aus dem Synology-Drive-Ordner nach `~/dev.local/piston` umgezogen
@@ -458,11 +474,19 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - **AGPL-3.0-or-later** mit Zusatzbedingungen nach §7 (`ADDITIONAL_TERMS`):
   1. Namensnennung „Powered by PiSton“ + Link auf `https://github.com/BlackPhantomDev/piston`
      auf **jeder Seite** des Panels (Footer *oder* Sidebar) – nie entfernen.
+     Im Panel verlinkt „PiSton“ auf `https://pistonpanel.dev`, „Quellcode“ aufs Repo (04.11.2026).
   2. Veränderte Versionen müssen als verändert gekennzeichnet sein.
   3. Keine Markenrechte am Namen „PiSton“ / Logo.
 - Copyright-Inhaber: **„Mischa S.“** (so in `ADDITIONAL_TERMS` und allen Kopfkommentaren).
 - **Jede neue Quelldatei** (JS, CSS, HTML, Python) beginnt mit dem AGPL-Kopfkommentar. Vorlage: Anfang von `public/css/tokens.css`;
   in Python als `#`-Zeilen vor dem Docstring, dazu `# SPDX-License-Identifier: AGPL-3.0-or-later`.
+
+### Website
+- Offizielle Projektseite **https://pistonpanel.dev**, in einem eigenen, privaten Repo
+  (`BlackPhantomDev/pistonpanel-website`) – nicht Teil dieses Repos (Entscheidung vom 04.11.2026).
+- Gemeinsames (Logo, Favicon, Schriften, Farben) kommt aus diesem Repo; die Website übernimmt Änderungen von hier.
+- Die Website ist auch die Kontaktadresse im User-Agent: `piston-panel/<version> (https://pistonpanel.dev)`.
+- Regeln: `AGENTS.md` §1 „Website (pistonpanel.dev)“.
 
 ### Backend
 - **Python 3.11+ mit `asyncio`** (Entscheidung vom 29.10.2026, vorher war Node.js geplant). Auf dem Pi braucht
