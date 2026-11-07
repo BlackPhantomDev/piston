@@ -114,9 +114,8 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - Bewusst ohne Bestätigungs-Checkbox vor den Links: Impressum und Datenschutz müssen ohne Hürde erreichbar sein.
   - `scripts/build_dist.py` ersetzt drei Platzhalter-Kommentare in `public/index.html`; `main.js` öffnet Dialoge über `data-opens`.
   - Test: `tests/test_build_dist.py`, der erste Python-Test. axe im geöffneten Dialog (DE/EN, 1280/375 px): keine Verstöße.
-- [ ] **Datenschutzerklärung auf pistonpanel.dev:** Sie gilt für die Website „sowie für alle damit verbundenen
-      Online-Angebote“ und beschreibt die Server-Logs (30 Tage). Ausdrücklich genannt sind die Demo
-      (`demo.pistonpanel.dev`) und die Sprachwahl im `localStorage` dort noch nicht. Liegt im Website-Repo, nicht hier.
+- [x] **Datenschutzerklärung auf pistonpanel.dev** (07.11.2026): nennt die Demo (`demo.pistonpanel.dev`) ausdrücklich,
+      ihre Server-Logs (30 Tage) und die Sprachwahl im `localStorage` (`piston.locale`). Liegt im Website-Repo, nicht hier.
 - [x] **Rechtliches der Demo umgestellt** (07.11.2026): Die Demo (`https://demo.pistonpanel.dev`) verlinkt jetzt
       Impressum und Datenschutz von `pistonpanel.dev` (`IMPRINT_URL`, `PRIVACY_URL` in `build_dist.py`, AGENTS.md §1);
       `legal.text` in `de.js`/`en.js` nennt pistonpanel.dev statt siegristdigital.ch.
