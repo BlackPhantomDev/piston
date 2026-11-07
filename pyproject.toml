@@ -10,7 +10,7 @@ description = "A tiny web panel for your Minecraft server on a Raspberry Pi"
 readme = "README.md"
 license = "AGPL-3.0-or-later"
 license-files = ["LICENCE", "ADDITIONAL_TERMS", "THIRD-PARTY-NOTICES"]
-authors = [{ name = "Mischa S." }]
+authors = [{ name = "PiSton Developers" }]
 requires-python = ">=3.11"
 # The only planned runtime dependency, aiohttp
 dependencies = [
