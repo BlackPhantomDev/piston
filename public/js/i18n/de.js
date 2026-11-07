@@ -441,7 +441,7 @@ export default {
     source: 'Quellcode',
     // Only in the demo (dist/), see scripts/build_dist.py
     title: 'Rechtliches',
-    text: 'Diese Demo zeigt PiSton mit Beispieldaten und steuert keinen echten Server. Für diese Seite gelten das Impressum und die Datenschutzerklärung von siegristdigital.ch.',
+    text: 'Diese Demo zeigt PiSton mit Beispieldaten und steuert keinen echten Server. Für diese Seite gelten das Impressum und die Datenschutzerklärung von pistonpanel.dev.',
     imprint: 'Impressum',
     privacy: 'Datenschutzerklärung',
     newTab: ' (öffnet in neuem Tab)',

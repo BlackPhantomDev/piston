@@ -60,8 +60,8 @@ DEMO_SOURCE = "export * from './api/demo.js';"
 VERSION = re.compile(r"VERSION = '([^']+)'")
 
 # Legal pages of the demo – the addresses are given in AGENTS.md §1 "Website", never guess them
-IMPRINT_URL = "https://siegristdigital.ch/imprint"
-PRIVACY_URL = "https://siegristdigital.ch/privacy"
+IMPRINT_URL = "https://pistonpanel.dev/imprint.html"
+PRIVACY_URL = "https://pistonpanel.dev/privacy.html"
 
 
 def _external(url: str, key: str, text: str) -> str:
@@ -80,7 +80,7 @@ _OPENER = (
 _DIALOG = f"""<dialog class="dialog" id="legal-dialog" aria-labelledby="legal-title" aria-describedby="legal-text">
       <form class="dialog__form" method="dialog">
         <h2 id="legal-title" data-i18n="legal.title">Rechtliches</h2>
-        <p id="legal-text" data-i18n="legal.text">Diese Demo zeigt PiSton mit Beispieldaten und steuert keinen echten Server. Für diese Seite gelten das Impressum und die Datenschutzerklärung von siegristdigital.ch.</p>
+        <p id="legal-text" data-i18n="legal.text">Diese Demo zeigt PiSton mit Beispieldaten und steuert keinen echten Server. Für diese Seite gelten das Impressum und die Datenschutzerklärung von pistonpanel.dev.</p>
         <ul class="legal-dialog__links">
           <li>{_external(IMPRINT_URL, "legal.imprint", "Impressum")}</li>
           <li>{_external(PRIVACY_URL, "legal.privacy", "Datenschutzerklärung")}</li>

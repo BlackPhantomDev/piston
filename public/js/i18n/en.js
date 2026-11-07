@@ -453,7 +453,7 @@ export default {
     source: 'Source code',
     // Only in the demo (dist/), see scripts/build_dist.py
     title: 'Legal',
-    text: 'This demo shows PiSton with sample data and controls no real server. The imprint and privacy policy of siegristdigital.ch apply to this site.',
+    text: 'This demo shows PiSton with sample data and controls no real server. The imprint and privacy policy of pistonpanel.dev apply to this site.',
     imprint: 'Imprint',
     privacy: 'Privacy policy',
     newTab: ' (opens in a new tab)',
