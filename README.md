@@ -11,7 +11,7 @@
 <p align="center">
   <strong>A tiny web panel for your Minecraft server on a Raspberry Pi.</strong><br>
   Start, stop and watch a single Minecraft Java server from your browser – lean enough to run next to the game on a Pi.<br>
-  <a href="https://pistonpanel.dev">pistonpanel.dev</a>
+  <a href="https://pistonpanel.dev">pistonpanel.dev</a> · <a href="https://demo.pistonpanel.dev">Live demo</a>
 </p>
 
 <p align="center">
@@ -169,7 +169,7 @@ sample data in `public/js/mock/` – also once the real backend exists – so ev
 shown without a second branch. Add `?sim=lost` to the address to show a lost connection, `?sim=error` to
 show error messages, `?sim=eula` for a server whose EULA is not accepted yet – or several: `?sim=lost,error`.
 As a public website, the demo has a "Legal" link next to the attribution – a dialog with imprint, privacy
-policy and trademark notices; the panel itself does not.
+policy and trademark notices; the panel itself does not. The current demo runs at <https://demo.pistonpanel.dev>.
 
 ### Releases
 
