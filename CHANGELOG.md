@@ -7,6 +7,12 @@ Versions below 1.0.0 are in development – anything may still change.
 
 ## [Unreleased]
 
+### Changed
+
+- Demo: imprint and privacy policy now link to the project website, [pistonpanel.dev/imprint.html](https://pistonpanel.dev/imprint.html)
+  and [pistonpanel.dev/privacy.html](https://pistonpanel.dev/privacy.html), instead of the company website.
+- README: link to the live demo, [demo.pistonpanel.dev](https://demo.pistonpanel.dev).
+
 ## [0.1.0-alpha.9] – 2026-11-04
 
 The demo as a public website: imprint, privacy policy and trademark notices one click away.
