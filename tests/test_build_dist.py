@@ -38,8 +38,12 @@ I18N_KEY = re.compile(r'data-i18n="([\w.]+)"')
 def has_key(source: str, key: str) -> bool:
     """True if a locale file (de.js, en.js) defines the dotted key, e.g. legal.title."""
     section, name = key.split(".")
-    match = re.search(rf"^  {section}: \{{\n(.*?)^  \}},", source, re.MULTILINE | re.DOTALL)
-    return bool(match and re.search(rf"^    {name}:", match.group(1), re.MULTILINE))
+    match = re.search(
+        rf"^  {section}: \{{\n(.*?)^  \}},", source, re.MULTILINE | re.DOTALL
+    )
+    return bool(
+        match and re.search(rf"^    {name}:", match.group(1), re.MULTILINE)
+    )
 
 
 class BuildDistTest(unittest.TestCase):
@@ -48,12 +52,19 @@ class BuildDistTest(unittest.TestCase):
         cls._tmp = tempfile.TemporaryDirectory()
         cls.out = Path(cls._tmp.name) / "dist"
         subprocess.run(
-            [sys.executable, str(ROOT / "scripts" / "build_dist.py"), "--out", str(cls.out)],
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "build_dist.py"),
+                "--out",
+                str(cls.out),
+            ],
             check=True,
             capture_output=True,
         )
         cls.html = (cls.out / "index.html").read_text(encoding="utf-8")
-        cls.panel = (ROOT / "public" / "index.html").read_text(encoding="utf-8")
+        cls.panel = (ROOT / "public" / "index.html").read_text(
+            encoding="utf-8"
+        )
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -62,13 +73,21 @@ class BuildDistTest(unittest.TestCase):
     def test_demo_opens_the_legal_dialog(self) -> None:
         # Sidebar on wide screens, footer on narrow ones – both open the same dialog
         self.assertEqual(self.html.count('data-opens="legal-dialog"'), 2)
-        self.assertEqual(self.html.count('<dialog class="dialog" id="legal-dialog"'), 1)
+        self.assertEqual(
+            self.html.count('<dialog class="dialog" id="legal-dialog"'), 1
+        )
         for placeholder in LEGAL:
             self.assertNotIn(placeholder, self.html)
 
     def test_imprint_and_privacy_open_in_a_new_tab(self) -> None:
         for url in (IMPRINT_URL, PRIVACY_URL):
-            self.assertEqual(self.html.count(f'href="{url}" target="_blank" rel="noopener noreferrer"'), 1, url)
+            self.assertEqual(
+                self.html.count(
+                    f'href="{url}" target="_blank" rel="noopener noreferrer"'
+                ),
+                1,
+                url,
+            )
         self.assertEqual(self.html.count('data-i18n="legal.newTab"'), 2)
 
     def test_trademark_notices_in_english(self) -> None:
@@ -76,10 +95,16 @@ class BuildDistTest(unittest.TestCase):
         self.assertIn('lang="en" data-i18n="legal.raspberryPi"', self.html)
 
     def test_every_added_text_in_every_language(self) -> None:
-        added = set(I18N_KEY.findall(self.html)) - set(I18N_KEY.findall(self.panel))
-        self.assertTrue({"legal.privacy", "legal.storage", "legal.logs"} <= added)
+        added = set(I18N_KEY.findall(self.html)) - set(
+            I18N_KEY.findall(self.panel)
+        )
+        self.assertTrue(
+            {"legal.privacy", "legal.storage", "legal.logs"} <= added
+        )
         for locale in ("de", "en"):
-            source = (ROOT / "public" / "js" / "i18n" / f"{locale}.js").read_text(encoding="utf-8")
+            source = (
+                ROOT / "public" / "js" / "i18n" / f"{locale}.js"
+            ).read_text(encoding="utf-8")
             for key in sorted(added):
                 self.assertTrue(has_key(source, key), f"{locale}.js: {key}")
 

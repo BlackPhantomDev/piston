@@ -55,31 +55,43 @@ PRERELEASE = {"alpha": "a", "beta": "b", "rc": "rc"}
 
 def git(*args: str, check: bool = True) -> str:
     """Runs git in the repository root and returns its output."""
-    result = subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True)
+    result = subprocess.run(
+        ["git", *args], cwd=ROOT, capture_output=True, text=True
+    )
     if check and result.returncode != 0:
-        raise SystemExit(f"git {' '.join(args)} failed:\n{result.stderr.strip()}")
+        raise SystemExit(
+            f"git {' '.join(args)} failed:\n{result.stderr.strip()}"
+        )
     return result.stdout.rstrip()
 
 
 def to_pep440(semver: str) -> str:
     """0.1.0-alpha.8 → 0.1.0a8, 0.1.0-beta.1 → 0.1.0b1, 0.1.0 → 0.1.0"""
-    match = re.fullmatch(r"(\d+\.\d+\.\d+)(?:-(alpha|beta|rc)\.(\d+))?", semver)
+    match = re.fullmatch(
+        r"(\d+\.\d+\.\d+)(?:-(alpha|beta|rc)\.(\d+))?", semver
+    )
     if not match:
-        raise SystemExit(f"public/js/version.js: {semver!r} is not MAJOR.MINOR.PATCH[-alpha|beta|rc.N]")
+        raise SystemExit(
+            f"public/js/version.js: {semver!r} is not MAJOR.MINOR.PATCH[-alpha|beta|rc.N]"
+        )
     release, kind, number = match.groups()
     return release + (f"{PRERELEASE[kind]}{number}" if kind else "")
 
 
 def read_version() -> str:
     """The SemVer form from version.js, after checking pyproject.toml has the same version."""
-    match = VERSION_JS.search((ROOT / "public" / "js" / "version.js").read_text(encoding="utf-8"))
+    match = VERSION_JS.search(
+        (ROOT / "public" / "js" / "version.js").read_text(encoding="utf-8")
+    )
     if not match:
         raise SystemExit("public/js/version.js: no VERSION found")
     semver = match.group(1)
     with (ROOT / "pyproject.toml").open("rb") as file:
         pep440 = tomllib.load(file)["project"]["version"]
     if to_pep440(semver) != pep440:
-        raise SystemExit(f"Versions differ: version.js {semver}, pyproject.toml {pep440} (expected {to_pep440(semver)})")
+        raise SystemExit(
+            f"Versions differ: version.js {semver}, pyproject.toml {pep440} (expected {to_pep440(semver)})"
+        )
     return semver
 
 
@@ -91,14 +103,21 @@ def check(version: str, tag: str) -> None:
 
     branch = git("branch", "--show-current")
     if branch != BRANCH:
-        raise SystemExit(f"On branch {branch!r}, releases come from {BRANCH!r}")
+        raise SystemExit(
+            f"On branch {branch!r}, releases come from {BRANCH!r}"
+        )
     if git("status", "--porcelain"):
-        raise SystemExit("Uncommitted changes – commit or stash them first:\n" + git("status", "--short"))
+        raise SystemExit(
+            "Uncommitted changes – commit or stash them first:\n"
+            + git("status", "--short")
+        )
 
     git("fetch", "--quiet", REMOTE, BRANCH)
     behind = int(git("rev-list", "--count", f"HEAD..{REMOTE}/{BRANCH}"))
     if behind:
-        raise SystemExit(f"{BRANCH} is {behind} commit(s) behind {REMOTE}/{BRANCH} – pull first")
+        raise SystemExit(
+            f"{BRANCH} is {behind} commit(s) behind {REMOTE}/{BRANCH} – pull first"
+        )
 
     if git("tag", "--list", tag):
         raise SystemExit(f"Tag {tag} exists already")
@@ -107,9 +126,19 @@ def check(version: str, tag: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Tag and push the current PiSton version, build dist/.")
-    parser.add_argument("--dry-run", action="store_true", help="only check and build, no tag, no push")
-    parser.add_argument("--yes", action="store_true", help="do not ask before tagging and pushing")
+    parser = argparse.ArgumentParser(
+        description="Tag and push the current PiSton version, build dist/."
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="only check and build, no tag, no push",
+    )
+    parser.add_argument(
+        "--yes",
+        action="store_true",
+        help="do not ask before tagging and pushing",
+    )
     args = parser.parse_args()
 
     version = read_version()
@@ -124,15 +153,22 @@ def main() -> None:
     if args.dry_run:
         print("Dry run – nothing tagged or pushed.")
         return
-    if not args.yes and input("Tag and push? [y/N] ").strip().lower() not in ("y", "yes"):
+    if not args.yes and input("Tag and push? [y/N] ").strip().lower() not in (
+        "y",
+        "yes",
+    ):
         print("Cancelled – nothing tagged or pushed. dist/ is built.")
         return
 
     git("tag", "--annotate", tag, "--message", f"PiSton {version}")
-    push = subprocess.run(["git", "push", "--atomic", REMOTE, BRANCH, tag], cwd=ROOT)
+    push = subprocess.run(
+        ["git", "push", "--atomic", REMOTE, BRANCH, tag], cwd=ROOT
+    )
     if push.returncode != 0:
         git("tag", "--delete", tag)
-        raise SystemExit(f"Push failed – tag {tag} removed again, nothing changed on {REMOTE}")
+        raise SystemExit(
+            f"Push failed – tag {tag} removed again, nothing changed on {REMOTE}"
+        )
     print(f"Done: {tag} pushed, demo in dist/.")
 
 

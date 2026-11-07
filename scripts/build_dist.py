@@ -98,12 +98,9 @@ _DIALOG = f"""<dialog class="dialog" id="legal-dialog" aria-labelledby="legal-ti
     </dialog>"""
 # Placeholder in public/index.html → what replaces it in dist/index.html
 LEGAL = {
-    "<!-- dist: legal line – the demo only, added by scripts/build_dist.py -->":
-        f'<span class="legal-notice__line">{_OPENER}</span>',
-    "<!-- dist: legal inline – the demo only, added by scripts/build_dist.py -->":
-        f"· {_OPENER}",
-    "<!-- dist: legal dialog – the demo only, added by scripts/build_dist.py -->":
-        _DIALOG,
+    "<!-- dist: legal line – the demo only, added by scripts/build_dist.py -->": f'<span class="legal-notice__line">{_OPENER}</span>',
+    "<!-- dist: legal inline – the demo only, added by scripts/build_dist.py -->": f"· {_OPENER}",
+    "<!-- dist: legal dialog – the demo only, added by scripts/build_dist.py -->": _DIALOG,
 }
 
 
@@ -124,7 +121,13 @@ def build(out: Path) -> None:
 
     shutil.copytree(PUBLIC, out, ignore=skip)
 
-    fonts = sorted(set(FONT_URL.findall((PUBLIC / "css" / "fonts.css").read_text(encoding="utf-8"))))
+    fonts = sorted(
+        set(
+            FONT_URL.findall(
+                (PUBLIC / "css" / "fonts.css").read_text(encoding="utf-8")
+            )
+        )
+    )
     for font in fonts:
         target = out / font
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -139,9 +142,13 @@ def build(out: Path) -> None:
 
     # Always the demo: sample data instead of the backend
     api = out / "js" / "api.js"
-    source, count = API_SOURCE.subn(DEMO_SOURCE, api.read_text(encoding="utf-8"))
+    source, count = API_SOURCE.subn(
+        DEMO_SOURCE, api.read_text(encoding="utf-8")
+    )
     if count != 1:
-        raise SystemExit(f"{api}: expected one line like {DEMO_SOURCE!r}, found {count}")
+        raise SystemExit(
+            f"{api}: expected one line like {DEMO_SOURCE!r}, found {count}"
+        )
     api.write_text(source, encoding="utf-8")
 
     # The demo is a public website: "Rechtliches" next to the attribution (sidebar and narrow-screen footer)
@@ -149,20 +156,31 @@ def build(out: Path) -> None:
     html = index.read_text(encoding="utf-8")
     for placeholder, link in LEGAL.items():
         if html.count(placeholder) != 1:
-            raise SystemExit(f"{index}: expected the placeholder {placeholder!r} once, found {html.count(placeholder)}")
+            raise SystemExit(
+                f"{index}: expected the placeholder {placeholder!r} once, found {html.count(placeholder)}"
+            )
         html = html.replace(placeholder, link)
     index.write_text(html, encoding="utf-8")
 
     files = [path for path in out.rglob("*") if path.is_file()]
     size_mb = sum(path.stat().st_size for path in files) / 1_000_000
-    version = VERSION.search((out / "js" / "version.js").read_text(encoding="utf-8"))
+    version = VERSION.search(
+        (out / "js" / "version.js").read_text(encoding="utf-8")
+    )
     print(f"PiSton demo {version.group(1) if version else '?'} → {out}")
     print(f"{len(files)} files, {size_mb:.1f} MB, {len(fonts)} font files")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build the PiSton demo (sample data, no backend).")
-    parser.add_argument("--out", type=Path, default=ROOT / "dist", help="target folder (default: dist/)")
+    parser = argparse.ArgumentParser(
+        description="Build the PiSton demo (sample data, no backend)."
+    )
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=ROOT / "dist",
+        help="target folder (default: dist/)",
+    )
     build(parser.parse_args().out)
 
 
