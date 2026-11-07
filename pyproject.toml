@@ -12,8 +12,10 @@ license = "AGPL-3.0-or-later"
 license-files = ["LICENCE", "ADDITIONAL_TERMS", "THIRD-PARTY-NOTICES"]
 authors = [{ name = "Mischa S." }]
 requires-python = ">=3.11"
-# The only planned runtime dependency, aiohttp, comes with the backend (phase 6)
-dependencies = []
+# The only planned runtime dependency, aiohttp
+dependencies = [
+    "aiohttp>=3.14.5"
+]
 
 [project.urls]
 Repository = "https://github.com/BlackPhantomDev/piston"
