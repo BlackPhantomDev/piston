@@ -23,3 +23,9 @@ Changelog = "https://github.com/BlackPhantomDev/piston/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 include = ["server*"]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP"]
