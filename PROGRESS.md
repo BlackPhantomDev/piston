@@ -313,11 +313,11 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
     immer auf die Demo – egal, worauf das Repo gerade zeigt.
 - [x] `pyproject.toml` (Version in PEP-440-Form `0.1.0a9`, Lizenz, `requires-python = ">=3.11"`) – vorgezogen,
       ersetzt die frühere `package.json`
-- [ ] venv (`python3 -m venv .venv && .venv/bin/pip install -e .`), `aiohttp` als einzige Abhängigkeit in `pyproject.toml`
+- [x] venv (`python3 -m venv .venv && .venv/bin/pip install -e .`), `aiohttp` als einzige Abhängigkeit in `pyproject.toml`
 - [x] `.gitignore`: `.venv/`, `__pycache__/` – nur lokal, solange `.gitignore` selbst nicht im Repo ist (siehe Offene Punkte)
-- [ ] `tests/test_version.py`: `public/js/version.js` = `version` aus `pyproject.toml` (nach Umrechnung PEP 440 ↔ SemVer),
+- [x] `tests/test_version.py`: `public/js/version.js` = `version` aus `pyproject.toml` (nach Umrechnung PEP 440 ↔ SemVer),
       Aufruf `python -m unittest`
-- [ ] `server/` als Paket, Start mit `python -m server` (`__main__.py`)
+- [x] `server/` als Paket, Start mit `python -m server` (`__main__.py`)
 - [ ] `server/config.py` + `panel.config.example.json`: Datei + Umgebungsvariablen, validiert
   - LAN-IP selbst ermitteln, wenn `panelHost` leer ist (Standard-Route, ohne Pakete zu senden).
   - Ohne private Adresse bricht der Start ab, kein Ausweichen auf `0.0.0.0`.
