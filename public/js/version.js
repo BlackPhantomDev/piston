@@ -22,5 +22,5 @@
 // Panel version for the browser. The source of truth is "version" in pyproject.toml –
 // the browser cannot read that file (it lives outside public/), so it is repeated here.
 // pyproject.toml uses the PEP 440 form (0.1.0a9), this file the SemVer form (0.1.0-alpha.9).
-// Change both together; tests/test_version.py will compare them (phase 6).
+// Change both together; tests/test_version.py compares them.
 export const VERSION = '0.1.0-alpha.9';
