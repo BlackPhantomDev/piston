@@ -49,6 +49,10 @@ ENV_KEYS = {
 }
 
 
+class ConfigError(Exception):
+    """Raised when the panel configuration is invalid."""
+
+
 @dataclass(frozen=True)
 class Config:
     """Settings of the panel, built once at start and never changed."""
@@ -66,7 +70,7 @@ def load_config(path: Path) -> Config:
 
     Environment variables override the file, the file overrides the
     defaults. A missing file or key keeps the default; an unknown key in
-    the file raises ValueError.
+    the file raises ConfigError.
     """
     config_dict: dict = {}
     _load_config_file(path, config_dict)
@@ -79,7 +83,7 @@ def _load_config_file(path: Path, config_dict: dict) -> None:
     """Copy the values from the JSON file into config_dict.
 
     Keys are renamed from camelCase to the field names via KEY_NAMES.
-    A missing file adds nothing; an unknown key raises ValueError.
+    A missing file adds nothing; an unknown key raises ConfigError.
     """
     try:
         with open(path, encoding="utf-8") as file:
@@ -88,7 +92,7 @@ def _load_config_file(path: Path, config_dict: dict) -> None:
         return
     for key, value in data.items():
         if key not in KEY_NAMES:
-            raise ValueError(f"Unknown key in {path}: {key}")
+            raise ConfigError(f"Unbekannter Schlüssel in {path}: {key}")
         config_dict[KEY_NAMES[key]] = value
 
 
@@ -114,7 +118,35 @@ def _convert_types(config_dict: dict) -> None:
     if "backup_dir" in config_dict:
         config_dict["backup_dir"] = Path(config_dict["backup_dir"])
     if "panel_port" in config_dict:
-        config_dict["panel_port"] = int(config_dict["panel_port"])
+        config_dict["panel_port"] = _parse_port(config_dict["panel_port"])
+
+
+def _parse_port(value: object) -> int:
+    """Return the port from a config value as int.
+
+    The value comes from the panel.config.json or the environment.
+    Raise ConfigError if the value is not an int or str,
+    cannot be converted to an int, or is outside 1–65535.
+    """
+    if isinstance(value, bool) or not isinstance(value, (str, int)):
+        raise ConfigError(
+            "Es wurde in panelPort / PANEL_PORT "
+            f"kein gültiger Port hinterlegt: {value}"
+        )
+    try:
+        port = int(value)
+    except ValueError as error:
+        raise ConfigError(
+            "Der angegebene Port in panelPort / PANEL_PORT "
+            "ist keine Zahl: "
+            f"{value}"
+        ) from error
+    if not 1 <= port <= 65535:
+        raise ConfigError(
+            "panelPort / PANEL_PORT muss eine Zahl zwischen "
+            f"1 und 65535 sein, nicht: {value}"
+        )
+    return port
 
 
 if __name__ == "__main__":
