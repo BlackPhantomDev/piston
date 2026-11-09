@@ -18,9 +18,15 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Load panel configuration from JSON file."""
+"""Panel configuration: defaults, panel.config.json and environment variables.
+
+Each value comes from the first of these that sets it, highest first:
+environment variable (e.g. PANEL_PORT), panel.config.json (e.g. panelPort),
+default in Config.
+"""
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -33,9 +39,20 @@ KEY_NAMES = {
     "backupDir": "backup_dir",
 }
 
+ENV_KEYS = {
+    "MC_DIR": "mc_dir",
+    "MC_SERVICE": "service_name",
+    "RCON_HOST": "rcon_host",
+    "PANEL_HOST": "panel_host",
+    "PANEL_PORT": "panel_port",
+    "BACKUP_DIR": "backup_dir",
+}
+
 
 @dataclass(frozen=True)
 class Config:
+    """Settings of the panel, built once at start and never changed."""
+
     mc_dir: Path = Path("/opt/minecraft")
     service_name: str = "minecraft.service"
     rcon_host: str = "127.0.0.1"
@@ -45,27 +62,59 @@ class Config:
 
 
 def load_config(path: Path) -> Config:
-    """Load every key from the config file.
+    """Load the panel configuration from a JSON file and the environment.
 
-    Missing keys are replaced with default values;
-    unknown keys trigger a ValueError;
-    a missing file also sets the default values.
+    Environment variables override the file, the file overrides the
+    defaults. A missing file or key keeps the default; an unknown key in
+    the file raises ValueError.
     """
-    config_dict = {}
+    config_dict: dict = {}
+    _load_config_file(path, config_dict)
+    _apply_env(config_dict)
+    _convert_types(config_dict)
+    return Config(**config_dict)
+
+
+def _load_config_file(path: Path, config_dict: dict) -> None:
+    """Copy the values from the JSON file into config_dict.
+
+    Keys are renamed from camelCase to the field names via KEY_NAMES.
+    A missing file adds nothing; an unknown key raises ValueError.
+    """
     try:
         with open(path, encoding="utf-8") as file:
             data = json.load(file)
     except FileNotFoundError:
-        return Config()
+        return
     for key, value in data.items():
         if key not in KEY_NAMES:
             raise ValueError(f"Unknown key in {path}: {key}")
         config_dict[KEY_NAMES[key]] = value
+
+
+def _apply_env(config_dict: dict) -> None:
+    """Copy the environment variables from ENV_KEYS into config_dict.
+
+    Only variables that are set are copied; they override values from
+    the file. The values stay strings, _convert_types() converts them.
+    """
+    for key, field in ENV_KEYS.items():
+        if key in os.environ:
+            config_dict[field] = os.environ[key]
+
+
+def _convert_types(config_dict: dict) -> None:
+    """Convert the values in config_dict to the types of Config, in place.
+
+    Paths become Path, the port becomes int. Fields that are not in
+    config_dict are left out, so Config uses its defaults for them.
+    """
     if "mc_dir" in config_dict:
         config_dict["mc_dir"] = Path(config_dict["mc_dir"])
     if "backup_dir" in config_dict:
         config_dict["backup_dir"] = Path(config_dict["backup_dir"])
-    return Config(**config_dict)
+    if "panel_port" in config_dict:
+        config_dict["panel_port"] = int(config_dict["panel_port"])
 
 
 if __name__ == "__main__":
