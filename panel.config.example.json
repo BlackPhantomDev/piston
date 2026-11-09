@@ -1,0 +1,8 @@
+{
+    "mcDir": "/opt/minecraft",
+    "serviceName": "minecraft.service",
+    "rconHost": "127.0.0.1",
+    "panelHost": null,
+    "panelPort": 8080,
+    "backupDir": "/opt/minecraft/backups"
+}
