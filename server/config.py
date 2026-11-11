@@ -124,6 +124,19 @@ def _convert_types(config_dict: dict) -> None:
         )
     if "panel_port" in config_dict:
         config_dict["panel_port"] = _parse_port(config_dict["panel_port"])
+    if "service_name" in config_dict:
+        config_dict["service_name"] = _parse_text(
+            config_dict["service_name"], "serviceName / MC_SERVICE"
+        )
+    if "rcon_host" in config_dict:
+        config_dict["rcon_host"] = _parse_text(
+            config_dict["rcon_host"], "rconHost / RCON_HOST"
+        )
+    if "panel_host" in config_dict:
+        if config_dict["panel_host"] is not None:
+            config_dict["panel_host"] = _parse_text(
+                config_dict["panel_host"], "panelHost / PANEL_HOST"
+            )
 
 
 def _parse_port(value: object) -> int:
@@ -171,6 +184,22 @@ def _parse_path(value: object, key: str) -> Path:
             f"Der angegebene Pfad in {key} ist nicht absolut: {value!r}"
         )
     return path
+
+
+def _parse_text(value: object, key: str) -> str:
+    """Return the text from a config value as str.
+
+    The value comes from the panel.config.json or the environment;
+    key names the field in the error message.
+    Raise ConfigError if the value is not a str or is empty.
+    """
+    if not isinstance(value, str):
+        raise ConfigError(
+            f"Der angegebene Wert in {key} ist kein gültiger Text: {value!r}"
+        )
+    if not value.strip():
+        raise ConfigError(f"Der angegebene Wert in {key} ist leer: {value!r}")
+    return value.strip()
 
 
 if __name__ == "__main__":
