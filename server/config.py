@@ -112,11 +112,16 @@ def _convert_types(config_dict: dict) -> None:
 
     Paths become Path, the port becomes int. Fields that are not in
     config_dict are left out, so Config uses its defaults for them.
+    Invalid values raise ConfigError.
     """
     if "mc_dir" in config_dict:
-        config_dict["mc_dir"] = Path(config_dict["mc_dir"])
+        config_dict["mc_dir"] = _parse_path(
+            config_dict["mc_dir"], "mcDir / MC_DIR"
+        )
     if "backup_dir" in config_dict:
-        config_dict["backup_dir"] = Path(config_dict["backup_dir"])
+        config_dict["backup_dir"] = _parse_path(
+            config_dict["backup_dir"], "backupDir / BACKUP_DIR"
+        )
     if "panel_port" in config_dict:
         config_dict["panel_port"] = _parse_port(config_dict["panel_port"])
 
@@ -147,6 +152,25 @@ def _parse_port(value: object) -> int:
             f"1 und 65535 sein, nicht: {value}"
         )
     return port
+
+
+def _parse_path(value: object, key: str) -> Path:
+    """Return the path from a config value as Path.
+
+    The value comes from the panel.config.json or the environment;
+    key names the field in the error message.
+    Raise ConfigError if the value is not a str or not an absolute path.
+    """
+    if not isinstance(value, str):
+        raise ConfigError(
+            f"Der angegebene Pfad in {key} ist kein gültiger Pfad: {value!r}"
+        )
+    path = Path(value)
+    if not path.is_absolute():
+        raise ConfigError(
+            f"Der angegebene Pfad in {key} ist nicht absolut: {value!r}"
+        )
+    return path
 
 
 if __name__ == "__main__":
