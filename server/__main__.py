@@ -21,6 +21,13 @@
 """Run the PiSton backend."""
 
 import logging
+import sys
+from pathlib import Path
+
+from server.config import ConfigError, load_config
+
+ROOT = Path(__file__).resolve().parent.parent
+
 
 log = logging.getLogger(__name__)
 
@@ -30,7 +37,15 @@ def main() -> None:
         level="INFO",
         format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
     )
-    log.info("PiSton startet")
+    log.info("PiSton startet…")
+    try:
+        config = load_config(ROOT / "panel.config.json")
+    except ConfigError as error:
+        log.error(error)
+        sys.exit(1)
+    log.info(
+        f"PiSton läuft auf http://{config.panel_host}:{config.panel_port}"
+    )
 
 
 if __name__ == "__main__":
