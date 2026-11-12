@@ -240,7 +240,3 @@ def _apply_lan_ip(config_dict: dict) -> None:
     """Set panel_host to the detected LAN IP if it is not set."""
     if config_dict.get("panel_host") is None:
         config_dict["panel_host"] = _detect_lan_ip()
-
-
-if __name__ == "__main__":
-    print(load_config(Path("panel.config.example.json")))
