@@ -318,7 +318,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
 - [x] `tests/test_version.py`: `public/js/version.js` = `version` aus `pyproject.toml` (nach Umrechnung PEP 440 ↔ SemVer),
       Aufruf `python -m unittest`
 - [x] `server/` als Paket, Start mit `python -m server` (`__main__.py`)
-- [ ] `server/config.py` + `panel.config.example.json`: Datei + Umgebungsvariablen, validiert
+- [x] `server/config.py` + `panel.config.example.json`: Datei + Umgebungsvariablen, validiert
   - LAN-IP selbst ermitteln, wenn `panelHost` leer ist (Standard-Route, ohne Pakete zu senden).
   - Ohne private Adresse bricht der Start ab, kein Ausweichen auf `0.0.0.0`.
   - Log beim Start: `PiSton läuft auf http://<ip>:<port>`.
