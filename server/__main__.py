@@ -24,6 +24,9 @@ import logging
 import sys
 from pathlib import Path
 
+from aiohttp import web
+
+from server.app import create_app
 from server.config import ConfigError, load_config
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -46,6 +49,8 @@ def main() -> None:
     log.info(
         f"PiSton läuft auf http://{config.panel_host}:{config.panel_port}"
     )
+    app = create_app()
+    web.run_app(app, host=config.panel_host, port=config.panel_port)
 
 
 if __name__ == "__main__":
