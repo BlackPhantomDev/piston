@@ -322,7 +322,7 @@ die Commit-Konvention in der globalen `~/.claude/CLAUDE.md`.
   - LAN-IP selbst ermitteln, wenn `panelHost` leer ist (Standard-Route, ohne Pakete zu senden).
   - Ohne private Adresse bricht der Start ab, kein Ausweichen auf `0.0.0.0`.
   - Log beim Start: `PiSton läuft auf http://<ip>:<port>`.
-- [ ] `server/app.py`: aiohttp-App, liefert `public/` aus (AGENTS.md §5 „Auslieferung des Frontends“)
+- [x] `server/app.py`: aiohttp-App, liefert `public/` aus (AGENTS.md §5 „Auslieferung des Frontends“)
   - Reihenfolge der Routen: `/api/…`, `/ws`, `/` → `index.html`, zuletzt `add_static(…, follow_symlinks=False)`.
   - `.js` als `text/javascript`; `Cache-Control` je Ordner.
   - Path-Traversal abgelehnt (`Path.resolve()` + `is_relative_to`, AGENTS.md §8).
