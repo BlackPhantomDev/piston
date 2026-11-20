@@ -43,7 +43,6 @@ import re
 import subprocess
 import sys
 import tomllib
-from pathlib import Path
 
 from build_dist import ROOT, build
 
@@ -72,14 +71,18 @@ def to_pep440(semver: str) -> str:
     )
     if not match:
         raise SystemExit(
-            f"public/js/version.js: {semver!r} is not MAJOR.MINOR.PATCH[-alpha|beta|rc.N]"
+            f"public/js/version.js: {semver!r} is not "
+            "MAJOR.MINOR.PATCH[-alpha|beta|rc.N]"
         )
     release, kind, number = match.groups()
     return release + (f"{PRERELEASE[kind]}{number}" if kind else "")
 
 
 def read_version() -> str:
-    """The SemVer form from version.js, after checking pyproject.toml has the same version."""
+    """The SemVer form from version.js.
+
+    Stops if pyproject.toml has a different version.
+    """
     match = VERSION_JS.search(
         (ROOT / "public" / "js" / "version.js").read_text(encoding="utf-8")
     )
@@ -90,13 +93,14 @@ def read_version() -> str:
         pep440 = tomllib.load(file)["project"]["version"]
     if to_pep440(semver) != pep440:
         raise SystemExit(
-            f"Versions differ: version.js {semver}, pyproject.toml {pep440} (expected {to_pep440(semver)})"
+            f"Versions differ: version.js {semver}, pyproject.toml {pep440} "
+            f"(expected {to_pep440(semver)})"
         )
     return semver
 
 
 def check(version: str, tag: str) -> None:
-    """Stops with a message when the repository is not ready for the release."""
+    """Stops with a message if the repository is not ready for release."""
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     if f"## [{version}]" not in changelog:
         raise SystemExit(f"CHANGELOG.md has no section '## [{version}]'")
@@ -116,7 +120,8 @@ def check(version: str, tag: str) -> None:
     behind = int(git("rev-list", "--count", f"HEAD..{REMOTE}/{BRANCH}"))
     if behind:
         raise SystemExit(
-            f"{BRANCH} is {behind} commit(s) behind {REMOTE}/{BRANCH} – pull first"
+            f"{BRANCH} is {behind} commit(s) behind "
+            f"{REMOTE}/{BRANCH} – pull first"
         )
 
     if git("tag", "--list", tag):
@@ -167,7 +172,8 @@ def main() -> None:
     if push.returncode != 0:
         git("tag", "--delete", tag)
         raise SystemExit(
-            f"Push failed – tag {tag} removed again, nothing changed on {REMOTE}"
+            f"Push failed – tag {tag} removed again, "
+            f"nothing changed on {REMOTE}"
         )
     print(f"Done: {tag} pushed, demo in dist/.")
 
